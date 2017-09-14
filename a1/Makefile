@@ -8,6 +8,7 @@ CFLAGS = -g
 CPPFLAGS = -std=c99 -Wall -pedantic
 LDFLAGS = 
 LDLIBS =
+ARFLAGS = rcs
 
 .PHONY: all clean windows unix
 
