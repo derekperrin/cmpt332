@@ -1,4 +1,6 @@
+#include <stdio.h>
 
-int main(void){
+int main(int argc, char* argv[]){
+	printf("%s %s %s\n", argv[1], argv[2], argv[3]);
 	return 0;
 }
