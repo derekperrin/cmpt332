@@ -1,0 +1,57 @@
+# CMPT 332 -- Fall 2017
+# Assignment 1
+# Derek Perrin 		dmp450 11050915
+# Dominic McKeith 	dom258 11184543
+
+# these functions will all be similar between partA1,partA2,partA3,partA4
+# syntax will be different because we are using different OS and libraries
+
+# global array that keeps track of stack size created by square
+int square_invocations[];
+
+# global bool that is set to false when deadline has passed
+bool keep_running = true
+
+# called by each thread. Invokes square and prints stuff when exits
+int thread_main_func( int size ) {
+    initialize(time)
+    for (i = 1; i <= size; i++) {
+        return Square(i)
+    }
+    print(end_time)
+    print(square_invocations[thread_id])
+    exit()
+}
+
+# inefficient square method from Makaroff
+int Square(int n) {
+    if !(keep_running) die()
+    square_invocations[thread_id]++
+    if (n == 0) return 0
+    return (Square(n-1) + n + n -1)
+}
+
+# takes string array of args. Converts to ints, checks if all > 0
+int parse_args(*threads, *deadline, *size, argc, argv){
+    threads,deadline,size = argv[1,2,3]
+    check_validity(argv)
+    return EXIT_SUCCESS if valid
+}
+
+# parent thread 
+int main(int argc, char* argv[argc+1]){
+    parse_args(threads,deadline,size,argc,argv)
+    square_invocations = malloc(sizeof(int) * threads)
+    malloc(threads)
+
+    # create threads
+    for (i = 0; i < threads; i++){
+        thread_array[i] = createThread()
+    }
+
+    sleep(deadline)
+    keep_running = false
+
+    free(threads and malloc'd arrays)
+    return EXIT_SUCCESS
+}
