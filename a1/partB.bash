@@ -11,6 +11,7 @@ INT=[1-9][0-9]*
 
 checkArgs(){
 	if ! [[ $# == 3 && $@ =~ ^$INT\ $INT\ $INT$ ]]; then
+		echo "Invalid arguments"
 		continue
 	fi
 }
@@ -39,10 +40,6 @@ if [ $# -eq 1 ] ; then
 else
 	invalidInput
 fi
-
-
-
-
 
 exit 0
 
