@@ -6,13 +6,11 @@
 
 OS=`uname`
 PROG=part$1
-echo $PROG
+INT=[1-9][0-9]*
+
 
 checkArgs(){
-	if [[ $# == 3 && $1 =~ ^[1-9]*[0-9]$ ]]; then
-		echo happy
-	else
-		echo bad
+	if ! [[ $# == 3 && $@ =~ ^$INT\ $INT\ $INT$ ]]; then
 		continue
 	fi
 }
@@ -33,8 +31,10 @@ if [ $# -eq 1 ] ; then
 	# check that the OS matches what part the user is trying to run
 	if [[ $OS =~ MINGW* && $1 == "A1" ]]; then
 		main
-	elif [[ $1 =~ A[2-4] ]]; then
+	elif ! [[ $OS =~ MINGW* ]] && [[ $1 =~ A[2-4] ]]; then
 		main
+	else
+		invalidInput
 	fi
 else
 	invalidInput
