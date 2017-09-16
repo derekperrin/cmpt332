@@ -4,6 +4,7 @@
 # Dominic McKeith 	dom258 11184543
 
 # Part C Design Documentation
+# Pseudocode below:
 
 const MAX_LISTS
 const MAX_NODES
