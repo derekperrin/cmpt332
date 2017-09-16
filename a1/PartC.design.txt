@@ -1,0 +1,112 @@
+# CMPT 332 -- Fall 2017
+# Assignment 1
+# Derek Perrin 		dmp450 11050915
+# Dominic McKeith 	dom258 11184543
+
+# Part C Design Documentation
+
+const MAX_LISTS
+const MAX_NODES
+
+# Stack to grab empty lists from.
+struct list_stack{
+    list_mem[]
+    int size
+}
+
+struct node_stack{
+    node_mem[]
+    int size
+}
+
+STACK {
+    void* data
+    STACK* next
+}
+
+LIST* ListCreate()
+    if (list_stack.current == 0)
+        allocate list_stack
+        allocate node_stack
+    increment list_stack size
+    return list_stack.list_mem[0]
+
+int ListCount()
+    return list.size
+
+void* ListFirst()
+    return list.head
+
+void* ListLast()
+    return list.tail
+
+void* ListNext()
+    list.curr = list.curr.next
+    return list.curr.data
+
+void* ListPrev()
+    list.curr = list.curr.prev
+    return list.curr.data
+
+void* ListCurr()
+    return list.curr
+
+int ListAdd()
+    pop from node_pool
+    adjust pointers to accommodate it
+    insert item in list.curr
+
+int ListInsert()
+    Same as ListAdd(), but backwards
+
+int ListAppend()
+    pop from node_pool
+    adjust pointers of tail for new node
+    insert item in last node
+    return 1
+
+int ListPrepend()
+    same as ListAppend, but adjust head
+
+void* ListRemove()
+    list.curr.next.prev = list.curr.prev
+    list.curr = list.curr.next
+    list.curr.prev.next = list.curr
+    return list.curr.item
+
+void ListConcat()
+    list1.tail.next = list2.head
+    list2.head.prev = list1.tail
+    list1.tail = list2.tail
+    list2 and its members are NULL
+    push(list2) to list_stack
+
+void ListFree
+    for (node in list)
+        freeitem(node.item)
+        node.item = NULL
+        push(node) node_stack
+    nullify(list members)
+    push(list) list_stack
+
+void* ListTrim
+    rNode = list.tail
+    list.tail = list.tail.prev
+    list.tail.next = NULL
+    return rNode
+
+void* ListSearch()
+    for (node in list)
+        if (comparator(item, comparisonArg))
+            list.curr = node
+            return list.curr.item
+    return 0
+
+
+
+
+        
+
+
+free(int i)
+    available_list_mem[i] = 1

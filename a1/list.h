@@ -33,4 +33,4 @@ void ListConcat(LIST*, LIST*);
 void ListFree(LIST*, void (*)(void*));
 void* ListTrim(LIST*);
 void* ListSearch(LIST*, int (*)(void*, void*), void*);
-#endif
+#endif /* LIST_H */
