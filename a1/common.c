@@ -7,6 +7,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "common.h"
+
+bool keepRunning = true;
+
 /***
  * Validates arguments
  * threads: number of threads to create
@@ -40,6 +44,13 @@ void arg_error(){
  * n: number of squares to compute
  * return: square of n
 ***/
-void Square ( int n ) {
-    printf("Got to procedure Square\n");
+int Square ( int n ) {
+	incr_func();
+	
+	if (keepRunning == false)
+		return 0;
+	if (n == 0){
+		return 0;
+	}
+	return Square(n - 1) + n + n - 1;
 }
