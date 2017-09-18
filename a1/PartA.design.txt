@@ -55,3 +55,23 @@ int main(int argc, char* argv[argc+1]){
     free(threads and malloc'd arrays)
     return EXIT_SUCCESS
 }
+
+###### UPDATE FOR PHASE 2 #####
+
+## PART A1 ##
+Use Thread Local Storage to store a variable for each thread to track the number
+of calls to Square(). See
+https://msdn.microsoft.com/en-us/library/windows/desktop/ms686991(v=vs.85).aspx
+for more information on the topic.
+
+# Waiting for threads to exit:
+In main(), when the parent thread is done sleeping until deadline, it must call
+WaitForSingleObject to wait for all child threads to exit. 
+
+# Child threads exiting
+If the child thread finished before deadline, it will print the time it ran for.
+If the keepRunning flag is set to false because deadline has passed, then the 
+child threads will exit in their current call of Square() and print their 
+stats before exiting.
+
+
