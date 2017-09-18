@@ -15,22 +15,32 @@ DWORD dwTlsIndex; /* enable thread local storage */
 /* need CreateThread(), GetSystemTime(), Sleep() */
 
 DWORD WINAPI Thread_Main( LPVOID lpParam ) {
+    /* Get time that thread starts executing
+     * Avoid use of GetSystemTime() because Microsoft said so.
+     */
+    /* TODO: More testing. Possibly use different method to measure time 
+     * elapsed. See Windows documentation and ask Jarrod.
+     */
+    DWORD init_time = GetTickCount();
+
+    /* set a counter for counting Square() recursive calls */
 	size_t counter = 0;
 	
 	/* Do the following to prevent overwrite and compiler errors
 	 * for attempting to dereference a LPVOID */
 	size_t size = *(size_t*)lpParam;
 	
-	/* TODO: get the time thread runs for */
 	if(! TlsSetValue(dwTlsIndex, &counter))
-        ErrorExit("TlsSetValue error in Thread_Main\n");
+        error_exit("TlsSetValue error in Thread_Main\n");
 	
 	for (size_t i = 1; i <= size && keepRunning; ++i){
 		Square(i);
 	}
 	
 	counter = *(size_t*)TlsGetValue(dwTlsIndex);
-	printf("Invocations of Square function: %d\n", counter);
+	printf("No. of Square calls: %d, Elapsed Time: %d\n",
+            counter,
+            GetTickCount() - init_time);
 	return EXIT_SUCCESS;
 }
 
@@ -40,7 +50,7 @@ void incr_func(){
 }
 
 /* Error function to return errors to stderr */
-VOID ErrorExit (LPSTR lpszMessage) {
+VOID error_exit (LPSTR lpszMessage) {
     fprintf(stderr, "%s\n", lpszMessage);
     ExitProcess(0);
 }
@@ -58,12 +68,12 @@ int main(int argc, char* argv[argc+1]){
 	/* create space for the threads */
 	thread_array = malloc(sizeof(HANDLE) * num_threads);
 	if (thread_array == NULL){
-        ErrorExit("thread_array malloc error\n");
+        error_exit("thread_array malloc error\n");
 	}
 	
 	/* allocating a TLS index */
 	if ((dwTlsIndex = TlsAlloc()) == TLS_OUT_OF_INDEXES) 
-        ErrorExit("TlsAlloc error\n");
+        error_exit("TlsAlloc error\n");
 	
 	/* create threads and stash them in thread array */
 	printf("Creating threads\n");
@@ -85,7 +95,7 @@ int main(int argc, char* argv[argc+1]){
             thread_array,       /* pointer to array of object handles */
             TRUE,               /* bWaitAll: TRUE to wait for all threads */
             INFINITE)){         /* wait until all threads return */
-        ErrorExit("WaitForMultipleObjects error\n");
+        error_exit("WaitForMultipleObjects error\n");
     }
     
     /* free allocated memory */

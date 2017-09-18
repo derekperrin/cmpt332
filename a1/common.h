@@ -20,5 +20,7 @@ void arg_error(void);
 
 void incr_func(void);
 
+/* print error message to stderr and exit with error status */
+void error_exit(char*);
 #endif /* COMMON_H */
 
