@@ -23,7 +23,7 @@ DWORD WINAPI Thread_Main( LPVOID lpParam ) {
 	
 	/* TODO: get the time thread runs for */
 	if(! TlsSetValue(dwTlsIndex, &counter))
-		return EXIT_FAILURE;
+        ErrorExit("TlsSetValue error in Thread_Main\n");
 	
 	for (size_t i = 1; i <= size && keepRunning; ++i){
 		Square(i);
@@ -39,8 +39,14 @@ void incr_func(){
 	++(*counter);
 }
 
+/* Error function to return errors to stderr */
+VOID ErrorExit (LPSTR lpszMessage) {
+    fprintf(stderr, "%s\n", lpszMessage);
+    ExitProcess(0);
+}
+
 int main(int argc, char* argv[argc+1]){
-	/* TODO: free all thread local storage */
+
 	HANDLE* thread_array;
 	int num_threads, size, deadline;
 
@@ -52,12 +58,12 @@ int main(int argc, char* argv[argc+1]){
 	/* create space for the threads */
 	thread_array = malloc(sizeof(HANDLE) * num_threads);
 	if (thread_array == NULL){
-		return EXIT_FAILURE;
+        ErrorExit("thread_array malloc error\n");
 	}
 	
 	/* allocating a TLS index */
 	if ((dwTlsIndex = TlsAlloc()) == TLS_OUT_OF_INDEXES) 
-		return EXIT_FAILURE;
+        ErrorExit("TlsAlloc error\n");
 	
 	/* create threads and stash them in thread array */
 	printf("Creating threads\n");
@@ -72,7 +78,19 @@ int main(int argc, char* argv[argc+1]){
 	}
 	Sleep(1000*deadline); /* 1000 for converting s to ms */
 	keepRunning = false;
-	/* TODO: WaitForSingleObject */
-	free(thread_array);
+
+    /* Wait until threads complete before exiting main() */
+    if (WaitForMultipleObjects(
+            num_threads,        /* number of threads in array */
+            thread_array,       /* pointer to array of object handles */
+            TRUE,               /* bWaitAll: TRUE to wait for all threads */
+            INFINITE)){         /* wait until all threads return */
+        ErrorExit("WaitForMultipleObjects error\n");
+    }
+    
+    /* free allocated memory */
+    TlsFree(dwTlsIndex);        /* free allocated TLS memory */
+	free(thread_array);         /* free thread array */  
+
 	return EXIT_SUCCESS;
 }
