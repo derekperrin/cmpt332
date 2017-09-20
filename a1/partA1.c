@@ -38,7 +38,7 @@ DWORD WINAPI Thread_Main( LPVOID lpParam ) {
 	}
 	
 	counter = *(size_t*)TlsGetValue(dwTlsIndex);
-	printf("Thread %d: No. of Square calls: %d, Elapsed Time: %d ms\n",
+	printf("Thread %d: No. of Square calls: %lu, Elapsed Time: %d ms\n",
 			GetCurrentThreadId(),
 			counter,
 			GetTickCount() - init_time);
