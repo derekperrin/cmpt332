@@ -19,7 +19,7 @@ bool keepRunning = true;
  * return EXIT_SUCCESS if valid, EXIT_FAILURE otherwise
 ***/
 int parse_args(int* threads, int* deadline, int* size,
-        int argc, char* argv[argc+1]){
+        int argc, char* argv[]){
     if (argc != 4) 
         return EXIT_FAILURE;
     if ( sscanf(argv[1], "%d", threads) != 1 ||

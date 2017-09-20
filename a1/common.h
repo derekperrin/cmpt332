@@ -14,7 +14,7 @@ extern bool keepRunning;
 int Square(int n);
 
 /* parse arguments */
-int parse_args(int*, int*, int*, int argc, char* argv[argc+1]);
+int parse_args(int*, int*, int*, int argc, char* argv[]);
 
 void arg_error(void);
 

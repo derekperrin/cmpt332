@@ -15,15 +15,15 @@ DWORD dwTlsIndex; /* enable thread local storage */
 /* need CreateThread(), GetSystemTime(), Sleep() */
 
 DWORD WINAPI Thread_Main( LPVOID lpParam ) {
-    /* Get time that thread starts executing
-     * Avoid use of GetSystemTime() because Microsoft said so.
-     */
-    /* TODO: More testing. Possibly use different method to measure time 
-     * elapsed. See Windows documentation and ask Jarrod.
-     */
-    DWORD init_time = GetTickCount();
-
-    /* set a counter for counting Square() recursive calls */
+	/* Get time that thread starts executing
+	 * Avoid use of GetSystemTime() because Microsoft said so.
+	 */
+	/* TODO: More testing. Possibly use different method to measure time 
+	 * elapsed. See Windows documentation and ask Jarrod.
+	 */
+	DWORD init_time = GetTickCount();
+	
+	/* set a counter for counting Square() recursive calls */
 	size_t counter = 0;
 	
 	/* Do the following to prevent overwrite and compiler errors
@@ -31,16 +31,17 @@ DWORD WINAPI Thread_Main( LPVOID lpParam ) {
 	size_t size = *(size_t*)lpParam;
 	
 	if(! TlsSetValue(dwTlsIndex, &counter))
-        error_exit("TlsSetValue error in Thread_Main\n");
+		error_exit("TlsSetValue error in Thread_Main\n");
 	
 	for (size_t i = 1; i <= size && keepRunning; ++i){
 		Square(i);
 	}
 	
 	counter = *(size_t*)TlsGetValue(dwTlsIndex);
-	printf("No. of Square calls: %d, Elapsed Time: %d\n",
-            counter,
-            GetTickCount() - init_time);
+	printf("Thread %d: No. of Square calls: %d, Elapsed Time: %d ms\n",
+			GetCurrentThreadId(),
+			counter,
+			GetTickCount() - init_time);
 	return EXIT_SUCCESS;
 }
 
@@ -51,11 +52,13 @@ void incr_func(){
 
 /* Error function to return errors to stderr */
 VOID error_exit (LPSTR lpszMessage) {
-    fprintf(stderr, "%s\n", lpszMessage);
-    ExitProcess(0);
+	fprintf(stderr, "%s %d\n", lpszMessage, GetLastError());
+	ExitProcess(0);
+	
+	
 }
 
-int main(int argc, char* argv[argc+1]){
+int main(int argc, char* argv[]){
 
 	HANDLE* thread_array;
 	int num_threads, size, deadline;
@@ -68,19 +71,19 @@ int main(int argc, char* argv[argc+1]){
 	/* create space for the threads */
 	thread_array = malloc(sizeof(HANDLE) * num_threads);
 	if (thread_array == NULL){
-        error_exit("thread_array malloc error\n");
+		error_exit("thread_array malloc error\n");
 	}
 	
 	/* allocating a TLS index */
 	if ((dwTlsIndex = TlsAlloc()) == TLS_OUT_OF_INDEXES) 
-        error_exit("TlsAlloc error\n");
+		error_exit("TlsAlloc error\n");
 	
 	/* create threads and stash them in thread array */
 	printf("Creating threads\n");
 	for (size_t i = 0; i < num_threads; ++i){
 		thread_array[i] = CreateThread(
 				NULL,                   /* security attributes */
-				0,                      /* default stack size */
+				2<<22,                  /* Stack size that accommodates size=200000 */
 				Thread_Main,            /* thread function */
 				&size,                  /* ptr to thread function argument */
 				0,                      /* default creation flag */
@@ -89,17 +92,18 @@ int main(int argc, char* argv[argc+1]){
 	Sleep(1000*deadline); /* 1000 for converting s to ms */
 	keepRunning = false;
 
-    /* Wait until threads complete before exiting main() */
-    if (WaitForMultipleObjects(
-            num_threads,        /* number of threads in array */
-            thread_array,       /* pointer to array of object handles */
-            TRUE,               /* bWaitAll: TRUE to wait for all threads */
-            INFINITE)){         /* wait until all threads return */
-        error_exit("WaitForMultipleObjects error\n");
-    }
-    
-    /* free allocated memory */
-    TlsFree(dwTlsIndex);        /* free allocated TLS memory */
+	/* Wait until threads complete before exiting main() */
+	if (WaitForMultipleObjects(
+			num_threads,      		 	 /* number of threads in array */
+			thread_array,      			 /* pointer to array of object handles */
+			TRUE,						 /* bWaitAll: TRUE to wait for all threads */
+			INFINITE) == WAIT_FAILED){         /* wait until all threads return */
+		error_exit("WaitForMultipleObjects error.\n");
+	}
+	
+	/* free allocated memory */
+
+	TlsFree(dwTlsIndex);        /* free allocated TLS memory */
 	free(thread_array);         /* free thread array */  
 
 	return EXIT_SUCCESS;
