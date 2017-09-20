@@ -10,6 +10,8 @@
 
 #include "common.h"
 
+/* TODO: check maximum input size. Don't accept if input > MAX */
+
 DWORD dwTlsIndex; /* enable thread local storage */
 
 /* need CreateThread(), GetSystemTime(), Sleep() */

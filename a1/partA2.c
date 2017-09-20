@@ -13,14 +13,56 @@
 void incr_func(void){
 }
 
+void child_main(int* n) {
+    int size = *n;
+    for (size_t i = 1; i <= size; ++i) {
+        Square(i);
+    }
+    printf("Child info: %d\n", MyPid());
+    Pexit();
+}
+
 void parent_main(int* args){
-    /* TODO: declare vars and stuff */
+    /* declare necessary argument variables */
+    int num_threads = args[0];
+    int deadline = args[1];
 
-    /* TODO: create threads */
+    PID* thread_array;
+    thread_array = malloc(sizeof(PID) * num_threads);
 
+    for (size_t i = 0; i < num_threads; ++i) {
+        /* create thread */
+        thread_array[i] = Create(
+                child_main, /* pointer to child thread function */
+                2 << 22,    /* stack size */
+                "child",    /* look at string cat, or if we need unique */
+                args + 2,       /* pointer to arguments for child_main */
+                NORM,       /* NORM privilege level */
+                USR        /* user level thread */
+          );
+        if (thread_array[i] == PNUL){
+            error_exit("Create child thread error\n");
+        }
+    }
+    /* Sleep parent thread until deadline */
+    Sleep(deadline * 100);  /* TICKINTERVAL = 10000 micro-s per tick */
+    
     /* TODO: kill threads */
+    /*
+    for (size_t i = 0; i < num_threads; ++i) {
+        if (PExists(i)){
+            if (Kill(i) == PNUL)
+                error_exit("Kill thread error\n");
+            printf("Thread_info\n");
+        }
+    }
+    */
 
-    /* TODO: free memory */
+    free(thread_array);
+    free(args);
+
+    /* exit */
+    Pexit();
 }
 
 void error_exit(char* error_message){
@@ -29,7 +71,7 @@ void error_exit(char* error_message){
 }
 
 int mainp(int argc, char* argv[argc+1]){
-    int *args;
+    int* args;
     args = malloc(sizeof(int) * argc - 1);
 
     /* parse arguments. I'm abusing pointer notation a bit */
@@ -39,12 +81,12 @@ int mainp(int argc, char* argv[argc+1]){
     }
 
     if(Create(
-            parent_main,          /* function pointer to thread func */
-            2<<22,              /* stack size magic number */
-            "parent_thread",    /* name identifier of thread */
-            args,               /* argument pointer */
-            HIGH,               /* HIGH because it's the parent */
-            USR)                /* user level threads */ 
+            parent_main,            /* function pointer to thread func */
+            2<<22,                  /* stack size magic number */
+            "parent_thread",        /* name identifier of thread */
+            args,                   /* argument pointer */
+            HIGH,                   /* HIGH because it's the parent */
+            USR)                    /* user level threads */ 
         == PNUL) {
         error_exit("Create parent error\n");
     }
