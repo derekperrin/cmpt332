@@ -32,7 +32,7 @@ EXE += partA1.exe partA2 partA3 partA4
 
 # compile part A
 partA1: partA1.o common.o
-partA2: partA2.o
+partA2: partA2.o common.o
 	$(CC) $(LDFLAGS) $(UBC_PTHREADS_LD) $^ $(LDLIBS) $(UBC_PTHREADS_LIB) \
 		-o $@
 partA3: partA3.o

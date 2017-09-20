@@ -10,6 +10,9 @@
 
 #include "common.h"
 
+void incr_func(void){
+}
+
 void parent_main(int* args){
     /* TODO: declare vars and stuff */
 
