@@ -10,15 +10,27 @@
 
 #include "common.h"
 
+#define MAX_DEADLINE 600
+#define MAX_THREADS 1000
+#define MAX_SIZE 500000
+
+size_t* square_counts;
+
 void incr_func(void){
+	square_counts[MyPid() - 2]++;
 }
 
 void child_main(int* n) {
+	long start_time = Time();
     int size = *n;
     for (size_t i = 1; i <= size; ++i) {
         Square(i);
     }
-    printf("Child info: %d\n", MyPid());
+	PID my_pid = MyPid();
+	
+	long run_time = (Time() - start_time)*10;	/* 10 is for us to ms */
+    printf("Thread %d: No. of Square calls: %lu, Elapsed time: %lu ms\n",
+		my_pid, square_counts[my_pid - 2], run_time);
     Pexit();
 }
 
@@ -26,12 +38,15 @@ void parent_main(int* args){
     /* declare necessary argument variables */
     int num_threads = args[0];
     int deadline = args[1];
+	
+	square_counts = malloc(sizeof(size_t) * num_threads);
 
     PID* thread_array;
     thread_array = malloc(sizeof(PID) * num_threads);
 
     for (size_t i = 0; i < num_threads; ++i) {
         /* create thread */
+		square_counts[i] = 0;
         thread_array[i] = Create(
                 child_main, /* pointer to child thread function */
                 2 << 22,    /* stack size */
@@ -47,19 +62,21 @@ void parent_main(int* args){
     /* Sleep parent thread until deadline */
     Sleep(deadline * 100);  /* TICKINTERVAL = 10000 micro-s per tick */
     
-    /* TODO: kill threads */
-    /*
-    for (size_t i = 0; i < num_threads; ++i) {
+	/* deadline * 1000 is for seconds -> milliseconds */
+    for (size_t i = 2; i < num_threads + 2; ++i) {
         if (PExists(i)){
             if (Kill(i) == PNUL)
                 error_exit("Kill thread error\n");
-            printf("Thread_info\n");
+            printf("Thread %lu: No. of Square calls:\
+				%lu, Elapsed time: %d ms\n",
+				i, square_counts[i - 2], deadline * 1000);
         }
     }
-    */
+    
 
     free(thread_array);
     free(args);
+	free(square_counts);
 
     /* exit */
     Pexit();
@@ -79,7 +96,7 @@ int mainp(int argc, char* argv[argc+1]){
         arg_error();
         exit(EXIT_FAILURE);
     }
-
+	
     if(Create(
             parent_main,            /* function pointer to thread func */
             2<<22,                  /* stack size magic number */
