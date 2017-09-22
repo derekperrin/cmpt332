@@ -56,7 +56,7 @@ LIST* ListCreate(){
 int ListAdd(LIST* list, void* item){
 	if (list == NULL){
 		printf("Error in procedure ListAdd: Invalid parameter list\n");
-		return EXIT_FAILURE;
+		return -1;
 	}
 	
 	NODE* new_node = request_node();
@@ -69,18 +69,22 @@ int ListAdd(LIST* list, void* item){
 	if (list->size == 0){
 		list->head = new_node;
 		list->tail = new_node;
-		
+        new_node->prev = NULL;
+        new_node->next = NULL;
+    } 
+
 	/* if curr is at the end, we need to adjust list->tail */
-	} else if (list->curr == list->tail){
+	else if (list->curr == list->tail){
 		list->tail = new_node;
 		new_node->prev = list->curr;
 		list->curr->next = new_node;
 		new_node->next = NULL;
-		
+    } 
+
 	/* otherwise, we're inserting in the middle and need to 
 	adjust pointers. 
 	*/
-	} else {
+	else {
 		new_node->next = list->curr->next;
 		new_node->prev = list->curr;
 		new_node->next->prev = new_node;
@@ -94,43 +98,98 @@ int ListAdd(LIST* list, void* item){
 }
 
 int ListInsert(LIST* list, void* item){
-	printf("Got to procedure ListInsert\n");
 	if (list == NULL){
 		printf("Error in procedure ListInsert: Invalid parameter list\n");
-		return EXIT_FAILURE;
-	} else if (item == NULL){
-		printf("Error in procedure ListInsert: Invalid parameter item\n");
-		return EXIT_FAILURE;
-	}
+		return -1;
+    }
+
+    NODE* new_node = request_node();
+    if (new_node == NULL) {
+        return -1; /* TODO: Expand node pool for bonus :) */
+    }
+
+    new_node->data = item;
+    /* if list is empty */
+    if (list->size == 0){
+        list->head = new_node;
+        list->tail = new_node;
+        new_node->prev = NULL;
+        new_node->next = NULL;
+    }    
+    /* If curr is at the beginning, we need to adjust list->head */
+    else if (list->curr == list->head) {
+        list->head = new_node;
+        new_node->next = list->curr;
+        list->curr->prev = new_node;
+        new_node->prev = NULL;
+    }
+	/* otherwise, we're inserting in the middle and need to 
+	adjust pointers. 
+	*/
+    else {
+        new_node->next = list->curr;
+        new_node->prev = list->curr->prev;
+        new_node->prev->next = new_node;
+        list->curr->prev = new_node;
+    }
+
+    /* these need to be performed regardless of where we insert */
+    list->curr = new_node;
+    list->size++;
 	return EXIT_SUCCESS;
 }
 
 int ListAppend(LIST* list, void* item){
-	printf("Got to procedure ListAppend\n");
 	if (list == NULL){
-		printf("Error in procedure ListAppend: Invalid parameter list\n");
-		return EXIT_FAILURE;
-	} else if (item == NULL){
-		printf("Error in procedure ListAppend: Invalid parameter item\n");
-		return EXIT_FAILURE;
-	}
+		return -1;
+    }
+
+    NODE* new_node = request_node();
+    new_node->data = item;
+
+    /* If list is empty */
+    if (list->size == 0) {
+        list->head = new_node;
+        new_node->prev = NULL;
+    } else {
+        list->tail->next = new_node;
+        new_node->prev = list->tail;
+    }
+
+    list->tail = new_node;
+    new_node->next = NULL;
+    list->curr = new_node;
+    list->size++;
+
 	return EXIT_SUCCESS;
 }
 
 int ListPrepend(LIST* list, void* item){
-	printf("Got to procedure ListPrepend\n");
 	if (list == NULL){
-		printf("Error in procedure ListPrepend: Invalid parameter list\n");
-		return EXIT_FAILURE;
-	} else if (item == NULL){
-		printf("Error in procedure ListPrepend: Invalid parameter item\n");
-		return EXIT_FAILURE;
-	}
+		return -1;
+    }
+
+    NODE* new_node = request_node();
+    new_node->data = item;
+
+    /* If list is empty */
+    if (list->size == 0) {
+        list->tail = new_node;
+        new_node->next = NULL;
+    } else {
+        list->head->prev = new_node;
+        new_node->next = list->head;
+    }
+
+    list->head = new_node;
+    new_node->prev = NULL;
+    list->curr = new_node;
+    list->size++;
+
 	return EXIT_SUCCESS;
 }
 
 void ListConcat(LIST* list1, LIST* list2){
-	printf("Got to procedure ListConcat\n");
 	if (list1 == NULL){
 		printf("Error in procedure ListConcat: Invalid parameter list1\n");
 		return;
@@ -138,4 +197,11 @@ void ListConcat(LIST* list1, LIST* list2){
 		printf("Error in procedure ListConcat: Invalid parameter list2\n");
 		return;
 	}
+    list1->tail->next = list2->head;
+    list2->head->prev = list1->tail;
+    list1->tail = list2->tail;
+
+    list1->size += list2->size;
+
+    release_list(list2);
 }

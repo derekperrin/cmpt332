@@ -10,7 +10,7 @@
 #include "list.h"
 #include "list_alloc.h"
 
-NODE* request_node(void){
+NODE* request_node(void) {
 	if (curr_free_node == NULL){
 		return NULL;
 	}
@@ -19,7 +19,7 @@ NODE* request_node(void){
 	return new_node;
 }
 
-LIST* request_list(void){
+LIST* request_list(void) {
 	if (curr_free_list == NULL){
 		return NULL;
 	}
@@ -29,8 +29,15 @@ LIST* request_list(void){
 	return new_list;
 }
 
-void free_node(NODE* node){
+void release_node(NODE* node) {
 	/* TODO: complete this later */
 	node->next = curr_free_node;
 	curr_free_node = node;
+}
+
+void release_list(LIST* list) {
+    list->head = NULL;
+
+    list->next_free = curr_free_list;
+    curr_free_list = list;
 }

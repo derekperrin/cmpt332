@@ -11,6 +11,7 @@
 
 NODE* request_node(void);
 LIST* request_list(void);
-void free_node(NODE*);
+void release_node(NODE*);
+void release_list(LIST*);
 
 #endif /* LIST_ALLOC_H */
