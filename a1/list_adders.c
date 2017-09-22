@@ -6,11 +6,44 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+
 #include "list.h"
 
+bool memory_allocated = false;
+
 LIST* ListCreate(){
+    /* allocated memory the first time a list is created */
+    if (!memory_allocated) {
+        list_memory = malloc(sizeof(LIST) * MAX_LISTS);
+        node_memory = malloc(sizeof(NODE) * MAX_NODES);
+        for (size_t i = 0; i < MAX_NODES - 1; ++i) {
+            node_memory[i].next = &node_memory[i+1];
+        }
+        for (size_t i = 0; i < MAX_LISTS - 1; ++i) {
+            list_memory[i].next = &list_memory[i+1];
+        }
+        node_memory[MAX_NODES-1].next = NULL;
+        list_memory[MAX_LISTS-1].next = NULL;
+
+        /* point to the free lists and nodes at the head */
+        curr_free_list = list_memory;
+        curr_free_node = node_memory;
+
+        /* set memory_allocated to true to prevent entering this again */
+        memory_allocated = true;
+    }
+    /* TODO: check if there is memory left to give a list out */
+    
+    LIST* newList = curr_free_list;
+    curr_free_list = curr_free_list->next;
+
+    newList->size = 0;
+    newList->head = NULL;
+    newList->tail = NULL;
+    newList->curr = NULL;
 	printf("Got to procedure ListCreate\n");
-	return NULL;
+	return newList;
 }
 
 int ListAdd(LIST* list, void* item){

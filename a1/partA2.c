@@ -67,9 +67,9 @@ void parent_main(int* args){
         if (PExists(i)){
             if (Kill(i) == PNUL)
                 error_exit("Kill thread error\n");
-            printf("Thread %lu: No. of Square calls:\
-				%lu, Elapsed time: %d ms\n",
-				i, square_counts[i - 2], deadline * 1000);
+            printf("Thread %lu: No. of Square calls:"
+                    " %lu, Elapsed time: %d ms\n",
+                    i, square_counts[i - 2], deadline * 1000);
         }
     }
     
