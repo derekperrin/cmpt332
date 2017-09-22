@@ -89,7 +89,7 @@ void error_exit(char* error_message){
 
 int mainp(int argc, char* argv[argc+1]){
     int* args;
-    args = malloc(sizeof(int) * argc - 1);
+    args = malloc(sizeof(int) * (argc - 1));
 
     /* parse arguments. I'm abusing pointer notation a bit */
     if (parse_args(args, args+1, args+2, argc, argv) != 0 ){

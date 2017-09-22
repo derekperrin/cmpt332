@@ -9,8 +9,17 @@
 #include <stdbool.h>
 
 #include "list.h"
+#include "list_alloc.h"
 
 bool memory_allocated = false;
+
+/* list memory pool to create new lists */
+LIST* list_memory;
+LIST* curr_free_list;
+
+/* node memory pool to create new nodes */
+NODE* node_memory;
+NODE* curr_free_node;
 
 LIST* ListCreate(){
     /* allocated memory the first time a list is created */
@@ -21,10 +30,10 @@ LIST* ListCreate(){
             node_memory[i].next = &node_memory[i+1];
         }
         for (size_t i = 0; i < MAX_LISTS - 1; ++i) {
-            list_memory[i].next = &list_memory[i+1];
+            list_memory[i].next_free = &list_memory[i+1];
         }
         node_memory[MAX_NODES-1].next = NULL;
-        list_memory[MAX_LISTS-1].next = NULL;
+        list_memory[MAX_LISTS-1].next_free = NULL;
 
         /* point to the free lists and nodes at the head */
         curr_free_list = list_memory;
@@ -33,28 +42,54 @@ LIST* ListCreate(){
         /* set memory_allocated to true to prevent entering this again */
         memory_allocated = true;
     }
-    /* TODO: check if there is memory left to give a list out */
-    
-    LIST* newList = curr_free_list;
-    curr_free_list = curr_free_list->next;
-
-    newList->size = 0;
-    newList->head = NULL;
-    newList->tail = NULL;
-    newList->curr = NULL;
-	printf("Got to procedure ListCreate\n");
-	return newList;
+    LIST* new_list = request_list();
+    if (new_list == NULL){
+		return NULL; /* TODO: need to grow the memory when on bonus */
+	}
+    new_list->size = 0;
+    new_list->head = NULL;
+    new_list->tail = NULL;
+    new_list->curr = NULL;
+	return new_list;
 }
 
 int ListAdd(LIST* list, void* item){
-	printf("Got to procedure ListAdd\n");
 	if (list == NULL){
 		printf("Error in procedure ListAdd: Invalid parameter list\n");
 		return EXIT_FAILURE;
-	} else if (item == NULL){
-		printf("Error in procedure ListAdd: Invalid parameter item\n");
-		return EXIT_FAILURE;
 	}
+	
+	NODE* new_node = request_node();
+	if (new_node == NULL) {
+		return -1; /* TODO: Expand node pool for bonus :) */
+	}
+	
+	new_node->data = item;
+	/* if list is empty */
+	if (list->size == 0){
+		list->head = new_node;
+		list->tail = new_node;
+		
+	/* if curr is at the end, we need to adjust list->tail */
+	} else if (list->curr == list->tail){
+		list->tail = new_node;
+		new_node->prev = list->curr;
+		list->curr->next = new_node;
+		new_node->next = NULL;
+		
+	/* otherwise, we're inserting in the middle and need to 
+	adjust pointers. 
+	*/
+	} else {
+		new_node->next = list->curr->next;
+		new_node->prev = list->curr;
+		new_node->next->prev = new_node;
+		list->curr->next = new_node;
+	}
+	
+	/* these need to be performed regardless of where we insert */
+	list->curr = new_node;
+	list->size++;
 	return EXIT_SUCCESS;
 }
 

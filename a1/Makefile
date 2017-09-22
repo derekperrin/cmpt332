@@ -54,7 +54,7 @@ mytestlist: mytestlist.o liblist.a
 # add mytestlist to executables for cleaning
 EXE += mytestlist
 
-liblist.a: liblist.a(list_adders.o list_movers.o list_removers.o)
+liblist.a: liblist.a(list_adders.o list_movers.o list_removers.o list_alloc.o)
 
 windows: partA1
 

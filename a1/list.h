@@ -18,25 +18,25 @@ typedef struct NODE {
 	struct NODE* prev;
 } NODE;
 
-/* LIST structure: A standard linked list, but a union is used so we can
- * link the list to other free lists in our memory pool when the list is
- * available.
- * Note to graders: Sorry for the complexity
+/* LIST structure: 
+ * next_free field points to the next free list when the current list is free,
+ * otherwise it's NULL.
  */
 typedef struct LIST{
 	NODE* head;
 	NODE* tail;
-	union {NODE* curr; struct LIST* next;};
+	NODE* curr; 
+	struct LIST* next_free; 
 	int size;
 } LIST;
 
 /* list memory pool to create new lists */
-LIST* list_memory;
-LIST* curr_free_list;
+extern LIST* list_memory;
+extern LIST* curr_free_list;
 
 /* node memory pool to create new nodes */
-NODE* node_memory;
-NODE* curr_free_node;
+extern NODE* node_memory;
+extern NODE* curr_free_node;
 
 LIST* ListCreate();
 int ListCount(LIST*);
