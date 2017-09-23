@@ -47,6 +47,7 @@ void* ListPrev(LIST*);
 void* ListCurr(LIST*);
 int ListAdd(LIST*, void*);
 int ListInsert(LIST*, void*);
+int ListAppend(LIST*, void*);
 int ListPrepend(LIST*, void*);
 void* ListRemove(LIST*);
 void ListConcat(LIST*, LIST*);

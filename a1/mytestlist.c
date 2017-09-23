@@ -12,60 +12,198 @@
 
 int main(int argc, char* argv[]){
 	
+    int num_tests = 0;
+    int tests_passed = 0;
+
 	LIST* list1 = ListCreate();
 	LIST* list2 = ListCreate();
 	LIST* list3 = ListCreate();
 	LIST* list4 = ListCreate();
 	
 	/* testing ListAdd */
+    num_tests++;
 	int item1 = 7;
 	ListAdd(list1, &item1);
-	if (list1->head->data == &item1 && list1->curr->data == &item1)
+	if (list1->head->data == &item1 && list1->curr->data == &item1){
 		printf("ListAdd test 1 passed\n");
+        tests_passed++;
+    }
 	else
 		printf("ListAdd test 1 failed\n");
 	
+    num_tests++;
 	int item2 = 5;
 	ListAdd(list1, &item2);
-	if (list1->head->next->data == &item2)
+	if (list1->head->next->data == &item2){
 		printf("ListAdd test 2 passed\n");
+        tests_passed++;
+    }
 	else
 		printf("ListAdd test 2 failed\n");
 	
+    num_tests++;
 	int item3 = 98;
 	ListAdd(list1, &item3);
-	if (list1->curr->data == &item3)
+	if (list1->curr->data == &item3){
 		printf("ListAdd test 3 passed\n");
+        tests_passed++;
+    }
 	else
 		printf("ListAdd test 3 failed\n");
 	
 	/* Testing ListInsert */
+    num_tests++;
 	char pizza[6];
 	strncpy(pizza, "Pizza", 6);
 	ListInsert(list2, pizza);
-	if (list2->head->data == pizza)
+	if (list2->head->data == pizza){
 		printf("ListInsert test 1 passed \n");
+        tests_passed++;
+    }
 	else
 		printf("ListInsert test 1 failed \n");
 	
+    num_tests++;
 	char jones_soda[10];
 	strncpy(jones_soda, "Dr. Jones", 10);
 	ListInsert(list2, jones_soda);
-	if (list2->curr->data == jones_soda)
+	if (list2->curr->data == jones_soda){
 		printf("ListInsert test 2 passed \n");
+        tests_passed++;
+    }
 	else
 		printf("ListInsert test 2 failed \n");
 	
+    num_tests++;
 	char skittles[10];
 	strncpy(skittles, "Skittles", 10);
 	ListInsert(list2, skittles);
-	if (list2->head->data == skittles)
+	if (list2->head->data == skittles) {
 		printf("ListInsert test 3 passed \n");
+        tests_passed++;
+    }
 	else
 		printf("ListInsert test 3 failed \n");
 	
-	/* Testing for ListAppend
-	
+	/* Testing for ListAppend */
+    num_tests++;
+    float thing1 = -45.45;
+    ListAppend(list3, &thing1);
+    if (list3->head->data == &thing1 && list3->tail->data == &thing1) {
+        printf("ListAppend test 1 passed\n");
+        tests_passed++;
+    }
+    else
+        printf("ListAppend test 1 failed\n");
+
+    num_tests++;
+    float thing2 = 3.9912;
+    ListAppend(list3, &thing2);
+    if (list3->curr->data == &thing2){
+        printf("ListAppend test 2 passed\n");
+        tests_passed++;
+    }
+    else
+        printf("ListAppend test 2 failed\n");
+
+    num_tests++;
+    float thing3 = 3.14159;
+    ListAppend(list3, &thing3);
+    if (list3->tail->data == &thing3){
+        printf("ListAppend test 3 passed\n");
+        tests_passed++;
+    }
+    else
+        printf("ListAppend test 3 failed\n");
+
+    /* Testing for ListPrepend */
+    num_tests++;
+    char c1 = 'd';
+    ListPrepend(list4, &c1);
+    if(list4->head->data == &c1 && list4->tail->data == &c1) {
+        printf("ListPrepend test 1 passed\n");
+        tests_passed++;
+    }
+    else
+        printf("ListPrepend test 1 failed\n");
+
+    num_tests++;
+    char c2 = 'x';
+    ListPrepend(list4, &c2);
+    if (list4->curr->data == &c2) {
+        printf("ListPrepend test 2 passed\n");
+        tests_passed++;
+    }
+    else
+        printf("ListPrepend test 2 failed\n");
+
+    num_tests++;
+    char c3 = 'z';
+    ListPrepend(list4, &c3);
+    if (list4->head->data == &c3) {
+        printf("ListPrepend test 3 passed\n");
+        tests_passed++;
+    }
+    else
+        printf("ListPrepend test 3 failed\n");
+
+    /* Testing for ListConcat */
+    int i1 = 574;
+    int i2 = -90;
+    int i3 = 24248;
+    LIST* list5 = ListCreate();
+
+    ListAppend(list5, &i1);
+    ListAppend(list5, &i2);
+    ListAppend(list5, &i3);
+    /* list5: i1 -> i2 -> i3 */
+    /* list1: item1 -> item2 -> item3 */
+
+    num_tests++;
+    ListConcat(list1, list5);
+    if (list1->head->data == &item1 &&
+            list1->head->next->data == &item2 &&
+            list1->head->next->next->data == &item3 &&
+            list1->head->next->next->next->data == &i1 &&
+            list1->head->next->next->next->next->data == &i2 &&
+            list1->tail->data == &i3) {
+        printf("ListConcat test 1 passed\n");
+        tests_passed++;
+    }
+    else
+        printf("ListConcat test 1 failed\n");
+
+    num_tests++;
+    if (list1->head->prev == NULL &&
+            list1->tail->next == NULL) {
+        printf("ListConcat test 2 passed\n");
+        tests_passed++;
+    }
+    else
+        printf("ListConcat test 2 failed\n");
+
+    num_tests++;
+    if (list1->tail->data == &i3 &&
+            list1->tail->prev->data == &i2 &&
+            list1->tail->prev->prev->data == &i1 &&
+            list1->tail->prev->prev->prev->data == &item3 &&
+            list1->tail->prev->prev->prev->prev->data == &item2 &&
+            list1->tail->prev->prev->prev->prev->prev->data == &item1) {
+        printf("ListConcat test 3 passed\n");
+        tests_passed++;
+    } else {
+        printf("ListConcat test 3 failed\n");
+    }
+
+    /****** FINAL OUTPUT ******/
+    if (tests_passed == num_tests) {
+        printf("All %d tests passed!\n", num_tests);
+    } else {
+        printf("Only %d/%d tests passed :(\n", tests_passed, num_tests);
+    }
+
+
+
 	/*
 	ListCount(NULL);
 	ListFirst(NULL);
