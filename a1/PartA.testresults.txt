@@ -1,0 +1,251 @@
+# CMPT 332 -- Fall 2017
+# Assignment 1
+# Derek Perrin 		dmp450 11050915
+# Dominic McKeith 	dom258 11184543
+
+# Test results for Part A2
+
+# -1 -1 -1
+Invalid arguments
+
+# 0 0 0
+Invalid arguments
+
+# 1 2 1000
+Thread 2: No. of Square calls: 501500, Elapsed time: 0 ms
+
+# 5 5 50000
+exiting threads
+Thread 2: No. of Square calls: 171560025, Elapsed time: 5000 ms
+Thread 3: No. of Square calls: 167340650, Elapsed time: 5000 ms
+Thread 4: No. of Square calls: 164368509, Elapsed time: 5000 ms
+Thread 5: No. of Square calls: 159082165, Elapsed time: 5000 ms
+Thread 6: No. of Square calls: 158997684, Elapsed time: 5000 ms
+
+# 100 5 100000
+exiting threads
+Thread 2: No. of Square calls: 10019525, Elapsed time: 5000 ms
+Thread 3: No. of Square calls: 9899024, Elapsed time: 5000 ms
+Thread 4: No. of Square calls: 10095811, Elapsed time: 5000 ms
+Thread 5: No. of Square calls: 9996934, Elapsed time: 5000 ms
+Thread 6: No. of Square calls: 10095805, Elapsed time: 5000 ms
+Thread 7: No. of Square calls: 9920145, Elapsed time: 5000 ms
+Thread 8: No. of Square calls: 11778230, Elapsed time: 5000 ms
+Thread 9: No. of Square calls: 10158777, Elapsed time: 5000 ms
+Thread 10: No. of Square calls: 10154270, Elapsed time: 5000 ms
+Thread 11: No. of Square calls: 9876789, Elapsed time: 5000 ms
+Thread 12: No. of Square calls: 10040784, Elapsed time: 5000 ms
+Thread 13: No. of Square calls: 9927495, Elapsed time: 5000 ms
+Thread 14: No. of Square calls: 10211321, Elapsed time: 5000 ms
+Thread 15: No. of Square calls: 10050885, Elapsed time: 5000 ms
+Thread 16: No. of Square calls: 11803542, Elapsed time: 5000 ms
+Thread 17: No. of Square calls: 11736684, Elapsed time: 5000 ms
+Thread 18: No. of Square calls: 10176815, Elapsed time: 5000 ms
+Thread 19: No. of Square calls: 10119648, Elapsed time: 5000 ms
+Thread 20: No. of Square calls: 9872345, Elapsed time: 5000 ms
+Thread 21: No. of Square calls: 10122749, Elapsed time: 5000 ms
+Thread 22: No. of Square calls: 9991257, Elapsed time: 5000 ms
+Thread 23: No. of Square calls: 10109255, Elapsed time: 5000 ms
+Thread 24: No. of Square calls: 10177871, Elapsed time: 5000 ms
+Thread 25: No. of Square calls: 9970344, Elapsed time: 5000 ms
+Thread 26: No. of Square calls: 10055369, Elapsed time: 5000 ms
+Thread 27: No. of Square calls: 9998577, Elapsed time: 5000 ms
+Thread 28: No. of Square calls: 10046402, Elapsed time: 5000 ms
+Thread 29: No. of Square calls: 9948029, Elapsed time: 5000 ms
+Thread 30: No. of Square calls: 10115365, Elapsed time: 5000 ms
+Thread 31: No. of Square calls: 9968800, Elapsed time: 5000 ms
+Thread 32: No. of Square calls: 11807369, Elapsed time: 5000 ms
+Thread 33: No. of Square calls: 10181327, Elapsed time: 5000 ms
+Thread 34: No. of Square calls: 9967539, Elapsed time: 5000 ms
+Thread 35: No. of Square calls: 10100264, Elapsed time: 5000 ms
+Thread 36: No. of Square calls: 10145259, Elapsed time: 5000 ms
+Thread 37: No. of Square calls: 11846529, Elapsed time: 5000 ms
+Thread 38: No. of Square calls: 10178685, Elapsed time: 5000 ms
+Thread 39: No. of Square calls: 10112684, Elapsed time: 5000 ms
+Thread 40: No. of Square calls: 9798412, Elapsed time: 5000 ms
+Thread 41: No. of Square calls: 10041920, Elapsed time: 5000 ms
+Thread 42: No. of Square calls: 11608287, Elapsed time: 5000 ms
+Thread 43: No. of Square calls: 10300891, Elapsed time: 5000 ms
+Thread 44: No. of Square calls: 10317152, Elapsed time: 5000 ms
+Thread 45: No. of Square calls: 10192613, Elapsed time: 5000 ms
+Thread 46: No. of Square calls: 10513923, Elapsed time: 5000 ms
+Thread 47: No. of Square calls: 10282994, Elapsed time: 5000 ms
+Thread 48: No. of Square calls: 10317152, Elapsed time: 5000 ms
+Thread 49: No. of Square calls: 10221980, Elapsed time: 5000 ms
+Thread 50: No. of Square calls: 10394519, Elapsed time: 5000 ms
+Thread 51: No. of Square calls: 10232765, Elapsed time: 5000 ms
+Thread 52: No. of Square calls: 10297904, Elapsed time: 5000 ms
+Thread 53: No. of Square calls: 9853618, Elapsed time: 5000 ms
+Thread 54: No. of Square calls: 10382845, Elapsed time: 5000 ms
+Thread 55: No. of Square calls: 10443898, Elapsed time: 5000 ms
+Thread 56: No. of Square calls: 10161439, Elapsed time: 5000 ms
+Thread 57: No. of Square calls: 10360924, Elapsed time: 5000 ms
+Thread 58: No. of Square calls: 10167794, Elapsed time: 5000 ms
+Thread 59: No. of Square calls: 8335649, Elapsed time: 5000 ms
+Thread 60: No. of Square calls: 8605025, Elapsed time: 5000 ms
+Thread 61: No. of Square calls: 8811405, Elapsed time: 5000 ms
+Thread 62: No. of Square calls: 10127206, Elapsed time: 5000 ms
+Thread 63: No. of Square calls: 10131193, Elapsed time: 5000 ms
+Thread 64: No. of Square calls: 10086785, Elapsed time: 5000 ms
+Thread 65: No. of Square calls: 10190354, Elapsed time: 5000 ms
+Thread 66: No. of Square calls: 10014356, Elapsed time: 5000 ms
+Thread 67: No. of Square calls: 10138095, Elapsed time: 5000 ms
+Thread 68: No. of Square calls: 10071799, Elapsed time: 5000 ms
+Thread 69: No. of Square calls: 10190354, Elapsed time: 5000 ms
+Thread 70: No. of Square calls: 10061729, Elapsed time: 5000 ms
+Thread 71: No. of Square calls: 10164923, Elapsed time: 5000 ms
+Thread 72: No. of Square calls: 10050885, Elapsed time: 5000 ms
+Thread 73: No. of Square calls: 10021051, Elapsed time: 5000 ms
+Thread 74: No. of Square calls: 9783675, Elapsed time: 5000 ms
+Thread 75: No. of Square calls: 9008063, Elapsed time: 5000 ms
+Thread 76: No. of Square calls: 9464745, Elapsed time: 5000 ms
+Thread 77: No. of Square calls: 8407241, Elapsed time: 5000 ms
+Thread 78: No. of Square calls: 9221364, Elapsed time: 5000 ms
+Thread 79: No. of Square calls: 8941288, Elapsed time: 5000 ms
+Thread 80: No. of Square calls: 9503833, Elapsed time: 5000 ms
+Thread 81: No. of Square calls: 9598770, Elapsed time: 5000 ms
+Thread 82: No. of Square calls: 9864921, Elapsed time: 5000 ms
+Thread 83: No. of Square calls: 11244495, Elapsed time: 5000 ms
+Thread 84: No. of Square calls: 1651652, Elapsed time: 5000 ms
+Thread 85: No. of Square calls: 0, Elapsed time: 5000 ms
+Thread 86: No. of Square calls: 0, Elapsed time: 5000 ms
+Thread 87: No. of Square calls: 0, Elapsed time: 5000 ms
+Thread 88: No. of Square calls: 0, Elapsed time: 5000 ms
+Thread 89: No. of Square calls: 0, Elapsed time: 5000 ms
+Thread 90: No. of Square calls: 0, Elapsed time: 5000 ms
+Thread 91: No. of Square calls: 0, Elapsed time: 5000 ms
+Thread 92: No. of Square calls: 0, Elapsed time: 5000 ms
+Thread 93: No. of Square calls: 0, Elapsed time: 5000 ms
+Thread 94: No. of Square calls: 0, Elapsed time: 5000 ms
+Thread 95: No. of Square calls: 0, Elapsed time: 5000 ms
+Thread 96: No. of Square calls: 0, Elapsed time: 5000 ms
+Thread 97: No. of Square calls: 0, Elapsed time: 5000 ms
+Thread 98: No. of Square calls: 0, Elapsed time: 5000 ms
+Thread 99: No. of Square calls: 0, Elapsed time: 5000 ms
+Thread 100: No. of Square calls: 0, Elapsed time: 5000 ms
+Thread 101: No. of Square calls: 0, Elapsed time: 5000 ms
+
+exiting threads
+
+# 1100 5 55555
+Error: Maximum number of threads arg too high. MAX_THREADS = 1000
+
+# 100 700 40000
+Error: Maximum deadline arg too high. MAX_DEADLINE = 600 s
+
+# 3 3 1000000
+Error: Maximum size arg is too high. MAX_SIZE = 500000
+
+# Part A1
+-1 -1 -1
+Invalid arguments
+
+0 0 0
+Invalid arguments
+
+1 1 1
+Thread 3028: No. of Square calls: 2, Elapsed Time: 0 ms
+
+10 2 10000
+Creating threads
+Thread 5424: No. of Square calls: 50015000, Elapsed Time: 1125 ms
+Thread 5588: No. of Square calls: 50015000, Elapsed Time: 1204 ms
+Thread 5640: No. of Square calls: 50015000, Elapsed Time: 1406 ms
+Thread 3860: No. of Square calls: 50015000, Elapsed Time: 1406 ms
+Thread 1312: No. of Square calls: 50015000, Elapsed Time: 1469 ms
+Thread 6472: No. of Square calls: 50015000, Elapsed Time: 1485 ms
+Thread 3396: No. of Square calls: 50015000, Elapsed Time: 1609 ms
+Thread 4832: No. of Square calls: 50015000, Elapsed Time: 1625 ms
+Thread 6488: No. of Square calls: 50015000, Elapsed Time: 1625 ms
+Thread 6960: No. of Square calls: 50015000, Elapsed Time: 1640 ms
+
+30 5 100000
+Creating threads
+Thread 5032: No. of Square calls: 53311918, Elapsed Time: 4813 ms
+Thread 5888: No. of Square calls: 35900100, Elapsed Time: 4954 ms
+Thread 2104: No. of Square calls: 56476493, Elapsed Time: 4907 ms
+Thread 3460: No. of Square calls: 49456484, Elapsed Time: 4844 ms
+Thread 1532: No. of Square calls: 46741266, Elapsed Time: 4672 ms
+Thread 4588: No. of Square calls: 54090738, Elapsed Time: 4719 ms
+ThreaTdh r4e2a9d2 : No.3 9o8f8 :S qNuoa.r eo fc aSlqlusa:r e c4a5l4l3s5:1 73,4 6Elapsed Time6:4 9496625 ms
+4, Elapsed Time: 4469 ms
+Thread 5388: No. of Square calls: 48230338, Elapsed Time: 4766 ms
+Thread 812: No. of Square calls: 35689002, Elapsed Time: 4485 ms
+Thread 6980: No. of Square calls: 63815395, Elapsed Time: 4547 ms
+Thread 3480: No. of Square calls: 68741966, Elapsed Time: 4766 ms
+Thread 5220: No. of Square calls: 48928210, Elapsed Time: 4594 ms
+Thread 2364: No. of Square calls: 61872143, Elapsed Time: 5000 ms
+Thread 3428: No. of Square calls: 50657144, Elapsed Time: 4672 ms
+Thread 4004: No. of Square calls: 57302649, Elapsed Time: 4954 ms
+Thread 8044: No. of Square calls: 44037131, Elapsed Time: 4547 ms
+Thread 7428: No. of Square calls: 46410442, Elapsed Time: 4875 ms
+Thread 6792: No. of Square calls: 44317337, Elapsed Time: 4422 ms
+Thread 4284: No. of Square calls: 62059245, Elapsed Time: 4594 ms
+Thread 944: No. of Square calls: 61857794, Elapsed Time: 4672 ms
+Thread 5740: No. of Square calls: 65733940, Elapsed Time: 5000 ms
+Thread 5328: No. of Square calls: 48289877, Elapsed Time: 4907 ms
+Thread 4936: No. of Square calls: 51358227, Elapsed Time: 4719 ms
+Thread 5808: No. of Square calls: 51131327, Elapsed Time: 5000 ms
+Thread 8072: No. of Square calls: 52299157, Elapsed Time: 4860 ms
+Thread 1260: No. of Square calls: 53019252, Elapsed Time: 4813 ms
+Thread 8128: No. of Square calls: 50756528, Elapsed Time: 4954 ms
+Thread 4500: No. of Square calls: 64971360, Elapsed Time: 5000 ms
+Thread 3352: No. of Square calls: 61251970, Elapsed Time: 4907 ms
+
+20 1 20000
+Creating threads
+Thread 6616: No. of Square calls: 14713279, Elapsed Time: 734 ms
+Thread 5732: No. of Square calls: 11876504, Elapsed Time: 937 ms
+Thread 6388: No. of Square calls: 14230334, Elapsed Time: 687 ms
+Thread 6592: No. of Square calls: 17733989, Elapsed Time: 672 ms
+Thread 4380: No. of Square calls: 18693554, Elapsed Time: 906 ms
+Thread 7684: No. of Square calls: 11122685, Elapsed Time: 1000 ms
+Thread 1784: No. of Square calls: 21159466, Elapsed Time: 828 ms
+Thread 4636: No. of Square calls: 12563377Thread 6912: No. of Square calls: 15785954, Elapsed Time: 984 ms
+, Elapsed Time: 906 ms
+Thread 6964: No. of Square calls: 14217484, Elapsed Time: 781 ms
+Thread 6180: No. of Square calls: 15365195, Elapsed Time: 734 ms
+Thread 5636: No. of Square calls: 13699825, Elapsed Time: 812 ms
+Thread 5168: No. of Square calls: 10847002, Elapsed Time: 1000 ms
+Thread 5092: No. of Square calls: 14362389, Elapsed Time: 953 ms
+Thread 6844: No. of Square calls: 15371217, Elapsed Time: 953 ms
+Thread 7584: No. of Square calls: 13736373, Elapsed Time: 1000 ms
+Thread 4412: No. of Square calls: 11865437, Elapsed Time: 734 ms
+Thread 4056: No. of Square calls: 8830502, Elapsed Time: 828 ms
+Thread 4060: No. of Square calls: 12111973, Elapsed Time: 859 ms
+Thread 4040: No. of Square calls: 20787157, Elapsed Time: 953 ms
+
+20 10 200000
+Creating threads
+Thread 7448: No. of Square calls: 127832054, Elapsed Time: 9969 ms
+Thread 7020: No. of Square calls: 143257569, Elapsed Time: 9953 ms
+Thread 6048: No. of Square calls: 152491790, Elapsed Time: 9906 ms
+Thread 6772: No. of Square calls: 142573942, Elapsed Time: 9859 ms
+Thread 3196: No. of Square calls: 137252089, Elapsed Time: 9719 ms
+Thread 7880: No. of Square calls: 208777694, Elapsed Time: 9781 ms
+Thread 6832: No. of Square calls: 160876952, Elapsed Time: 9953 ms
+Thread 6552: No. of Square calls: 163524569, Elapsed Time: 9875 ms
+Thread 3748: No. of Square calls: 137364990, Elapsed Time: 10000 ms
+Thread 7492: No. of Square calls: 151440905, Elapsed Time: 9844 ms
+Thread 1724: No. of Square calls: 145814326, Elapsed Time: 9984 ms
+Thread 6816: No. of Square calls: 143535129, Elapsed Time: 9734 ms
+Thread 6684: No. of Square calls: 159498055, Elapsed Time: 9765 ms
+Thread 7264: No. of Square calls: 203247995, Elapsed Time: 9765 ms
+Thread 4608: No. of Square calls: 178708964, Elapsed Time: 9906 ms
+Thread 5132: No. of Square calls: 169213770, Elapsed Time: 9797 ms
+Thread 2316: No. of Square calls: 171093967, Elapsed Time: 9797 ms
+Thread 6664: No. of Square calls: 164212502, Elapsed Time: 9844 ms
+Thread 5600: No. of Square calls: 171467971, Elapsed Time: 9906 ms
+Thread 7704: No. of Square calls: 136879952, Elapsed Time: 10000 ms
+
+65 10 100000
+Error: Maximum number of thread arg too high. MAX_THREADS = 64
+126
+
+30 700 100000
+Error: Maximum number of deadline arg too high. MAX_DEADLINE = 64 126
+
+30 10 500000
+Error: Maximum number of size arg too high. MAX_SIZE = 64
+126
+
