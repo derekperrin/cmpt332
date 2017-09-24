@@ -4,5 +4,12 @@
 * Dominic McKeith 	dom258 11184543
 */
 
-For all parts of Part A, we will test minimums, maximum, and various other 
-bounds.
+For all parts of partA, we will test inputs to make sure things work properly.
+We will try inputs of 0, negative values, and values that exceed MAX_THREADS,
+MAX_DEADLINE, and MAX_SIZE. 
+
+We will count the number of output lines to verify the proper number of threads
+created and exited properly by printing their stats. We will test the time the
+parent thread sleeps for by using the stop watch app on our phones; although
+this won't be accurate to the millisecond, it should give us a good idea if 
+our sleep function is working somewhat properly.

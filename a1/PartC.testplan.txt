@@ -7,8 +7,60 @@
 Our plan for testing part C is to write a test program. The source code is in
 the file mytestlist.c
 
-We create 4 lists using ListCreate(). This shows that ListCreate() works.
-Then we use list1 as a list of integers. We test ListAdd() by adding an item
-into list1. We then check if the item is at the head and if the current item
-pointer is pointed to the item. Then we add a second item and check that the
-item is the second item in the list.
+We keep track of how many tests have been run in the variable num_tests, 
+declared at the start of main and initialized to 0. We keep track of how many
+tests have been passed using the variable tests_passed, declared at the start
+of main and initialized to 0.
+
+* Testing for ListCreate():
+At the start of the We create 4 lists using the ListCreate() function. 
+It is then checked if any of the lists are NULL. If the lists are NULL, 
+ListCreate() failed, otherwise, it passed. 
+
+* Testing for ListAdd()
+We use list1 (created by ListCreate) as a list of integers. This list is 
+initially empty. We test ListAdd() by adding an integers into list1. We then 
+check if the integers are in the correct positions in the list by checking the
+value of pointers.
+
+* Testing for ListInsert()
+We use list2 (created by ListCreate) as a list of strings. This list is empty
+at the start of testing ListInsert. The testing here is very similar to the 
+testing for ListAdd(). We add various strings to the list then check that the
+strings are in the order they should be in based on the definition of how 
+ListInsert() should insert them.
+
+* Testing for ListAppend()
+We use list3 (an empty list created by ListCreate) to test the ListAppend
+function. We start by testing appending to an empty list then verify that
+the item is in the correct position. We add various other items and also verify
+their locations as correct.
+
+* Testing for ListPrepend()
+We use list4 (an empty list created by ListCreate) to test this function. We 
+test prepending to an empty list and then continue to prepend items to this 
+list. Every time we add something, we check that everything is still in the 
+correct position.
+
+* Testing for ListConcat()
+Since we do not have list_movers.c implemented yet because it's not required 
+for the phase 2, testing the correctness of the list after ListConcat() is 
+called is a little messy. When we concatonate two lists together, we check 
+every element in the returned list to make sure that every element is where it
+should be. We also check the position of head, curr, and tail, to make sure
+they are correct. We also make sure that the 'prev' and 'next' field of every 
+node in the list is correct.
+
+* Testing max number of lists
+Near the end of main we have already created 5 lists. The max number of lists
+our implementation uses is 64. As a result, we attempt to create 60 more lists.
+This should leave us with a total of 64 lists and one list should fail to be 
+created. When the 65th list is to be created, we have a test to make sure that
+ListCreate returned NULL instead of a pointer to a list.
+
+* Testing max number of nodes.
+Near the end of main, we have already created several nodes for testing other
+functions. The max number of nodes our implementation can handle is 1024. We
+attempt to create 1020 more nodes. The creation of the last several nodes 
+should fail. We check node 1019 to see if ListInsert returned -1 which means 
+fail.
