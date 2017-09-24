@@ -1,0 +1,14 @@
+/* CMPT 332 -- Fall 2017
+* Assignment 1
+* Derek Perrin 		dmp450 11050915
+* Dominic McKeith 	dom258 11184543
+*/
+
+Our plan for testing part C is to write a test program. The source code is in
+the file mytestlist.c
+
+We create 4 lists using ListCreate(). This shows that ListCreate() works.
+Then we use list1 as a list of integers. We test ListAdd() by adding an item
+into list1. We then check if the item is at the head and if the current item
+pointer is pointed to the item. Then we add a second item and check that the
+item is the second item in the list.

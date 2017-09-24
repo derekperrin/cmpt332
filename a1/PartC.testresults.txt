@@ -1,0 +1,19 @@
+ListCreate test passed
+ListAdd test 1 passed
+ListAdd test 2 passed
+ListAdd test 3 passed
+ListInsert test 1 passed 
+ListInsert test 2 passed 
+ListInsert test 3 passed 
+ListAppend test 1 passed
+ListAppend test 2 passed
+ListAppend test 3 passed
+ListPrepend test 1 passed
+ListPrepend test 2 passed
+ListPrepend test 3 passed
+ListConcat test 1 passed
+ListConcat test 2 passed
+ListConcat test 3 passed
+ListCreate test passed.
+Node Overflow test passed.
+All 18 tests passed!

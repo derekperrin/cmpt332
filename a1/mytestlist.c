@@ -19,6 +19,13 @@ int main(int argc, char* argv[]){
 	LIST* list2 = ListCreate();
 	LIST* list3 = ListCreate();
 	LIST* list4 = ListCreate();
+	num_tests++;
+	if (list1 != NULL || list2 != NULL || list3 != NULL || list4 != NULL){
+		printf("ListCreate test passed\n");
+		tests_passed++;
+	}
+	else
+		printf("ListCreate failed to create one or more lists\n");
 	
 	/* testing ListAdd */
     num_tests++;
@@ -195,14 +202,37 @@ int main(int argc, char* argv[]){
         printf("ListConcat test 3 failed\n");
     }
 
+
+	num_tests++;
+	for (size_t i = 0; i <= 60; ++i){
+		if (ListCreate() == NULL){
+			if (i == 60){
+				printf("ListCreate test passed.\n");
+				tests_passed++;
+			}
+			else 
+				printf("ListCreate test failed. "
+				"More than 64 lists have been created?\n");
+		}
+	}
+	
+	num_tests++;
+	for (size_t i = 0; i < 1020; ++i){
+		if (ListInsert(list1, NULL) == -1){
+			printf("Node Overflow test passed.\n");
+			tests_passed++;
+			break;
+		}
+		else if (i == 1019)
+			printf("Node Overflow test failed.\n");
+	}
+	
     /****** FINAL OUTPUT ******/
     if (tests_passed == num_tests) {
         printf("All %d tests passed!\n", num_tests);
     } else {
         printf("Only %d/%d tests passed :(\n", tests_passed, num_tests);
     }
-
-
 
 	/*
 	ListCount(NULL);

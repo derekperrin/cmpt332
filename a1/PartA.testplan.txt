@@ -1,0 +1,8 @@
+/* CMPT 332 -- Fall 2017
+* Assignment 1
+* Derek Perrin 		dmp450 11050915
+* Dominic McKeith 	dom258 11184543
+*/
+
+Our plan for testing Part A is to try to make our program crash and burn. It 
+failed. Our program is great. 0 bugs. Much Perfect. Wow.
