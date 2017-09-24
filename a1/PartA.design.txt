@@ -3,60 +3,6 @@
 # Derek Perrin 		dmp450 11050915
 # Dominic McKeith 	dom258 11184543
 
-# these functions will all be similar between partA1,partA2,partA3,partA4
-# syntax will be different because we are using different OS and libraries
-
-# global array that keeps track of stack size created by square
-int square_invocations[];
-
-# global bool that is set to false when deadline has passed
-bool keep_running = true
-
-# called by each thread. Invokes square and prints stuff when exits
-int thread_main_func( int size ) {
-    initialize(time)
-    for (i = 1; i <= size; i++) {
-        return Square(i)
-    }
-    print(end_time)
-    print(square_invocations[thread_id])
-    exit()
-}
-
-# inefficient square method from Makaroff
-int Square(int n) {
-    if !(keep_running) die()
-    square_invocations[thread_id]++
-    if (n == 0) return 0
-    return (Square(n-1) + n + n -1)
-}
-
-# takes string array of args. Converts to ints, checks if all > 0
-int parse_args(*threads, *deadline, *size, argc, argv){
-    threads,deadline,size = argv[1,2,3]
-    check_validity(argv)
-    return EXIT_SUCCESS if valid
-}
-
-# parent thread 
-int main(int argc, char* argv[argc+1]){
-    parse_args(threads,deadline,size,argc,argv)
-    square_invocations = malloc(sizeof(int) * threads)
-    malloc(threads)
-
-    # create threads
-    for (i = 0; i < threads; i++){
-        thread_array[i] = createThread()
-    }
-
-    sleep(deadline)
-    keep_running = false
-
-    free(threads and malloc'd arrays)
-    return EXIT_SUCCESS
-}
-
-###### UPDATE FOR PHASE 2 #####
 
 ## PART A1 ##
 Use Thread Local Storage to store a variable for each thread to track the number
@@ -64,9 +10,15 @@ of calls to Square(). See
 https://msdn.microsoft.com/en-us/library/windows/desktop/ms686991(v=vs.85).aspx
 for more information on the topic.
 
+UBC pthreads does not have thread local storage, so an array must be used.
+Thread_id's are sequential starting at 2. The parent starts at thread_id 0, 
+and the scheduler has thread_id 1. This is convenient that threads are
+sequential because we don't have to implement our own TLS or make a hash table.
+
 # Waiting for threads to exit:
 In main(), when the parent thread is done sleeping until deadline, it must call
-WaitForSingleObject to wait for all child threads to exit. 
+WaitForMultipleObjects to wait for all child threads to exit and print their
+stats as per the assignment spec.
 
 # Child threads exiting
 If the child thread finished before deadline, it will print the time it ran for.
@@ -74,4 +26,94 @@ If the keepRunning flag is set to false because deadline has passed, then the
 child threads will exit in their current call of Square() and print their 
 stats before exiting.
 
+# Stack size
+We set the stack size to be 2^22 bytes. We chose this number because it seemed
+to fit with our boundaries without getting a segmentation fault.
+
+########## Pseudocode for partA1 ##########
+main(args)
+    parse_args()
+    check_args()    # checks args for boundary conditions
+    alloc(thread_array)
+    alloc(TlsStorage)   # Used so threads can count Square() calls.
+    for(i = 0:num_threads)
+        CreateThread(thread_func, &args)
+    Sleep(deadline)
+    keepRunning = false     # so children know to stop calling Square()
+    WaitForChildren         # allow children to exit gracefully
+    freeMem                 # free allocated memory from above.
+    return 0;
+
+thread_func(args)
+    init_time = start_timer()           # get initial time thread starts
+    initialize_tls_counter = 0  # for threads to count Square() calls
+    for(i = 1:size)
+        Square(i)
+    elapsed_time = start_timer() - init_time;
+    print_stats(thread_id, counter, elapsed_time);
+    return
+
+########## Pseudocode for partA2 ##########
+# parent needs to be created with HIGH priority so that it can create the
+# children without being interrupted by them. Then all the children can start
+# running at the same time. Check parent isn't PNUL when creating parent.
+
+mainp(args)
+    parse_args()
+    check_args()        # make sure args are within boundary conditions
+    if (createThread(parent_thread, HIGH))
+        error_exit()
+    return 0
+
+parent_thread(args)
+    declare_vars;
+    malloc(square_array)    # give threads somewhere to store counts. No TLS.
+    malloc(thread_array)
+    for (i = 0:num_threads)
+        Create(child_func, NORM)
+        if (child[i] == PNUL) exit_error()
+    Sleep(deadline * 100)
+# from poking around in the source of pthreads, TICKINTERVAL = 10000 micro-sec
+
+# Kill children and print stats if they haven't exited
+    for (i = 2:num_threads+2)
+        if (exists(i))
+            if (Kill(i) = PNUL)
+                error_exit()
+            print_stats(thread_id, count, deadline);
+            # print deadline for time elapsed because it timed out.
+
+    free(allocated_stuff)
+    Pexit()
+
+child_thread()
+    start_time = Time()
+    for(i = 1:size)
+        Square(i)
+    print_stats(thread_id, count, Time()-start_time)
+    Pexit()
+
+########## Pseudocode for Common.c ##########
+# these functions will all be similar between partA1,partA2,partA3,partA4
+# syntax will be different because we are using different OS and libraries
+
+# sscanf was used instead of atoi because sscanf has error checking. We take a
+    slight performance hit, but the trade-off is worth it.
+parse_args(*destination, argc, argv)
+    if(argc != 4) error_exit
+    sscanf(argv[1], threads);
+    sscanf(argv[2], deadline);
+    sscanf(argv[3], size);
+    if (threads <= 0 || deadline <= 0 || size <= 0)
+        error_exit
+
+int Square(size)
+    incr_func()     # increment function used in each part to count Square calls
+    if (keepRunning == false)
+        return 0
+    if (size == 0)
+        return 0
+    return Square(size -1) + size + size -1
+
+ 
 
