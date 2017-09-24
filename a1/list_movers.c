@@ -50,7 +50,8 @@ void* ListCurr(LIST* list){
 	return NULL;
 }
 
-void* ListSearch(LIST* list, int (* comparator)(void* item1, void* item2), void* comparisonArg){
+void* ListSearch(LIST* list, int (* comparator)(void* item1, void* item2),
+        void* comparisonArg){
 	printf("Got to procedure ListSearch\n");
 	if (list == NULL){
 		printf("Error in procedure ListSearch: Invalid parameter list\n");
@@ -61,7 +62,8 @@ void* ListSearch(LIST* list, int (* comparator)(void* item1, void* item2), void*
 		return NULL;
 	}
 	else if (comparisonArg == NULL){
-		printf("Error in procedure ListSearch: Invalid parameter comparisonArg\n");
+		printf("Error in procedure ListSearch: "
+                "Invalid parameter comparisonArg\n");
 		return NULL;
 	}
 	return NULL;

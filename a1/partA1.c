@@ -10,7 +10,9 @@
 
 #include "common.h"
 
-/* TODO: check maximum input size. Don't accept if input > MAX */
+#define MAX_THREADS 64
+#define MAX_DEADLINE 600
+#define MAX_SIZE 200000
 
 DWORD dwTlsIndex; /* enable thread local storage */
 
@@ -19,9 +21,6 @@ DWORD dwTlsIndex; /* enable thread local storage */
 DWORD WINAPI Thread_Main( LPVOID lpParam ) {
 	/* Get time that thread starts executing
 	 * Avoid use of GetSystemTime() because Microsoft said so.
-	 */
-	/* TODO: More testing. Possibly use different method to measure time 
-	 * elapsed. See Windows documentation and ask Jarrod.
 	 */
 	DWORD init_time = GetTickCount();
 	
@@ -70,6 +69,18 @@ int main(int argc, char* argv[]){
 		return EXIT_FAILURE;
 	}
 
+    /* check that arguments don't exceed maximum values */
+    if (num_threads > MAX_THREADS)
+        error_exit("Error: Maximum number of threads arg too high. "
+                "MAX_THREADS = 64\n");
+    if (deadline > MAX_DEADLINE)
+        error_exit("Error: Maximum deadline arg too high. "
+                "MAX_DEADLINE = 600 s\n");
+    if (size > MAX_SIZE)
+        error_exit("Error: Maximum size arg is too high. "
+                "MAX_SIZE = 200000\n");
+
+
 	/* create space for the threads */
 	thread_array = malloc(sizeof(HANDLE) * num_threads);
 	if (thread_array == NULL){
@@ -84,12 +95,12 @@ int main(int argc, char* argv[]){
 	printf("Creating threads\n");
 	for (size_t i = 0; i < num_threads; ++i){
 		thread_array[i] = CreateThread(
-				NULL,                   /* security attributes */
-				2<<22,                  /* Stack size that accommodates size=200000 */
-				Thread_Main,            /* thread function */
-				&size,                  /* ptr to thread function argument */
-				0,                      /* default creation flag */
-				NULL);                  /* thread identifier */
+				NULL,          /* security attributes */
+				2<<22,         /* Stack size that accommodates size=200000 */
+				Thread_Main,   /* thread function */
+				&size,         /* ptr to thread function argument */
+				0,             /* default creation flag */
+				NULL);         /* thread identifier */
 	}
 	Sleep(1000*deadline); /* 1000 for converting s to ms */
 	keepRunning = false;
@@ -97,9 +108,9 @@ int main(int argc, char* argv[]){
 	/* Wait until threads complete before exiting main() */
 	if (WaitForMultipleObjects(
 			num_threads,      		 	 /* number of threads in array */
-			thread_array,      			 /* pointer to array of object handles */
-			TRUE,						 /* bWaitAll: TRUE to wait for all threads */
-			INFINITE) == WAIT_FAILED){         /* wait until all threads return */
+			thread_array,      		 /* pointer to array of object handles */
+			TRUE,				 /* bWaitAll: TRUE to wait for all threads */
+			INFINITE) == WAIT_FAILED){   /* wait until all threads return */
 		error_exit("WaitForMultipleObjects error.\n");
 	}
 	

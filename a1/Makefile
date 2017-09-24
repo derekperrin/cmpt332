@@ -2,6 +2,24 @@
 # Assignment 1
 # Derek Perrin 		dmp450 11050915
 # Dominic McKeith 	dom258 11184543
+#
+# Reminders:
+# "target" means the part before the :
+# "prerequisites" are the items after
+# "recipe" is the line below target and prerequisites.
+# -Make will detect files in the current directory and try to build them
+#  automatically. Example, if partA1.c is present, when you put partA1.o
+#  as a prerequisite for a target, make will find partA1.c and build it with
+#  default flags.
+# -If you don't include a recipe, make will build with default flags
+# -If you don't include prerequisites for a target, make won't link them 
+#  together.
+# 
+# Special variables from the make documentation:
+# $@ -> target name
+# $^ -> all prerequisites
+# $< -> first prerequisite
+# Make also has implicit variables such as CC. See Make docs for more info.
 
 CC = gcc
 CFLAGS = -g
@@ -16,10 +34,12 @@ UBC_PTHREADS_DIR = /student/cmpt332/pthreads
 ARCH = $(shell uname -m)
 OS = $(shell uname -s)
 
+# Add variables for compiling partA2 with UBC pthreads
 UBC_PTHREADS_INC = -I$(UBC_PTHREADS_DIR)
 UBC_PTHREADS_LD = -L$(UBC_PTHREADS_DIR)/lib/$(OS)$(ARCH)
 UBC_PTHREADS_LIB = -lpthreads
 
+# Check OS so you know what to compile for.
 ifneq (,$(findstring MINGW,$(OS)))
 TARGET = windows
 else
@@ -31,7 +51,7 @@ all: $(TARGET)
 EXE += partA1.exe partA2 partA3 partA4
 
 # compile part A
-partA1: partA1.o common.o
+partA1: partA1.o windows-common.o
 partA2: partA2.o common.o
 	$(CC) $(LDFLAGS) $(UBC_PTHREADS_LD) $^ $(LDLIBS) $(UBC_PTHREADS_LIB) \
 		-o $@
@@ -51,9 +71,13 @@ mytestlist: LDFLAGS=-L.
 mytestlist: LDLIBS=-llist
 mytestlist: mytestlist.o liblist.a
 
+# needed in case we make on Windows and then on Linux.
+windows-common.o: common.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $^ -o $@
 # add mytestlist to executables for cleaning
 EXE += mytestlist
 
+# the parenthesis option are a way of using ar implicitely. See Make docs
 liblist.a: liblist.a(list_adders.o list_movers.o list_removers.o list_alloc.o)
 
 windows: partA1

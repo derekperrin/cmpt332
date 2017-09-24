@@ -97,6 +97,17 @@ int mainp(int argc, char* argv[argc+1]){
         exit(EXIT_FAILURE);
     }
 	
+    /* Make sure arguments are within the acceptable range */
+    if (args[0] > MAX_THREADS)
+        error_exit("Error: Maximum number of threads arg too high. "
+                "MAX_THREADS = 1000 \n");
+    if (args[1] > MAX_DEADLINE)
+        error_exit("Error: Maximum deadline arg too high. "
+                "MAX_DEADLINE = 600 s\n");
+    if (args[2] > MAX_SIZE)
+        error_exit("Error: Maximum size arg is too high. "
+                "MAX_SIZE = 500000\n" );
+
     if(Create(
             parent_main,            /* function pointer to thread func */
             2<<22,                  /* stack size magic number */
@@ -107,7 +118,5 @@ int mainp(int argc, char* argv[argc+1]){
         == PNUL) {
         error_exit("Create parent error\n");
     }
-
-	printf("Got to procedure main A2\n");
 	return EXIT_SUCCESS;
 }
