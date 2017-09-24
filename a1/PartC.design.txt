@@ -9,21 +9,28 @@
 const MAX_LISTS
 const MAX_NODES
 
-# Stack to grab empty lists from.
-struct list_stack{
-    list_mem[]
-    int size
-}
-
-struct node_stack{
-    node_mem[]
-    int size
-}
-
-STACK {
+struct NODE {
+    NODE* next
+    NODE* prev
     void* data
-    STACK* next
 }
+
+struct LIST {
+    NODE* curr
+    NODE* head
+    NODE* tail
+    int size
+    LIST next
+}
+
+
+# We create a queue to keep track of free lists and nodes. This is the reason
+# we have a 'next' member in our LIST implementation. All lists point to the
+# next free list. The last list points to NULL. A 'free' pointer points to the
+# head of the list at all times. To give memory back to the list pool, the 
+# 'next' member is changed to point to the head of the list pool, and 'free'
+# points to the list being freed. It's a really slick implementation.
+    
 
 LIST* ListCreate()
     if (list_stack.current == 0)
