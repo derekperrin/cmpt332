@@ -4,5 +4,5 @@
 * Dominic McKeith 	dom258 11184543
 */
 
-Our plan for testing Part A is to try to make our program crash and burn. It 
-failed. Our program is great. 0 bugs. Much Perfect. Wow.
+For all parts of Part A, we will test minimums, maximum, and various other 
+bounds.

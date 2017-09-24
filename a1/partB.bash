@@ -17,7 +17,7 @@ checkArgs(){
 }
 
 main(){
-	while read -p "> " line; do
+	while read -p "THEADS DEADLINE SIZE > " line; do
 		checkArgs $line
 		./$PROG $line
 	done
