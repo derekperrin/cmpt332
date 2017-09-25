@@ -14,34 +14,14 @@
 bool memory_allocated = false;
 
 /* list memory pool to create new lists */
-LIST* list_memory;
+LIST** list_memory = NULL;
 LIST* curr_free_list;
 
 /* node memory pool to create new nodes */
-NODE* node_memory;
+NODE** node_memory = NULL;
 NODE* curr_free_node;
 
 LIST* ListCreate(){
-    /* allocated memory the first time a list is created */
-    if (!memory_allocated) {
-        list_memory = malloc(sizeof(LIST) * MAX_LISTS);
-        node_memory = malloc(sizeof(NODE) * MAX_NODES);
-        for (size_t i = 0; i < MAX_NODES - 1; ++i) {
-            node_memory[i].next = &node_memory[i+1];
-        }
-        for (size_t i = 0; i < MAX_LISTS - 1; ++i) {
-            list_memory[i].next_free = &list_memory[i+1];
-        }
-        node_memory[MAX_NODES-1].next = NULL;
-        list_memory[MAX_LISTS-1].next_free = NULL;
-
-        /* point to the free lists and nodes at the head */
-        curr_free_list = list_memory;
-        curr_free_node = node_memory;
-
-        /* set memory_allocated to true to prevent entering this again */
-        memory_allocated = true;
-    }
     LIST* new_list = request_list();
     if (new_list == NULL){
         return NULL; /* TODO: need to grow the memory when on bonus */

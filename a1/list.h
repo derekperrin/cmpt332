@@ -8,8 +8,8 @@
 
 #include <stdbool.h>
 
-#define MAX_LISTS 64    /* we picked these because they're computer numbers */
-#define MAX_NODES 1024
+#define MIN_LISTS 2    /* we picked these because they're computer numbers */
+#define MIN_NODES 8
 
 /* NODE structure: Used to store data and are used in the linked list. */
 typedef struct NODE {
@@ -31,11 +31,15 @@ typedef struct LIST{
 } LIST;
 
 /* list memory pool to create new lists */
-extern LIST* list_memory;
+extern LIST** list_memory;
+extern size_t list_mem_blocks;
+extern size_t list_mem_size;
 extern LIST* curr_free_list;
 
 /* node memory pool to create new nodes */
-extern NODE* node_memory;
+extern NODE** node_memory;
+extern size_t node_mem_blocks;
+extern size_t node_mem_size;
 extern NODE* curr_free_node;
 
 LIST* ListCreate();
