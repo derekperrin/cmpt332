@@ -4,10 +4,32 @@
 # Dominic McKeith 	dom258 11184543
 
 # Part C Design Documentation
+
+### HEADS UP: WE DID THE BONUS. DETAILS BELOW ###
+
 # Pseudocode below:
 
-const MAX_LISTS
-const MAX_NODES
+# We set the following constants to low values to make testing easier so we
+# could call add_list_memory and add_node_memory multiple times without having
+# massive for loops.
+
+const MIN_LISTS = 2
+const MIN_NODES = 8
+
+LIST** list_mem
+NODE** node_mem
+
+# the following four variables are used to keep track of how much to grow the
+# size of the list and node memory pools by. list_mem_blocks increments by 1
+# every time a grow is called, list_mem_size doubles every time a grow is 
+# called. list_mem_blocks essentially grows the "outer shell" of the memory
+# array, while list_mem_size grows the inner amount of available lists.
+
+int list_mem_blocks
+int list_mem_size
+
+int node_mem_blocks
+int node_mem_size
 
 struct NODE {
     NODE* next
@@ -23,21 +45,74 @@ struct LIST {
     LIST next
 }
 
-
 # We create a queue to keep track of free lists and nodes. This is the reason
 # we have a 'next' member in our LIST implementation. All lists point to the
 # next free list. The last list points to NULL. A 'free' pointer points to the
 # head of the list at all times. To give memory back to the list pool, the 
 # 'next' member is changed to point to the head of the list pool, and 'free'
 # points to the list being freed. It's a really slick implementation.
+
+# We included extra files called list_alloc.c and list_alloc.h. These contain
+# functions used to grow our memory, and in phase 3 will be used to shrink
+# our memory. We made a separate file because it made things a bit cleaner
+# inside of our list_adders and other files, since they are really only used
+# to grow the memory.
+
+# list_alloc
+add_list_memory()
+    # grows the list memory by doubling it when more memory is needed.
+    # On the first call, the initial list memory is set to MIN_LISTS.
+    # We use realloc to grow the memory. The first call of realloc acts the same
+    # as malloc according to the man page; this is when realloc is passed a NULL
+    # pointer. The basic design is having our list memory pool as a pointer to
+    # an array of LIST pointers. When more memory is needed, we realloc the 
+    # array of pointers. This way, any pointers that were previously returned
+    # to the user are still retained. The only way we found to make this
+    # function fail is to use up all of the memory on the computer. Regardless,
+    # the function will return -1 if anything fails inside.
+
+add_node_memory()
+    # This code is exactly the same as add_list_memory, but the variable names
+    # say node instead of list.
+
+request_list()
+    # Returns a list to the user. If no lists are available because memory is
+    # full, then a call is made to add_list_memory() and then a free list is
+    # returned.
+
+request_node()
+    # This code is exactly the same as request_list, but the variable names
+    # say node instead of list.
+
+release_list()
+    # this is called to release a list back to the memory pool. If the total
+    # used lists are less than half of available lists, a call to
+    # shrink_list_memory() is made to halve the size of the available memory.
+
+release_node()
+    # This code is exactly the same as release_list, but the variable names
+    # say node instead of list.
+
+shrink_list_memory()
+    # We have no idea how we'll implement this yet. It shrinks the available
+    # memory to be half of the current available memory.
+
+shrink_node_memory()
+    # We have no idea how we'll implement this yet. It shrinks the available
+    # memory to be half of the current available memory.
     
 
 LIST* ListCreate()
-    if (list_stack.current == 0)
-        allocate list_stack
-        allocate node_stack
-    increment list_stack size
-    return list_stack.list_mem[0]
+    LIST* newList = requestList();
+    if (newList == NULL)
+        # something bad went wrong because it should have grown
+        return NULL
+    newList->head = NULL
+    newList->tail = NULL
+    newList->curr = NULL
+    newList->next = NULL
+    newList->size = 0
+    return newList
 
 int ListCount()
     return list.size
@@ -89,13 +164,13 @@ void ListConcat()
     list2 and its members are NULL
     push(list2) to list_stack
 
-void ListFree
+void ListFree(list, freeitem)
     for (node in list)
         freeitem(node.item)
         node.item = NULL
         push(node) node_stack
     nullify(list members)
-    push(list) list_stack
+    release_list(list)
 
 void* ListTrim
     rNode = list.tail
@@ -109,12 +184,3 @@ void* ListSearch()
             list.curr = node
             return list.curr.item
     return 0
-
-
-
-
-        
-
-
-free(int i)
-    available_list_mem[i] = 1

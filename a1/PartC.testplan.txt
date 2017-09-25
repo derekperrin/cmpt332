@@ -51,6 +51,20 @@ should be. We also check the position of head, curr, and tail, to make sure
 they are correct. We also make sure that the 'prev' and 'next' field of every 
 node in the list is correct.
 
+* Testing add_list_memory
+Near the end of main, we have already created 5 lists. The initial number of
+lists our design supports is 2. As a result, we attempt to create 60 more lists.
+This should succeed and none of the lists should be NULL unless there's not 
+enough physical memory for some reason. We check if each of the lists is NULL
+and print a failure message if any list fails the test.
+
+* Testing add_node_memory
+Near the end of main, we have already created several nodes. The initial number
+of nodes our design supports is 8. As a result, we attempt to create 1000 more
+nodes. This should succeed and none of the nodes should be NULL unless there's
+not enough physical memory for some reason. We check if each of the nodes is
+NULL and print a failure message if any nodes fails the test.
+
 * Testing max number of lists
 Near the end of main we have already created 5 lists. The max number of lists
 our implementation uses is 64. As a result, we attempt to create 60 more lists.
