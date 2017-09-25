@@ -1,7 +1,7 @@
 /* CMPT 332 -- Fall 2017
 * Assignment 1
-* Derek Perrin 		dmp450 11050915
-* Dominic McKeith 	dom258 11184543
+* Derek Perrin      dmp450 11050915
+* Dominic McKeith   dom258 11184543
 */
 
 #include <stdio.h>
@@ -17,20 +17,20 @@
 size_t* square_counts;
 
 void incr_func(void){
-	square_counts[MyPid() - 2]++;
+    square_counts[MyPid() - 2]++;
 }
 
 void child_main(int* n) {
-	long start_time = Time();
+    long start_time = Time();
     int size = *n;
     for (size_t i = 1; i <= size; ++i) {
         Square(i);
     }
-	PID my_pid = MyPid();
-	
-	long run_time = (Time() - start_time)*10;	/* 10 is for us to ms */
+    PID my_pid = MyPid();
+    
+    long run_time = (Time() - start_time)*10;   /* 10 is for us to ms */
     printf("Thread %d: No. of Square calls: %lu, Elapsed time: %lu ms\n",
-		my_pid, square_counts[my_pid - 2], run_time);
+        my_pid, square_counts[my_pid - 2], run_time);
     Pexit();
 }
 
@@ -38,15 +38,15 @@ void parent_main(int* args){
     /* declare necessary argument variables */
     int num_threads = args[0];
     int deadline = args[1];
-	
-	square_counts = malloc(sizeof(size_t) * num_threads);
+    
+    square_counts = malloc(sizeof(size_t) * num_threads);
 
     PID* thread_array;
     thread_array = malloc(sizeof(PID) * num_threads);
 
     for (size_t i = 0; i < num_threads; ++i) {
         /* create thread */
-		square_counts[i] = 0;
+        square_counts[i] = 0;
         thread_array[i] = Create(
                 child_main, /* pointer to child thread function */
                 2 << 22,    /* stack size */
@@ -62,7 +62,7 @@ void parent_main(int* args){
     /* Sleep parent thread until deadline */
     Sleep(deadline * 100);  /* TICKINTERVAL = 10000 micro-s per tick */
     
-	/* deadline * 1000 is for seconds -> milliseconds */
+    /* deadline * 1000 is for seconds -> milliseconds */
     for (size_t i = 2; i < num_threads + 2; ++i) {
         if (PExists(i)){
             if (Kill(i) == PNUL)
@@ -76,7 +76,7 @@ void parent_main(int* args){
 
     free(thread_array);
     free(args);
-	free(square_counts);
+    free(square_counts);
 
     /* exit */
     Pexit();
@@ -96,7 +96,7 @@ int mainp(int argc, char* argv[argc+1]){
         arg_error();
         exit(EXIT_FAILURE);
     }
-	
+    
     /* Make sure arguments are within the acceptable range */
     if (args[0] > MAX_THREADS)
         error_exit("Error: Maximum number of threads arg too high. "
@@ -118,5 +118,5 @@ int mainp(int argc, char* argv[argc+1]){
         == PNUL) {
         error_exit("Create parent error\n");
     }
-	return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }

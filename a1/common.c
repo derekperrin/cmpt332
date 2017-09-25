@@ -1,7 +1,7 @@
 /* CMPT 332 -- Fall 2017
 * Assignment 1
-* Derek Perrin 		dmp450 11050915
-* Dominic McKeith 	dom258 11184543
+* Derek Perrin      dmp450 11050915
+* Dominic McKeith   dom258 11184543
 */
 
 #include <stdio.h>
@@ -45,12 +45,12 @@ void arg_error(){
  * return: square of n
 ***/
 int Square ( int n ) {
-	incr_func();
-	
-	if (keepRunning == false)
-		return 0;
-	if (n == 0){
-		return 0;
-	}
-	return Square(n - 1) + n + n - 1;
+    incr_func();
+    
+    if (keepRunning == false)
+        return 0;
+    if (n == 0){
+        return 0;
+    }
+    return Square(n - 1) + n + n - 1;
 }

@@ -1,7 +1,7 @@
 /* CMPT 332 -- Fall 2017
 * Assignment 1
-* Derek Perrin 		dmp450 11050915
-* Dominic McKeith 	dom258 11184543
+* Derek Perrin      dmp450 11050915
+* Dominic McKeith   dom258 11184543
 */
 #ifndef LIST_H
 #define LIST_H
@@ -13,9 +13,9 @@
 
 /* NODE structure: Used to store data and are used in the linked list. */
 typedef struct NODE {
-	void* data;
-	struct NODE* next;
-	struct NODE* prev;
+    void* data;
+    struct NODE* next;
+    struct NODE* prev;
 } NODE;
 
 /* LIST structure: 
@@ -23,11 +23,11 @@ typedef struct NODE {
  * otherwise it's NULL.
  */
 typedef struct LIST{
-	NODE* head;
-	NODE* tail;
-	NODE* curr; 
-	struct LIST* next_free; 
-	int size;
+    NODE* head;
+    NODE* tail;
+    NODE* curr; 
+    struct LIST* next_free; 
+    int size;
 } LIST;
 
 /* list memory pool to create new lists */

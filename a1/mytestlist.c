@@ -1,7 +1,7 @@
 /* CMPT 332 -- Fall 2017
 * Assignment 1
-* Derek Perrin 		dmp450 11050915
-* Dominic McKeith 	dom258 11184543
+* Derek Perrin      dmp450 11050915
+* Dominic McKeith   dom258 11184543
 */
 
 #include <stdio.h>
@@ -11,88 +11,88 @@
 #include "list.h"
 
 int main(int argc, char* argv[]){
-	
+    
     int num_tests = 0;
     int tests_passed = 0;
 
-	LIST* list1 = ListCreate();
-	LIST* list2 = ListCreate();
-	LIST* list3 = ListCreate();
-	LIST* list4 = ListCreate();
-	num_tests++;
-	if (list1 != NULL || list2 != NULL || list3 != NULL || list4 != NULL){
-		printf("ListCreate test passed\n");
-		tests_passed++;
-	}
-	else
-		printf("ListCreate failed to create one or more lists\n");
-	
-	/* testing ListAdd */
+    LIST* list1 = ListCreate();
+    LIST* list2 = ListCreate();
+    LIST* list3 = ListCreate();
+    LIST* list4 = ListCreate();
     num_tests++;
-	int item1 = 7;
-	ListAdd(list1, &item1);
-	if (list1->head->data == &item1 && list1->curr->data == &item1){
-		printf("ListAdd test 1 passed\n");
+    if (list1 != NULL || list2 != NULL || list3 != NULL || list4 != NULL){
+        printf("ListCreate test passed\n");
         tests_passed++;
     }
-	else
-		printf("ListAdd test 1 failed\n");
-	
+    else
+        printf("ListCreate failed to create one or more lists\n");
+    
+    /* testing ListAdd */
     num_tests++;
-	int item2 = 5;
-	ListAdd(list1, &item2);
-	if (list1->head->next->data == &item2){
-		printf("ListAdd test 2 passed\n");
+    int item1 = 7;
+    ListAdd(list1, &item1);
+    if (list1->head->data == &item1 && list1->curr->data == &item1){
+        printf("ListAdd test 1 passed\n");
         tests_passed++;
     }
-	else
-		printf("ListAdd test 2 failed\n");
-	
+    else
+        printf("ListAdd test 1 failed\n");
+    
     num_tests++;
-	int item3 = 98;
-	ListAdd(list1, &item3);
-	if (list1->curr->data == &item3){
-		printf("ListAdd test 3 passed\n");
+    int item2 = 5;
+    ListAdd(list1, &item2);
+    if (list1->head->next->data == &item2){
+        printf("ListAdd test 2 passed\n");
         tests_passed++;
     }
-	else
-		printf("ListAdd test 3 failed\n");
-	
-	/* Testing ListInsert */
+    else
+        printf("ListAdd test 2 failed\n");
+    
     num_tests++;
-	char pizza[6];
-	strncpy(pizza, "Pizza", 6);
-	ListInsert(list2, pizza);
-	if (list2->head->data == pizza){
-		printf("ListInsert test 1 passed \n");
+    int item3 = 98;
+    ListAdd(list1, &item3);
+    if (list1->curr->data == &item3){
+        printf("ListAdd test 3 passed\n");
         tests_passed++;
     }
-	else
-		printf("ListInsert test 1 failed \n");
-	
+    else
+        printf("ListAdd test 3 failed\n");
+    
+    /* Testing ListInsert */
     num_tests++;
-	char jones_soda[10];
-	strncpy(jones_soda, "Dr. Jones", 10);
-	ListInsert(list2, jones_soda);
-	if (list2->curr->data == jones_soda){
-		printf("ListInsert test 2 passed \n");
+    char pizza[6];
+    strncpy(pizza, "Pizza", 6);
+    ListInsert(list2, pizza);
+    if (list2->head->data == pizza){
+        printf("ListInsert test 1 passed \n");
         tests_passed++;
     }
-	else
-		printf("ListInsert test 2 failed \n");
-	
+    else
+        printf("ListInsert test 1 failed \n");
+    
     num_tests++;
-	char skittles[10];
-	strncpy(skittles, "Skittles", 10);
-	ListInsert(list2, skittles);
-	if (list2->head->data == skittles) {
-		printf("ListInsert test 3 passed \n");
+    char jones_soda[10];
+    strncpy(jones_soda, "Dr. Jones", 10);
+    ListInsert(list2, jones_soda);
+    if (list2->curr->data == jones_soda){
+        printf("ListInsert test 2 passed \n");
         tests_passed++;
     }
-	else
-		printf("ListInsert test 3 failed \n");
-	
-	/* Testing for ListAppend */
+    else
+        printf("ListInsert test 2 failed \n");
+    
+    num_tests++;
+    char skittles[10];
+    strncpy(skittles, "Skittles", 10);
+    ListInsert(list2, skittles);
+    if (list2->head->data == skittles) {
+        printf("ListInsert test 3 passed \n");
+        tests_passed++;
+    }
+    else
+        printf("ListInsert test 3 failed \n");
+    
+    /* Testing for ListAppend */
     num_tests++;
     float thing1 = -45.45;
     ListAppend(list3, &thing1);
@@ -203,30 +203,30 @@ int main(int argc, char* argv[]){
     }
 
 
-	num_tests++;
-	for (size_t i = 0; i <= 60; ++i){
-		if (ListCreate() == NULL){
-			if (i == 60){
-				printf("ListCreate test passed.\n");
-				tests_passed++;
-			}
-			else 
-				printf("ListCreate test failed. "
-				"More than 64 lists have been created?\n");
-		}
-	}
-	
-	num_tests++;
-	for (size_t i = 0; i < 1020; ++i){
-		if (ListInsert(list1, NULL) == -1){
-			printf("Node Overflow test passed.\n");
-			tests_passed++;
-			break;
-		}
-		else if (i == 1019)
-			printf("Node Overflow test failed.\n");
-	}
-	
+    num_tests++;
+    for (size_t i = 0; i <= 60; ++i){
+        if (ListCreate() == NULL){
+            if (i == 60){
+                printf("ListCreate test passed.\n");
+                tests_passed++;
+            }
+            else 
+                printf("ListCreate test failed. "
+                "More than 64 lists have been created?\n");
+        }
+    }
+    
+    num_tests++;
+    for (size_t i = 0; i < 1020; ++i){
+        if (ListInsert(list1, NULL) == -1){
+            printf("Node Overflow test passed.\n");
+            tests_passed++;
+            break;
+        }
+        else if (i == 1019)
+            printf("Node Overflow test failed.\n");
+    }
+    
     /****** FINAL OUTPUT ******/
     if (tests_passed == num_tests) {
         printf("All %d tests passed!\n", num_tests);
@@ -234,21 +234,21 @@ int main(int argc, char* argv[]){
         printf("Only %d/%d tests passed :(\n", tests_passed, num_tests);
     }
 
-	/*
-	ListCount(NULL);
-	ListFirst(NULL);
-	ListLast(NULL);
-	ListNext(NULL);
-	ListPrev(NULL);
-	ListCurr(NULL);
-	ListAdd(NULL, 0);
-	ListInsert(NULL, 0);
-	ListPrepend(NULL, 0);
-	ListRemove(NULL);
-	ListConcat(NULL, NULL);
-	ListFree(NULL, NULL);
-	ListTrim(NULL);
-	ListSearch(NULL, NULL, 0);
-	*/
+    /*
+    ListCount(NULL);
+    ListFirst(NULL);
+    ListLast(NULL);
+    ListNext(NULL);
+    ListPrev(NULL);
+    ListCurr(NULL);
+    ListAdd(NULL, 0);
+    ListInsert(NULL, 0);
+    ListPrepend(NULL, 0);
+    ListRemove(NULL);
+    ListConcat(NULL, NULL);
+    ListFree(NULL, NULL);
+    ListTrim(NULL);
+    ListSearch(NULL, NULL, 0);
+    */
     return EXIT_SUCCESS;
 }
