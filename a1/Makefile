@@ -55,7 +55,7 @@ partA1: partA1.o windows-common.o
 partA2: partA2.o common.o
 	$(CC) $(LDFLAGS) $(UBC_PTHREADS_LD) $^ $(LDLIBS) $(UBC_PTHREADS_LIB) \
 		-o $@
-partA3: partA3.o
+partA3: partA3.o common.o
 	$(CC) $(LDFLAGS) $^ -pthread $(LDLIBS) -o $@
 partA4: partA4.o
 
