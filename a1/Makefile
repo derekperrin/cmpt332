@@ -77,6 +77,14 @@ windows-common.o: common.c
 # add mytestlist to executables for cleaning
 EXE += mytestlist
 
+# Needed to add these so liblist.a would recompile if anything changed in
+# these files. It also solves why list*.o files were being deleted at the end
+# of make all.
+list_adders.o: list_adders.c list.h
+list_movers.o: list_movers.c list.h
+list_removers.o: list_removers.c list.h
+list_alloc.o: list_alloc.c list.h
+
 # the parenthesis option are a way of using ar implicitely. See Make docs
 liblist.a: liblist.a(list_adders.o list_movers.o list_removers.o list_alloc.o)
 
