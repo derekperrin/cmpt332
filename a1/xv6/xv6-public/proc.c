@@ -47,6 +47,8 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  // CMPT 332 group23 change:
+  p->cswitch = 0;
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -283,6 +285,8 @@ scheduler(void)
       proc = p;
       switchuvm(p);
       p->state = RUNNING;
+      // CMPT 332 group23 change:
+      p->cswitch++;
       swtch(&cpu->scheduler, proc->context);
       switchkvm();
 
@@ -311,6 +315,8 @@ sched(void)
   if(readeflags()&FL_IF)
     panic("sched interruptible");
   intena = cpu->intena;
+  // CMPT 332 group23 change:
+  proc->cswitch++;
   swtch(&proc->context, cpu->scheduler);
   cpu->intena = intena;
 }

@@ -66,6 +66,8 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+  // CMPT 332 group 23 change
+  size_t cswitch;             // Number of context switches
 };
 
 // Process memory is laid out contiguously, low addresses first:
