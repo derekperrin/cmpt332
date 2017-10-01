@@ -17,6 +17,7 @@
 pthread_t* thread_array;
 pthread_key_t key;          /* thread specific data key for custom thread id */
 int* square_count;
+int* completed_threads;
 
 /* Used to increment the square counter for each thread */
 void incr_func(void) {
@@ -58,6 +59,7 @@ void* thread_func(void* args) {
     printf("Thread %lu: No. of Square calls: %d, Elapsed time: %d ms\n",
         my_pid, square_count[id], elapsed_time);
 
+    completed_threads[id] = 1;
     pthread_exit(0);
 }
 
@@ -77,6 +79,9 @@ int main(int argc, char* argv[argc+1]){
 
     if ((square_count = calloc(num_threads, sizeof(int))) == NULL)
         error_exit("calloc error square_count partA3.c\n");
+
+    if ((completed_threads = calloc(num_threads, sizeof(int))) == NULL)
+        error_exit("calloc error completed_threads partA3.c\n");
 
     /* set up the thread specific data to store the id later on */
     pthread_key_create(&key, NULL);
@@ -106,11 +111,14 @@ int main(int argc, char* argv[argc+1]){
     /* and this one below it */
 
     for (size_t i = 0; i < num_threads; ++i) {
-        error_code = pthread_cancel(thread_array[i]);
-        if (error_code == 0){
+        if (completed_threads[i])
+            continue;
+        if ((pthread_cancel(thread_array[i]) == 0)) {
             unsigned long thread_id = (unsigned long)(thread_array[i]);
             printf("Thread %lu: No. of Square calls: %d, Elapsed time: %d ms\n",
                 thread_id, square_count[i], deadline * 1000);
+        } else {
+            error_exit("pthread_cancel error partA3.c\n");
         }
     }
 
