@@ -93,5 +93,5 @@ sys_uptime(void)
 int
 sys_csinfo(void)
 {
-	return 0;
+  return proc->cscount;
 }

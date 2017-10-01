@@ -48,7 +48,7 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
   // CMPT 332 group23 change:
-  p->cswitch = 0;
+  p->cscount = 0;
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -286,7 +286,7 @@ scheduler(void)
       switchuvm(p);
       p->state = RUNNING;
       // CMPT 332 group23 change:
-      p->cswitch++;
+      p->cscount++;
       swtch(&cpu->scheduler, proc->context);
       switchkvm();
 
@@ -316,7 +316,7 @@ sched(void)
     panic("sched interruptible");
   intena = cpu->intena;
   // CMPT 332 group23 change:
-  proc->cswitch++;
+  proc->cscount++;
   swtch(&proc->context, cpu->scheduler);
   cpu->intena = intena;
 }

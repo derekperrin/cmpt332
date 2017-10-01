@@ -32,7 +32,7 @@ forktest(void)
     printf(1, "fork claimed to work N times!\n", N);
     exit();
   }
-  
+
   for(; n > 0; n--){
     if(wait() < 0){
       printf(1, "wait stopped early\n");
