@@ -57,7 +57,7 @@ partA2: partA2.o common.o
 		-o $@
 partA3: partA3.o common.o
 	$(CC) $(LDFLAGS) $^ -pthread $(LDLIBS) -o $@
-partA4: partA4.o
+partA4: partA4.o common.o
 
 # need to specify include directory for partA2.o
 partA2.o: partA2.c
