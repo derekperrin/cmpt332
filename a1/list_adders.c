@@ -22,7 +22,9 @@ NODE** node_memory = NULL;
 NODE* curr_free_node;
 
 LIST* ListCreate(){
-    LIST* new_list = request_list();
+    LIST* new_list;
+
+    new_list = request_list();
     if (new_list == NULL){
         return NULL; /* TODO: need to grow the memory when on bonus */
     }
@@ -34,12 +36,14 @@ LIST* ListCreate(){
 }
 
 int ListAdd(LIST* list, void* item){
+    NODE* new_node;
+
     if (list == NULL){
         printf("Error in procedure ListAdd: Invalid parameter list\n");
         return -1;
     }
     
-    NODE* new_node = request_node();
+    new_node = request_node();
     if (new_node == NULL) {
         return -1; /* TODO: Expand node pool for bonus :) */
     }
@@ -78,12 +82,14 @@ int ListAdd(LIST* list, void* item){
 }
 
 int ListInsert(LIST* list, void* item){
+    NODE* new_node;
+
     if (list == NULL){
         printf("Error in procedure ListInsert: Invalid parameter list\n");
         return -1;
     }
 
-    NODE* new_node = request_node();
+    new_node = request_node();
     if (new_node == NULL) {
         return -1; /* TODO: Expand node pool for bonus :) */
     }
@@ -120,11 +126,12 @@ int ListInsert(LIST* list, void* item){
 }
 
 int ListAppend(LIST* list, void* item){
+    NODE* new_node;
     if (list == NULL){
         return -1;
     }
 
-    NODE* new_node = request_node();
+    new_node = request_node();
     new_node->data = item;
 
     /* If list is empty */
@@ -145,11 +152,12 @@ int ListAppend(LIST* list, void* item){
 }
 
 int ListPrepend(LIST* list, void* item){
+    NODE* new_node;
     if (list == NULL){
         return -1;
     }
 
-    NODE* new_node = request_node();
+    new_node = request_node();
     new_node->data = item;
 
     /* If list is empty */

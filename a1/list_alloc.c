@@ -18,10 +18,13 @@ size_t node_mem_size = 1;
 
 /* return 0 on success, -1 on fail */
 int add_node_memory(void){
+    NODE** new_node_memory;
+    size_t i;
+
     /* realloc acts as malloc when allocating the first memory block
      * because node_memory is initially NULL
      */
-    NODE** new_node_memory = /* on next line */
+    new_node_memory = /* on next line */
         realloc(node_memory, sizeof(NODE*) * (node_mem_blocks+1));
     if (new_node_memory == NULL)
         return -1;
@@ -35,7 +38,7 @@ int add_node_memory(void){
     curr_free_node = node_memory[node_mem_blocks];
     
     /* make each free node point to the next free node */
-    for (size_t i = 0; i < MIN_NODES*node_mem_size - 1; ++i) {
+    for ( i = 0; i < MIN_NODES*node_mem_size - 1; ++i) {
         curr_free_node[i].next = &curr_free_node[i+1];
     }
     
@@ -51,11 +54,13 @@ int add_node_memory(void){
 
 /* return 0 on success, -1 on fail */
 int add_list_memory(void){
+    LIST** new_list_memory;
+    size_t i;
     
     /* realloc acts as malloc when allocating the first memory block
      * because list_memory is initially NULL
      */
-    LIST** new_list_memory = /* on next line */
+    new_list_memory = /* on next line */
         realloc(list_memory, sizeof(LIST*) * (list_mem_blocks+1));
     if (new_list_memory == NULL)
         return -1;
@@ -69,7 +74,7 @@ int add_list_memory(void){
     curr_free_list = list_memory[list_mem_blocks];
     
     /* make each free list point to the next free list */
-    for (size_t i = 0; i < MIN_LISTS*list_mem_size - 1; ++i){
+    for ( i = 0; i < MIN_LISTS*list_mem_size - 1; ++i){
         curr_free_list[i].next_free = &curr_free_list[i+1];
     }
     
@@ -84,22 +89,25 @@ int add_list_memory(void){
 }
 
 LIST* request_list(void) {
+    LIST* new_list;
+
     if (curr_free_list == NULL){
         if (add_list_memory() == -1) /* add_list_memory returns -1 on fail */
             return NULL;
     }
-    LIST* new_list = curr_free_list;
+    new_list = curr_free_list;
     curr_free_list = curr_free_list->next_free;
     new_list->next_free = NULL;
     return new_list;
 }
 
 NODE* request_node(void) {
+    NODE* new_node;
     if (curr_free_node == NULL){
         if (add_node_memory() == -1) /* add_node_memory returns -1 on fail */
             return NULL;
     }
-    NODE* new_node = curr_free_node;
+    new_node = curr_free_node;
     curr_free_node = curr_free_node->next;
     return new_node;
 }

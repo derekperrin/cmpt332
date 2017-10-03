@@ -21,14 +21,18 @@ void incr_func(void){
 }
 
 void child_main(int* n) {
+    size_t i;   /* I use this later because c90 */
+    PID my_pid; /* I use this later because c90 */
+    long run_time;
+
     long start_time = Time();
     int size = *n;
-    for (size_t i = 1; i <= size; ++i) {
+    for ( i = 1; i <= size; ++i) {
         Square(i);
     }
-    PID my_pid = MyPid();
+    my_pid = MyPid();
     
-    long run_time = (Time() - start_time)*10;   /* 10 is for us to ms */
+    run_time = (Time() - start_time)*10;   /* 10 is for us to ms */
     printf("Thread %d: No. of Square calls: %lu, Elapsed time: %lu ms\n",
         my_pid, square_counts[my_pid - 2], run_time);
     Pexit();
@@ -36,15 +40,18 @@ void child_main(int* n) {
 
 void parent_main(int* args){
     /* declare necessary argument variables */
-    int num_threads = args[0];
-    int deadline = args[1];
+    int num_threads, deadline;
+    size_t i;
+    PID* thread_array;
+
+    num_threads = args[0];
+    deadline = args[1];
     
     square_counts = malloc(sizeof(size_t) * num_threads);
 
-    PID* thread_array;
     thread_array = malloc(sizeof(PID) * num_threads);
 
-    for (size_t i = 0; i < num_threads; ++i) {
+    for ( i = 0; i < num_threads; ++i) {
         /* create thread */
         square_counts[i] = 0;
         thread_array[i] = Create(
@@ -63,7 +70,7 @@ void parent_main(int* args){
     Sleep(deadline * 100);  /* TICKINTERVAL = 10000 micro-s per tick */
     
     /* deadline * 1000 is for seconds -> milliseconds */
-    for (size_t i = 2; i < num_threads + 2; ++i) {
+    for ( i = 2; i < num_threads + 2; ++i) {
         if (PExists(i)){
             if (Kill(i) == PNUL)
                 error_exit("Kill thread error\n");
@@ -87,7 +94,7 @@ void error_exit(char* error_message){
     exit(EXIT_FAILURE);
 }
 
-int mainp(int argc, char* argv[argc+1]){
+int mainp(int argc, char* argv[]){
     int* args;
     args = malloc(sizeof(int) * (argc - 1));
 

@@ -23,7 +23,7 @@
 
 CC = gcc
 CFLAGS = -g
-CPPFLAGS = -std=c99 -Wall -pedantic
+CPPFLAGS = -std=c90 -Wall -pedantic
 LDFLAGS = 
 LDLIBS =
 ARFLAGS = rcs

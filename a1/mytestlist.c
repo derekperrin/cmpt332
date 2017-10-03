@@ -11,14 +11,32 @@
 #include "list.h"
 
 int main(int argc, char* argv[]){
+    int num_tests, tests_passed, fails;
+    int item1, item2, item3;
+    int i1, i2, i3;
+    size_t i;
+
+    float thing1, thing2, thing3;
+
+    char c1, c2, c3;
+    char pizza[6];
+    char jones_soda[10];
+    char skittles[10];
     
-    int num_tests = 0;
-    int tests_passed = 0;
+    /* declare all list pointers because c90 */
+    LIST* list1;
+    LIST* list2;
+    LIST* list3;
+    LIST* list4;
+    LIST* list5;
+
+    num_tests = 0;
+    tests_passed = 0;
     
-    LIST* list1 = ListCreate();
-    LIST* list2 = ListCreate();
-    LIST* list3 = ListCreate();
-    LIST* list4 = ListCreate();
+    list1 = ListCreate();
+    list2 = ListCreate();
+    list3 = ListCreate();
+    list4 = ListCreate();
     num_tests++;
     if (list1 != NULL || list2 != NULL || list3 != NULL || list4 != NULL){
         printf("ListCreate test passed\n");
@@ -29,7 +47,7 @@ int main(int argc, char* argv[]){
     
     /* testing ListAdd */
     num_tests++;
-    int item1 = 7;
+    item1 = 7;
     ListAdd(list1, &item1);
     if (list1->head->data == &item1 && list1->curr->data == &item1){
         printf("ListAdd test 1 passed\n");
@@ -39,7 +57,7 @@ int main(int argc, char* argv[]){
         printf("ListAdd test 1 failed\n");
     
     num_tests++;
-    int item2 = 5;
+    item2 = 5;
     ListAdd(list1, &item2);
     if (list1->head->next->data == &item2){
         printf("ListAdd test 2 passed\n");
@@ -49,7 +67,7 @@ int main(int argc, char* argv[]){
         printf("ListAdd test 2 failed\n");
     
     num_tests++;
-    int item3 = 98;
+    item3 = 98;
     ListAdd(list1, &item3);
     if (list1->curr->data == &item3){
         printf("ListAdd test 3 passed\n");
@@ -60,7 +78,6 @@ int main(int argc, char* argv[]){
     
     /* Testing ListInsert */
     num_tests++;
-    char pizza[6];
     strncpy(pizza, "Pizza", 6);
     ListInsert(list2, pizza);
     if (list2->head->data == pizza){
@@ -71,7 +88,6 @@ int main(int argc, char* argv[]){
         printf("ListInsert test 1 failed \n");
     
     num_tests++;
-    char jones_soda[10];
     strncpy(jones_soda, "Dr. Jones", 10);
     ListInsert(list2, jones_soda);
     if (list2->curr->data == jones_soda){
@@ -82,7 +98,6 @@ int main(int argc, char* argv[]){
         printf("ListInsert test 2 failed \n");
     
     num_tests++;
-    char skittles[10];
     strncpy(skittles, "Skittles", 10);
     ListInsert(list2, skittles);
     if (list2->head->data == skittles) {
@@ -94,7 +109,7 @@ int main(int argc, char* argv[]){
     
     /* Testing for ListAppend */
     num_tests++;
-    float thing1 = -45.45;
+    thing1 = -45.45;
     ListAppend(list3, &thing1);
     if (list3->head->data == &thing1 && list3->tail->data == &thing1) {
         printf("ListAppend test 1 passed\n");
@@ -104,7 +119,7 @@ int main(int argc, char* argv[]){
         printf("ListAppend test 1 failed\n");
 
     num_tests++;
-    float thing2 = 3.9912;
+    thing2 = 3.9912;
     ListAppend(list3, &thing2);
     if (list3->curr->data == &thing2){
         printf("ListAppend test 2 passed\n");
@@ -114,7 +129,7 @@ int main(int argc, char* argv[]){
         printf("ListAppend test 2 failed\n");
 
     num_tests++;
-    float thing3 = 3.14159;
+    thing3 = 3.14159;
     ListAppend(list3, &thing3);
     if (list3->tail->data == &thing3){
         printf("ListAppend test 3 passed\n");
@@ -125,7 +140,7 @@ int main(int argc, char* argv[]){
 
     /* Testing for ListPrepend */
     num_tests++;
-    char c1 = 'd';
+    c1 = 'd';
     ListPrepend(list4, &c1);
     if(list4->head->data == &c1 && list4->tail->data == &c1) {
         printf("ListPrepend test 1 passed\n");
@@ -135,7 +150,7 @@ int main(int argc, char* argv[]){
         printf("ListPrepend test 1 failed\n");
 
     num_tests++;
-    char c2 = 'x';
+    c2 = 'x';
     ListPrepend(list4, &c2);
     if (list4->curr->data == &c2) {
         printf("ListPrepend test 2 passed\n");
@@ -145,7 +160,7 @@ int main(int argc, char* argv[]){
         printf("ListPrepend test 2 failed\n");
 
     num_tests++;
-    char c3 = 'z';
+    c3 = 'z';
     ListPrepend(list4, &c3);
     if (list4->head->data == &c3) {
         printf("ListPrepend test 3 passed\n");
@@ -155,10 +170,10 @@ int main(int argc, char* argv[]){
         printf("ListPrepend test 3 failed\n");
 
     /* Testing for ListConcat */
-    int i1 = 574;
-    int i2 = -90;
-    int i3 = 24248;
-    LIST* list5 = ListCreate();
+    i1 = 574;
+    i2 = -90;
+    i3 = 24248;
+    list5 = ListCreate();
 
     ListAppend(list5, &i1);
     ListAppend(list5, &i2);
@@ -209,8 +224,8 @@ int main(int argc, char* argv[]){
      * the computer, not a problem with our list implementation*
      */
     num_tests++;
-    int fails = 0;
-    for (size_t i = 0; i <= 60; ++i){
+    fails = 0;
+    for ( i = 0; i <= 60; ++i){
         if (ListCreate() == NULL){
             fails++;
         }
@@ -227,7 +242,7 @@ int main(int argc, char* argv[]){
     
     num_tests++;
     fails = 0;
-    for (size_t i = 0; i < 1000; ++i){
+    for ( i = 0; i < 1000; ++i){
         if (ListInsert(list1, NULL) == -1){
             fails++;
         }

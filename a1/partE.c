@@ -3,9 +3,12 @@
 * Derek Perrin      dmp450 11050915
 * Dominic McKeith   dom258 11184543
 */
+#define _POSIX_C_SOURCE 200112L   /* needed for strtok_r */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 #define INPUT_SIZE 32
 
@@ -24,13 +27,14 @@ char** parse_line(char* input_line){
     char** parsed_args;
     if (delim == NULL){
         perror("Failed to allocate memory for delimitor in parse_line");
-        return EXIT_FAILURE;
+        return NULL;
     }
     *delim = ' ';
     strtok_r(input_line, delim, parsed_args);
+    return NULL;
 }
 
-int main(int argc, char* argv[argc+1]){
+int main(int argc, char* argv[]){
     char input_line[INPUT_SIZE];
     char prompt[128];
     if (getcwd(prompt, 128) == NULL){

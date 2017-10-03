@@ -32,14 +32,15 @@ void incr_func(void){
 
 void child_exit(int sig) {
     struct timespec end_time;
+    int elapsed_time, my_pid;
     if (clock_gettime(CLOCK_MONOTONIC, &end_time) != 0) {
         error_exit("partA4.c: Could not get end time\n");
     }
     /* Measure the time difference since the process started and print it */
-    int elapsed_time = (int)(end_time.tv_sec - start_time.tv_sec)*1000 +
+    elapsed_time = (int)(end_time.tv_sec - start_time.tv_sec)*1000 +
         (int)(end_time.tv_nsec - start_time.tv_nsec)/1000000;
 
-    int my_pid = (int) getpid();
+    my_pid = (int) getpid();
     /* We shouldn't use printf because it's not synchronous. */
     printf("Process %d signalled to exit: No. of Square calls: %lu, Elapsed "
            "time: %d ms\n", my_pid, square_counts, elapsed_time);
@@ -48,6 +49,8 @@ void child_exit(int sig) {
 
 void child_func(int size){
     struct timespec end_time;
+    size_t i;
+    int elapsed_time, my_pid;
 
     /* Set up the sigaction struct to deal with signals */
     struct sigaction sa;
@@ -64,7 +67,7 @@ void child_func(int size){
         exit(1);
     }
 
-    for (size_t i = 1; i <= size; ++i){
+    for ( i = 1; i <= size; ++i){
         Square(i);
     }
     
@@ -72,11 +75,11 @@ void child_func(int size){
     if (clock_gettime(CLOCK_MONOTONIC, &end_time) != 0) {
         error_exit("partA4.c: Could not get end time\n");
     }
-    int elapsed_time = (int)(end_time.tv_sec - start_time.tv_sec)*1000 +
+    elapsed_time = (int)(end_time.tv_sec - start_time.tv_sec)*1000 +
         (int)(end_time.tv_nsec - start_time.tv_nsec)/1000000;
 
     /* print out the info we're supposed to print out */
-    int my_pid = (int) getpid();
+    my_pid = (int) getpid();
     printf("Process %d finished normally. No. of Square calls: %lu, Elapsed"
            " time: %d ms\n", my_pid, square_counts, elapsed_time);
     
@@ -84,11 +87,12 @@ void child_func(int size){
 }
 
 int timer(int deadline, int num_procs, pid_t* pids){    
+    size_t i;
     if (sleep(deadline) != 0){
         /* hopefully the parent has killed */
         return EXIT_SUCCESS;
     }
-    for (size_t i = 0; i < num_procs; ++i){
+    for ( i = 0; i < num_procs; ++i){
         if (kill(pids[i], SIGALRM) != 0) {
             perror("Failed to kill child process after timer expired");
             exit(1);
@@ -98,8 +102,11 @@ int timer(int deadline, int num_procs, pid_t* pids){
     return EXIT_SUCCESS;
 }
 
-int main(int argc, char* argv[argc+1]){
+int main(int argc, char* argv[]){
     int num_procs, deadline, size;
+    int* return_statuses;
+    size_t i;
+
     
     /* array of pids for child processes */
     pid_t* pids;            /* used for the child processes */
@@ -113,7 +120,7 @@ int main(int argc, char* argv[argc+1]){
     if ((pids = malloc(num_procs * sizeof(pid_t))) == NULL)
         error_exit("pids malloc error partA4.c\n");
 
-    size_t i = 0;
+    i = 0;
     do {
         pids[i] = fork();
     } while (pids[i] != 0 && pids[i] != -1 && ++i < num_procs);
@@ -134,7 +141,7 @@ int main(int argc, char* argv[argc+1]){
         exit(1);
     }
     
-    int* return_statuses = calloc(num_procs, sizeof(int));
+    return_statuses = calloc(num_procs, sizeof(int));
     
     if (return_statuses == NULL){
         error_exit("Failed to calloc array for return statuses\n");
@@ -142,7 +149,7 @@ int main(int argc, char* argv[argc+1]){
     
     /* wait for all the children processes to exit */
     /* less than or equal because +1 for the timer */
-    for (size_t i = 0; i < num_procs; ++i){
+    for ( i = 0; i < num_procs; ++i){
         if (waitpid(pids[i], &return_statuses[i], 0) == -1){
             perror("parent wait error");
             return EXIT_FAILURE;

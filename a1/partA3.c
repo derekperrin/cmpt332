@@ -21,7 +21,9 @@ int* completed_threads;
 
 /* Used to increment the square counter for each thread */
 void incr_func(void) {
-    int id = *(int*)(pthread_getspecific(key));
+    int id;
+
+    id = *(int*)(pthread_getspecific(key));
     square_count[id]++;
 }
 
@@ -32,9 +34,12 @@ void error_exit(char* error_message){
 
 void* thread_func(void* args) {
     struct timespec start_time, end_time;
+    int size, id, elapsed_time;
+    unsigned long my_pid;
+    size_t i;
     
-    int size = *(int*) args;
-    int id = *((int*)(args) + 1);
+    size = *(int*) args;
+    id = *((int*)(args) + 1);
     free(args);                 /* give memory back asap */
     pthread_setspecific(key, &id);
 
@@ -42,7 +47,7 @@ void* thread_func(void* args) {
         error_exit("partA3.c: Could not get start time\n");
     }
     
-    for (size_t i = 1; i <= size; ++i){
+    for ( i = 1; i <= size; ++i){
         Square(i);
     }
     
@@ -51,10 +56,10 @@ void* thread_func(void* args) {
     }
     
     /* Measure the time difference since the thread started and print it */
-    int elapsed_time = (int)(end_time.tv_sec - start_time.tv_sec)*1000 +
+    elapsed_time = (int)(end_time.tv_sec - start_time.tv_sec)*1000 +
         (int)(end_time.tv_nsec - start_time.tv_nsec)/1000000;
     
-    unsigned long my_pid = (unsigned long)pthread_self();
+    my_pid = (unsigned long)pthread_self();
 
     printf("Thread %lu: No. of Square calls: %d, Elapsed time: %d ms\n",
         my_pid, square_count[id], elapsed_time);
@@ -63,10 +68,12 @@ void* thread_func(void* args) {
     pthread_exit(0);
 }
 
-int main(int argc, char* argv[argc+1]){
+int main(int argc, char* argv[]){
     int error_code;
     int num_threads, deadline, size;
     int* args;
+    size_t i;
+    unsigned long thread_id;
 
     if (parse_args(&num_threads, &deadline, &size, argc, argv) != EXIT_SUCCESS){
         arg_error();
@@ -86,7 +93,7 @@ int main(int argc, char* argv[argc+1]){
     /* set up the thread specific data to store the id later on */
     pthread_key_create(&key, NULL);
 
-    for (size_t i = 0; i < num_threads; ++i) {
+    for ( i = 0; i < num_threads; ++i) {
         args = (int*)calloc(2, sizeof(int));
         if (args == NULL) 
             error_exit("calloc error args partA3.c\n");
@@ -110,11 +117,11 @@ int main(int argc, char* argv[argc+1]){
     /* ignore this comment */
     /* and this one below it */
 
-    for (size_t i = 0; i < num_threads; ++i) {
+    for ( i = 0; i < num_threads; ++i) {
         if (completed_threads[i])
             continue;
         if ((pthread_cancel(thread_array[i]) == 0)) {
-            unsigned long thread_id = (unsigned long)(thread_array[i]);
+            thread_id = (unsigned long)(thread_array[i]);
             printf("Thread %lu: No. of Square calls: %d, Elapsed time: %d ms\n",
                 thread_id, square_count[i], deadline * 1000);
         } else {
