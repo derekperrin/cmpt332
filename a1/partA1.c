@@ -19,22 +19,24 @@ DWORD dwTlsIndex; /* enable thread local storage */
 /* need CreateThread(), GetSystemTime(), Sleep() */
 
 DWORD WINAPI Thread_Main( LPVOID lpParam ) {
+    DWORD init_time;
+    size_t counter, size, i;
     /* Get time that thread starts executing
      * Avoid use of GetSystemTime() because Microsoft said so.
      */
-    DWORD init_time = GetTickCount();
+    init_time = GetTickCount();
     
     /* set a counter for counting Square() recursive calls */
-    size_t counter = 0;
+    counter = 0;
     
     /* Do the following to prevent overwrite and compiler errors
      * for attempting to dereference a LPVOID */
-    size_t size = *(size_t*)lpParam;
+    size = *(size_t*)lpParam;
     
     if(! TlsSetValue(dwTlsIndex, &counter))
         error_exit("TlsSetValue error in Thread_Main\n");
     
-    for (size_t i = 1; i <= size && keepRunning; ++i){
+    for ( i = 1; i <= size && keepRunning; ++i){
         Square(i);
     }
     
@@ -47,7 +49,8 @@ DWORD WINAPI Thread_Main( LPVOID lpParam ) {
 }
 
 void incr_func(){
-    size_t* counter = TlsGetValue(dwTlsIndex);
+    size_t* counter;
+    counter = TlsGetValue(dwTlsIndex);
     ++(*counter);
 }
 
@@ -60,9 +63,9 @@ VOID error_exit (LPSTR lpszMessage) {
 }
 
 int main(int argc, char* argv[]){
-
     HANDLE* thread_array;
     int num_threads, size, deadline;
+    size_t i;
 
     if ( parse_args(&num_threads, &deadline, &size, argc, argv) != 0 ) {
         arg_error();
@@ -93,7 +96,7 @@ int main(int argc, char* argv[]){
     
     /* create threads and stash them in thread array */
     printf("Creating threads\n");
-    for (size_t i = 0; i < num_threads; ++i){
+    for ( i = 0; i < num_threads; ++i){
         thread_array[i] = CreateThread(
                 NULL,          /* security attributes */
                 2<<22,         /* Stack size that accommodates size=200000 */
