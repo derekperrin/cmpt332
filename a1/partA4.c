@@ -89,7 +89,10 @@ int timer(int deadline, int num_procs, pid_t* pids){
         return EXIT_SUCCESS;
     }
     for (size_t i = 0; i < num_procs; ++i){
-        kill(pids[i], SIGALRM);
+        if (kill(pids[i], SIGALRM) != 0) {
+            perror("Failed to kill child process after timer expired");
+            exit(1);
+        }
     }
     
     return EXIT_SUCCESS;
@@ -99,8 +102,8 @@ int main(int argc, char* argv[argc+1]){
     int num_procs, deadline, size;
     
     /* array of pids for child processes */
-    pid_t* pids;
-    pid_t pid;        /* used for the timer */
+    pid_t* pids;            /* used for the child processes */
+    pid_t timer_pid;        /* used for the timer */
     
     if (parse_args(&num_procs, &deadline, &size, argc, argv) != EXIT_SUCCESS){
         arg_error();
@@ -113,28 +116,47 @@ int main(int argc, char* argv[argc+1]){
     size_t i = 0;
     do {
         pids[i] = fork();
-    } while (pids[i] != 0 && ++i < num_procs);
+    } while (pids[i] != 0 && pids[i] != -1 && ++i < num_procs);
     /* TODO: Consider changing parent's priority */
     if (pids[i] == 0){
         child_func(size);
+        /* child will never get past here */
+    } else if (pids[i] == -1){
+        perror("Failed to fork off child process");
     }
     
     /* create the timer process */
-    pid = fork();
-    if (pid == 0)
+    timer_pid = fork();
+    if (timer_pid == 0)
         return timer(deadline, num_procs, pids);
+    else if (timer_pid == -1){
+        perror("Failed to fork timer process");
+        exit(1);
+    }
+    
+    int* return_statuses = calloc(num_procs, sizeof(int));
+    
+    if (return_statuses == NULL){
+        error_exit("Failed to calloc array for return statuses\n");
+    }
     
     /* wait for all the children processes to exit */
     /* less than or equal because +1 for the timer */
-    for (size_t i = 0; i <= num_procs; ++i){
-        if (waitpid(-1, NULL, 0) == -1){
-            printf("Parent wait error\n");
+    for (size_t i = 0; i < num_procs; ++i){
+        if (waitpid(pids[i], &return_statuses[i], 0) == -1){
+            perror("parent wait error");
             return EXIT_FAILURE;
         }
+        if (return_statuses[i] == 1)
+            printf("Return status error\n");
         if (i == num_procs - 1){
-            kill(pid, SIGKILL);
+            if (kill(timer_pid, SIGKILL) != 0) {
+                perror("Failed to kill timer process");
+                exit(1);
+            }
         }
     }
+    
     
     
     return EXIT_SUCCESS;
