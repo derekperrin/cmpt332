@@ -34,7 +34,7 @@ void child_main(int* n) {
     
     run_time = (Time() - start_time)*10;   /* 10 is for us to ms */
     printf("Thread %d: No. of Square calls: %lu, Elapsed time: %lu ms\n",
-        my_pid, square_counts[my_pid - 2], run_time);
+            my_pid, square_counts[my_pid - 2], run_time);
     Pexit();
 }
 

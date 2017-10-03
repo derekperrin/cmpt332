@@ -9,62 +9,88 @@
 #include "list.h"
 
 int ListCount(LIST* list){
-    printf("Got to procedure ListCount\n");
-    if (list == NULL) 
-        printf("Error in procedure ListCount: Invalid parameter list\n");
-    return 0;
+    if (list == NULL) {
+        fprintf(stderr, "list is NULL\n");
+        return EXIT_FAILURE;
+    }
+    return list->size;
 }
 
 void* ListFirst(LIST* list){
-    printf("Got to procedure ListFirst\n");
-    if (list == NULL) 
-        printf("Error in procedure ListFirst: Invalid parameter list\n");
-    return NULL;
+    if (list == NULL) {
+        fprintf(stderr, "list is NULL\n");
+        return NULL;
+    }
+    list->curr = list->head;
+    return list->head->data;
 }
 
 void* ListLast(LIST* list){
-    printf("Got to procedure ListLast\n");
-    if (list == NULL) 
-        printf("Error in procedure ListLast: Invalid parameter list\n");
-    return NULL;
+    if (list == NULL) {
+        fprintf(stderr, "list is NULL\n");
+        return NULL;
+    }
+    list->curr = list->tail;
+    return list->tail->data;
 }
 
 void* ListNext(LIST* list){
-    printf("Got to procedure ListNext\n");
-    if (list == NULL) 
-        printf("Error in procedure ListNext: Invalid parameter list\n");
-    return NULL;
+    if (list == NULL) {
+        fprintf(stderr, "list is NULL\n");
+        return NULL;
+    } else if ( list->curr == NULL ) {
+        return NULL;
+    } else if (list->curr->next == NULL) {
+        return NULL;
+    }
+    list->curr = list->curr->next;
+    return list->curr->data;
 }
 
 void* ListPrev(LIST* list){
-    printf("Got to procedure ListPrev\n");
-    if (list == NULL) 
-        printf("Error in procedure ListPrev: Invalid parameter list\n");
-    return NULL;
+    if (list == NULL) {
+        fprintf(stderr, "list is NULL\n");
+        return NULL;
+    } else if ( list->curr == NULL ){
+        return NULL;
+    } else if ( list->curr->prev == NULL ){
+        return NULL;
+    }
+    list->curr = list->curr->prev;
+    return list->curr->data;
 }
 
 void* ListCurr(LIST* list){
-    printf("Got to procedure ListCurr\n");
-    if (list == NULL) 
-        printf("Error in procedure ListCurr: Invalid parameter list\n");
-    return NULL;
+    if (list == NULL) {
+        fprintf(stderr, "list is NULL\n");
+        return NULL;
+    } if (list->curr == NULL) {
+        return NULL;
+    }
+    return list->curr->data;
 }
 
 void* ListSearch(LIST* list, int (* comparator)(void* item1, void* item2),
         void* comparisonArg){
-    printf("Got to procedure ListSearch\n");
-    if (list == NULL){
-        printf("Error in procedure ListSearch: Invalid parameter list\n");
+    if (list == NULL) {
+        fprintf(stderr, "list is NULL\n");
         return NULL;
     }
     else if (comparator == NULL){
-        printf("Error in procedure ListSearch: Invalid parameter comparator\n");
+        fprintf(stderr, "list comparator is NULL\n");
         return NULL;
     }
     else if (comparisonArg == NULL){
-        printf("Error in procedure ListSearch: "
-                "Invalid parameter comparisonArg\n");
+        fprintf(stderr, "list comparisonArg is NULL\n");
+        return NULL;
+    } else if (list->curr == NULL) {
         return NULL;
     }
-    return NULL;
+    while (comparator(comparisonArg, list->curr->data) != 1){
+        if (list->curr == list->tail)
+            return NULL;
+        list->curr = list->curr->next;
+    }
+    return list->curr->data;
+    
 }
