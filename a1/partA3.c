@@ -124,8 +124,10 @@ int main(int argc, char* argv[argc+1]){
 
     /* free all memory */
     /* nevermind, not necessary according to blackboard. OS takes care of it */
+
     /*
     pthread_key_delete(key);
+    free(completed_threads);
     free(square_count);
     free(thread_array);
     */
