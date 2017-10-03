@@ -48,7 +48,8 @@ endif
 
 all: $(TARGET)
 
-EXE += partA1.exe partA2 partA3 partA4
+# this is used solely for cleaning
+EXE += partA1.exe partA2 partA3 partA4 partE
 
 # compile part A
 partA1: partA1.o windows-common.o
@@ -65,6 +66,9 @@ partA2.o: partA2.c
 
 # compile part C
 partC: mytestlist liblist.a
+
+# compile part E
+partE: partE.o
 
 # compiles mytestlist; temp sets LDFLAGS and LDLIBS to link liblist.a 
 mytestlist: LDFLAGS=-L.
@@ -90,7 +94,7 @@ liblist.a: liblist.a(list_adders.o list_movers.o list_removers.o list_alloc.o)
 
 windows: partA1
 
-unix: partA2 partA3 partA4 partC
+unix: partA2 partA3 partA4 partC partE
 
 clean:
 	$(RM) -rf $(EXE) *.o *.a
