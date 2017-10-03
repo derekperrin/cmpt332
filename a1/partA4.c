@@ -35,14 +35,14 @@ void child_exit(int sig) {
     if (clock_gettime(CLOCK_MONOTONIC, &end_time) != 0) {
         error_exit("partA4.c: Could not get end time\n");
     }
-    /* Measure the time difference since the thread started and print it */
+    /* Measure the time difference since the process started and print it */
     int elapsed_time = (int)(end_time.tv_sec - start_time.tv_sec)*1000 +
         (int)(end_time.tv_nsec - start_time.tv_nsec)/1000000;
 
     int my_pid = (int) getpid();
     /* We shouldn't use printf because it's not synchronous. */
-    printf("Thread %d: No. of Square calls: %lu, Elapsed time: %d ms\n",
-            my_pid, square_counts, elapsed_time);
+    printf("Process %d signalled to exit: No. of Square calls: %lu, Elapsed "
+           "time: %d ms\n", my_pid, square_counts, elapsed_time);
     exit(1);
 }
 
@@ -68,7 +68,7 @@ void child_func(int size){
         Square(i);
     }
     
-    /* Measure the time difference since the thread started and print it */
+    /* Measure the time difference since the process started and print it */
     if (clock_gettime(CLOCK_MONOTONIC, &end_time) != 0) {
         error_exit("partA4.c: Could not get end time\n");
     }
@@ -77,15 +77,13 @@ void child_func(int size){
 
     /* print out the info we're supposed to print out */
     int my_pid = (int) getpid();
-    printf("Thread %d: No. of Square calls: %lu, Elapsed time: %d ms\n",
-            my_pid, square_counts, elapsed_time);
+    printf("Process %d finished normally. No. of Square calls: %lu, Elapsed"
+           " time: %d ms\n", my_pid, square_counts, elapsed_time);
     
     exit(0);
 }
 
-int timer(int deadline, int num_procs, pid_t* pids){
-    printf("I am the timer!!\n");
-    
+int timer(int deadline, int num_procs, pid_t* pids){    
     if (sleep(deadline) != 0){
         /* hopefully the parent has killed */
         return EXIT_SUCCESS;
@@ -128,11 +126,16 @@ int main(int argc, char* argv[argc+1]){
     
     /* wait for all the children processes to exit */
     /* less than or equal because +1 for the timer */
-    for (size_t i = 0; i <= num_procs; ++i)
+    for (size_t i = 0; i <= num_procs; ++i){
         if (waitpid(-1, NULL, 0) == -1){
             printf("Parent wait error\n");
             return EXIT_FAILURE;
+        }
+        if (i == num_procs - 1){
+            kill(pid, SIGKILL);
+        }
     }
+    
     
     return EXIT_SUCCESS;
 }
