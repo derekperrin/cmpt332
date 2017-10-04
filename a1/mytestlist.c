@@ -10,7 +10,9 @@
 
 #include "list.h"
 
-int main(int argc, char* argv[]){
+/* Tests for list adders */
+/* @param results: integer pointer used to store test results */
+void test_adders(int* results) {
     int num_tests, tests_passed, fails;
     int item1, item2, item3;
     int i1, i2, i3;
@@ -38,136 +40,159 @@ int main(int argc, char* argv[]){
     list3 = ListCreate();
     list4 = ListCreate();
     num_tests++;
+
+    printf("ListCreate test 1: Attempting to create 4 lists\n");
     if (list1 != NULL || list2 != NULL || list3 != NULL || list4 != NULL){
         printf("ListCreate test passed\n");
         tests_passed++;
     }
     else
-        printf("ListCreate failed to create one or more lists\n");
+        printf("ListCreate FAILED to create one or more lists\n");
     
     /* testing ListAdd */
+    printf("ListAdd test 1: attempting to add to an empty list\n");
     num_tests++;
     item1 = 7;
     ListAdd(list1, &item1);
-    if (list1->head->data == &item1 && list1->curr->data == &item1){
+    if (ListFirst(list1) == &item1 && ListCurr(list1) == &item1){
         printf("ListAdd test 1 passed\n");
         tests_passed++;
     }
     else
-        printf("ListAdd test 1 failed\n");
+        printf("ListAdd test 1 FAILED\n");
     
+    printf("ListAdd test 2: attempting to add to a list of size 1\n");
     num_tests++;
     item2 = 5;
     ListAdd(list1, &item2);
-    if (list1->head->next->data == &item2){
+    if (ListCurr(list1) == &item2 && ListLast(list1) == &item2){
         printf("ListAdd test 2 passed\n");
         tests_passed++;
     }
     else
-        printf("ListAdd test 2 failed\n");
+        printf("ListAdd test 2 FAILED\n");
     
+    printf("ListAdd test 3: attempting to add to a list of size 2\n");
     num_tests++;
     item3 = 98;
     ListAdd(list1, &item3);
-    if (list1->curr->data == &item3){
+    if (ListCurr(list1) == &item3 && ListPrev(list1) == &item2){
         printf("ListAdd test 3 passed\n");
         tests_passed++;
     }
     else
-        printf("ListAdd test 3 failed\n");
+        printf("ListAdd test 3 FAILED\n");
     
     /* Testing ListInsert */
+    printf("ListInsert test 1: attempting to add to an empty list\n");
     num_tests++;
     strncpy(pizza, "Pizza", 6);
     ListInsert(list2, pizza);
-    if (list2->head->data == pizza){
+    if (ListCurr(list2) == pizza && ListFirst(list2) == pizza){
         printf("ListInsert test 1 passed \n");
         tests_passed++;
     }
     else
-        printf("ListInsert test 1 failed \n");
+        printf("ListInsert test 1 FAILED \n");
     
+    printf("ListInsert test 2: attempting to add to a list of size 1\n");
     num_tests++;
     strncpy(jones_soda, "Dr. Jones", 10);
     ListInsert(list2, jones_soda);
-    if (list2->curr->data == jones_soda){
+    if (ListFirst(list2) == jones_soda && ListCurr(list2) == jones_soda){
         printf("ListInsert test 2 passed \n");
         tests_passed++;
     }
     else
-        printf("ListInsert test 2 failed \n");
+        printf("ListInsert test 2 FAILED \n");
     
+    printf("ListInsert test 3: attempting to insert in middle  of "
+            "a list of size 2\n");
     num_tests++;
     strncpy(skittles, "Skittles", 10);
+    ListNext(list2);
     ListInsert(list2, skittles);
-    if (list2->head->data == skittles) {
+    if (ListCurr(list2) == skittles
+            && ListPrev(list2) == jones_soda) {
         printf("ListInsert test 3 passed \n");
         tests_passed++;
     }
     else
-        printf("ListInsert test 3 failed \n");
+        printf("ListInsert test 3 FAILED \n");
     
     /* Testing for ListAppend */
+    printf("ListAppend test 1: attempting to append to an empty list.\n");
     num_tests++;
     thing1 = -45.45;
     ListAppend(list3, &thing1);
-    if (list3->head->data == &thing1 && list3->tail->data == &thing1) {
+    if (ListFirst(list3) == &thing1 && ListLast(list3) == &thing1) {
         printf("ListAppend test 1 passed\n");
         tests_passed++;
     }
     else
-        printf("ListAppend test 1 failed\n");
+        printf("ListAppend test 1 FAILED\n");
 
+    printf("ListAppend test 2: attempting to append to a list of size 1.\n");
     num_tests++;
     thing2 = 3.9912;
     ListAppend(list3, &thing2);
-    if (list3->curr->data == &thing2){
+    if (ListCurr(list3) == &thing2 && ListPrev(list3) == &thing1){
         printf("ListAppend test 2 passed\n");
         tests_passed++;
     }
     else
-        printf("ListAppend test 2 failed\n");
+        printf("ListAppend test 2 FAILED\n");
 
+    printf("ListAppend test 3: attempting to append to a list of size 2.\n");
     num_tests++;
     thing3 = 3.14159;
     ListAppend(list3, &thing3);
-    if (list3->tail->data == &thing3){
+    if (ListLast(list3) == &thing3
+            && ListFirst(list3) == &thing1
+            && ListNext(list3) == &thing2){
         printf("ListAppend test 3 passed\n");
         tests_passed++;
     }
     else
-        printf("ListAppend test 3 failed\n");
+        printf("ListAppend test 3 FAILED\n");
 
     /* Testing for ListPrepend */
+    printf("ListPrepend test 1: attempting to prepend to an empty list.\n");
     num_tests++;
     c1 = 'd';
     ListPrepend(list4, &c1);
-    if(list4->head->data == &c1 && list4->tail->data == &c1) {
+    if(ListFirst(list4) == &c1
+            && ListCurr(list4) == &c1
+            && ListLast(list4) == &c1) {
         printf("ListPrepend test 1 passed\n");
         tests_passed++;
     }
     else
-        printf("ListPrepend test 1 failed\n");
+        printf("ListPrepend test 1 FAILED\n");
 
+    printf("ListPrepend test 2: attempting to prepend to a list of size 1.\n");
     num_tests++;
     c2 = 'x';
     ListPrepend(list4, &c2);
-    if (list4->curr->data == &c2) {
+    if (ListCurr(list4) == &c2 && ListFirst(list4) == &c2) {
         printf("ListPrepend test 2 passed\n");
         tests_passed++;
     }
     else
-        printf("ListPrepend test 2 failed\n");
+        printf("ListPrepend test 2 FAILED\n");
 
+    printf("ListPrepend test 3: attempting to prepend to a list of size 2.\n");
     num_tests++;
     c3 = 'z';
     ListPrepend(list4, &c3);
-    if (list4->head->data == &c3) {
+    if (ListFirst(list4) == &c3
+            && ListNext(list4) == &c2
+            && ListLast(list4) == &c1) {
         printf("ListPrepend test 3 passed\n");
         tests_passed++;
     }
     else
-        printf("ListPrepend test 3 failed\n");
+        printf("ListPrepend test 3 FAILED\n");
 
     /* Testing for ListConcat */
     i1 = 574;
@@ -181,40 +206,44 @@ int main(int argc, char* argv[]){
     /* list5: i1 -> i2 -> i3 */
     /* list1: item1 -> item2 -> item3 */
 
+    printf("ListConcat test 1: concat new (int)list5 to (int)list1\n");
     num_tests++;
     ListConcat(list1, list5);
-    if (list1->head->data == &item1 &&
-            list1->head->next->data == &item2 &&
-            list1->head->next->next->data == &item3 &&
-            list1->head->next->next->next->data == &i1 &&
-            list1->head->next->next->next->next->data == &i2 &&
-            list1->tail->data == &i3) {
+    if (ListFirst(list1) == &item1 &&
+            ListNext(list1) == &item2 &&
+            ListNext(list1) == &item3 &&
+            ListNext(list1) == &i1 &&
+            ListNext(list1) == &i2 &&
+            ListLast(list1) == &i3) {
         printf("ListConcat test 1 passed\n");
         tests_passed++;
     }
     else
-        printf("ListConcat test 1 failed\n");
+        printf("ListConcat test 1 FAILED\n");
 
+    printf("ListConcat test 2: check prev and next ptrs on head and tail\n");
     num_tests++;
-    if (list1->head->prev == NULL &&
-            list1->tail->next == NULL) {
-        printf("ListConcat test 2 passed\n");
-        tests_passed++;
-    }
-    else
-        printf("ListConcat test 2 failed\n");
+    if (ListNext(list1) == NULL) {
+        ListFirst(list1);
+        if (ListPrev(list1) == NULL) {
+            printf("ListConcat test 2 passed\n");
+            tests_passed++;
+        }
+    } else
+        printf("ListConcat test 2 FAILED\n");
 
+    printf("ListConcat test 3: check list structure going backwards\n");
     num_tests++;
-    if (list1->tail->data == &i3 &&
-            list1->tail->prev->data == &i2 &&
-            list1->tail->prev->prev->data == &i1 &&
-            list1->tail->prev->prev->prev->data == &item3 &&
-            list1->tail->prev->prev->prev->prev->data == &item2 &&
-            list1->tail->prev->prev->prev->prev->prev->data == &item1) {
+    if (ListLast(list1) == &i3 &&
+            ListPrev(list1) == &i2 &&
+            ListPrev(list1) == &i1 &&
+            ListPrev(list1) == &item3 &&
+            ListPrev(list1) == &item2 &&
+            ListPrev(list1) == &item1) {
         printf("ListConcat test 3 passed\n");
         tests_passed++;
     } else {
-        printf("ListConcat test 3 failed\n");
+        printf("ListConcat test 3 FAILED\n");
     }
     
     /* testing list memory growth */
@@ -223,6 +252,7 @@ int main(int argc, char* argv[]){
      * If it fails, it's because there is not enough memory on
      * the computer, not a problem with our list implementation*
      */
+    printf("Test list growing. MIN_LISTS: %d\n", MIN_LISTS); 
     num_tests++;
     fails = 0;
     for ( i = 0; i <= 60; ++i){
@@ -231,7 +261,7 @@ int main(int argc, char* argv[]){
         }
     }
     if (fails != 0)
-        printf("Creation of %d/60 list failed because there is not enough "
+        printf("Creation of %d/60 list FAILED because there is not enough "
                 "memory on your computer.\n", fails);
     else
         printf("Creation of 60 lists passed!\n");
@@ -240,6 +270,7 @@ int main(int argc, char* argv[]){
     memory, not because our program doesn't work.*/
     
     
+    printf("Test node growing. MIN_NODES: %d\n", MIN_NODES); 
     num_tests++;
     fails = 0;
     for ( i = 0; i < 1000; ++i){
@@ -248,7 +279,7 @@ int main(int argc, char* argv[]){
         }
     }
     if (fails != 0)
-        printf("Creation of %d/1000 nodes failed because there is not enough "
+        printf("Creation of %d/1000 nodes FAILED because there is not enough "
                 "memory on your computer.\n", fails);
     else
         printf("Creation of 1000 nodes passed!\n");
@@ -256,11 +287,20 @@ int main(int argc, char* argv[]){
     If nodes fail to be created, it's because the computer doesn't have enough
     memory, not because our program doesn't work.*/
     
+    results[0] = num_tests;
+    results[1] = tests_passed;
+    results[2] = fails;
+}
+
+int main(int argc, char* argv[]){
+    int la_results[3];
+    test_adders(la_results);
+
     /****** FINAL OUTPUT ******/
-    if (tests_passed == num_tests) {
-        printf("All %d tests passed!\n", num_tests);
+    if (la_results[1] == la_results[0]) {
+        printf("All %d tests passed!\n", la_results[0]);
     } else {
-        printf("Only %d/%d tests passed :(\n", tests_passed, num_tests);
+        printf("Only %d/%d tests passed :(\n",la_results[1], la_results[0] );
     }
 
 
