@@ -16,29 +16,86 @@ void* ListRemove(LIST* list){
     if (list == NULL) {
         fprintf(stderr, "list is NULL\n");
         return NULL;
+    } else if ( list->curr == NULL) {
+        fprintf(stderr, "list->curr is NULL\n");
+        return NULL;
     }
     node_to_remove = list->curr;
+
+    /* 4 scenarios:
+     * 1) list only has 1 node
+     * 2) curr is at tail
+     * 3) curr is at head
+     * 4) everything else
+     */
+
+    if (list->size == 1) {
+        list->curr = NULL;
+        list->head = NULL;
+        list->tail = NULL;
+    } else if ( list->curr == list->tail) {
+        node_to_remove->prev->next = NULL;
+        list->curr = list->curr->prev;
+        list->tail = list->curr;
+    } else if ( list->curr == list->head) {
+        node_to_remove->next->prev = NULL;
+        list->curr = list->curr->next;
+        list->head = list->curr;
+    } else {
+        node_to_remove->prev->next = node_to_remove->next;
+        node_to_remove->next->prev = node_to_remove->prev;
+        list->curr = list->curr->next;
+    }
     
-    list->curr->prev->next = list->curr->next;
-    
+    list->size--;
     release_node(node_to_remove);   /* method inside our list_alloc lib */
     return node_to_remove->data;
 }
 
 void ListFree(LIST* list, void (* itemFree)(void* itemToBeFreed)){
-    printf("Got to procedure ListFree\n");
-    if (list == NULL){
-        printf("Error in procedure ListFree: Invalid parameter list\n");
-    } else if (itemFree == NULL) {
-        printf("Error in procedure ListFree: Invalid parameter itemFree\n");
+    NODE* temp_node;
+    if (list == NULL) {
+        fprintf(stderr, "list is NULL\n");
+        return;
     }
+    list->curr = list->head;
+    for(;;){
+        if (list->curr == NULL)
+            break;
+        temp_node = list->curr;
+        itemFree(list->curr->data);
+        list->curr = list->curr->next;
+        release_node(temp_node);
+    }
+    release_list(list);
 }
 
 void* ListTrim(LIST* list){
-    printf("Got to procedure ListTrim\n");
-    if (list == NULL){
-        printf("Error in procedure ListTrim: Invalid parameter list\n");
+    NODE* node_to_remove;
+    if (list == NULL) {
+        fprintf(stderr, "list is NULL\n");
         return NULL;
     }
-    return NULL;
+
+    /* 3 cases to consider:
+     * 1) list is empty. Return NULL.
+     * 2) list only has 1 element. Nullify everything.
+     * 3) general case
+     */
+    if (list->size == 0) {
+        return NULL;
+    } else if (list->size == 1) {
+        node_to_remove = list->tail;
+        list->curr = NULL;
+        list->tail = NULL;
+        list->head = NULL;
+    } else {
+        node_to_remove = list->tail;
+        node_to_remove->prev->next = NULL;
+        list->tail = node_to_remove->prev;
+        list->curr = list->tail;
+    }
+    list->size--;
+    release_node(node_to_remove);
+    return(node_to_remove->data);
 }

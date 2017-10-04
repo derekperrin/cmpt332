@@ -119,8 +119,6 @@ void release_node(NODE* node) {
 }
 
 void release_list(LIST* list) {
-    list->head = NULL;
-
     list->next_free = curr_free_list;
     curr_free_list = list;
 }

@@ -140,7 +140,7 @@ int main(int argc, char* argv[]){
         perror("Failed to fork timer process");
         exit(1);
     }
-    
+
     return_statuses = calloc(num_procs, sizeof(int));
     
     if (return_statuses == NULL){

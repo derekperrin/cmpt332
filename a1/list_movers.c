@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "list.h"
 
 int ListCount(LIST* list){
@@ -21,6 +22,8 @@ void* ListFirst(LIST* list){
         fprintf(stderr, "list is NULL\n");
         return NULL;
     }
+    if (list->size == 0)
+        return NULL;
     list->curr = list->head;
     return list->head->data;
 }
@@ -30,6 +33,8 @@ void* ListLast(LIST* list){
         fprintf(stderr, "list is NULL\n");
         return NULL;
     }
+    if (list->size == 0)
+        return NULL;
     list->curr = list->tail;
     return list->tail->data;
 }
@@ -76,11 +81,12 @@ void* ListSearch(LIST* list, int (* comparator)(void* item1, void* item2),
         fprintf(stderr, "list is NULL\n");
         return NULL;
     }
-    else if (comparator == NULL){
+    else if (list->size == 0) {
+        return NULL;
+    } else if (comparator == NULL){
         fprintf(stderr, "list comparator is NULL\n");
         return NULL;
-    }
-    else if (comparisonArg == NULL){
+    } else if (comparisonArg == NULL){
         fprintf(stderr, "list comparisonArg is NULL\n");
         return NULL;
     } else if (list->curr == NULL) {
@@ -92,5 +98,4 @@ void* ListSearch(LIST* list, int (* comparator)(void* item1, void* item2),
         list->curr = list->curr->next;
     }
     return list->curr->data;
-    
 }
