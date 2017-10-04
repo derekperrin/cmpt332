@@ -10,6 +10,242 @@
 
 #include "list.h"
 
+/* Used for testing ListSearch */
+int listComp1(void* item1, void* item2) {
+    if (*(int*)item1 == *(int*)item2)
+        return 1;
+    return 0;
+}
+
+/* Used for testing ListSearch 
+ * checks if item1 divides item2.
+ */
+int listComp2(void* item1, void* item2) {
+    if (*(int*)item2 == 0) {
+        /* division by zero error */
+        return 0;
+    }
+    if ((*(int*)item2 % *(int*)item1) == 0) {
+        return 1;
+    }
+    return 0;
+}
+
+
+/* Tests for list_movers */
+/* @param results: integer pointer used to store test results */
+void test_movers(int* results) {
+    int num_tests, tests_passed, fails;
+    LIST* list1;
+    LIST* list2;
+    LIST* list3;
+    LIST* list4;
+
+    int item1, item2, item3;
+    int i1, i2, i3, i4, i5, i6;
+
+    num_tests = 0;
+    tests_passed = 0;
+
+    list1 = ListCreate();
+    list2 = ListCreate();
+    list3 = ListCreate();
+    list4 = ListCreate();
+
+    printf("Beginning list_movers tests\n");
+
+    /* Testing ListCount */
+    num_tests++;
+    printf("ListCount test 1: checking size of empty list\n");
+    if (ListCount(list1) == 0) {
+        printf("ListCount test 1 passed\n");
+        tests_passed++;
+    } else
+        printf("ListCount test 1 FAILED\n");
+
+    num_tests++;
+    printf("ListCount test 2: checking size of list with size 1.\n");
+    item1 = 17;
+    ListAdd(list1, &item1);
+    if (ListCount(list1) == 1) {
+        printf("ListSize test 2 passed\n");
+        tests_passed++;
+    } else
+        printf("ListSize test 2 FAILED\n");
+
+    /* Testing ListFirst */
+    printf("ListFirst test 1: checking empty list\n");
+    num_tests++;
+    if (ListFirst(list2) == NULL) {
+        printf("ListFirst test 1 passed\n");
+        tests_passed++;
+    } else
+        printf("ListFirst test 1 FAILED\n");
+
+    printf("ListFirst test 2: checking with list of size 1\n");
+    num_tests++;
+    ListAdd(list2, &item1);
+    if (ListFirst(list2) == &item1) {
+        printf("ListFirst test 2 passed\n");
+        tests_passed++;
+    } else
+        printf("ListFirst test 2 FAILED\n");
+
+    printf("ListFirst test 3: checking with list of size 2\n");
+    num_tests++;
+    item2 = 3020;
+    ListInsert(list2, &item2);
+    if (ListFirst(list2) == &item2) {
+        printf("ListFirst test 3 passed\n");
+        tests_passed++;
+    } else
+        printf("ListFirst test 3 FAILED\n");
+
+    ListRemove(list2);
+    ListRemove(list2);
+
+    printf("ListLast  test 1: checking with list of size 0\n");
+    num_tests++;
+    if (ListLast(list2) == NULL) {
+        printf("ListLast test 1 passed\n");
+        tests_passed++;
+    } else
+        printf("ListLast test 1 FAILED\n");
+
+    printf("ListLast test 2: checking with list of size 1\n");
+    num_tests++;
+    ListAdd(list2, &item2);
+    if (ListLast(list2) == &item2) {
+        printf("ListLast test 2 passed\n");
+        tests_passed++;
+    } else 
+        printf("ListLast test 2 FAILED\n");
+
+    printf("ListLast test 3: checking with list of size 2."
+            " Also checking position of list->curr\n");
+    num_tests++;
+    item3 = 32143;
+    ListAdd(list2, &item3);
+    if (ListLast(list2) == &item3
+        && ListCurr(list2) == &item3) {
+        printf("ListLast test 3 passed\n");
+        tests_passed++;
+    } else
+        printf("ListLast test 3 FAILED\n");
+
+    /* list2 = item2 -> item3 -> item1 */
+    ListAppend(list2, &item1);
+    ListFirst(list2);
+    printf("ListNext test 1: checking at the head of size 3 list\n");
+    num_tests++;
+    if (ListNext(list2) == &item3
+            && ListNext(list2) == &item1
+            && ListNext(list2) == NULL){
+        printf("ListNext test 1 passed\n");
+        tests_passed++;
+    } else
+        printf("ListNext test 1 FAILED\n");
+
+    /* traverse backwards to HEAD and attempt to go back one more */
+    printf("ListPrev test 1: checking at the tail of size 3 list\n");
+    num_tests++;
+    if (ListPrev(list2) == &item3
+            && ListPrev(list2) == &item2
+            && ListPrev(list2) == NULL) {
+        printf("ListPrev test 1 passed\n");
+        tests_passed++;
+    } else
+        printf("ListPrev test 1 FAILED\n");
+
+    printf("ListCurr test1: checking ListCurr on an empty list\n");
+    num_tests++;
+    if (ListCurr(list3) == NULL) {
+        printf("ListCurr test 1 passed\n");
+        tests_passed++;
+    } else
+        printf("ListCurr test 1 FAILED\n");
+
+    printf("ListCurr test2: checking ListCurr on the generic case\n");
+    num_tests++;
+    ListAdd(list3, &item2);
+    if (ListCurr(list3) == &item2) {
+        printf("ListCurr test 2 passed\n");
+        tests_passed++;
+    } else
+        printf("ListCurr test 2 FAILED\n");
+
+    /* last test on ListSearch...this one will suck */
+    i1 = 7;
+    i2 = 5;
+    i3 = 25;
+    i4 = 16;
+    i5 = 73;
+    i6 = 5;
+
+    ListAdd(list4, &i1);
+    ListAdd(list4, &i2);
+    ListAdd(list4, &i3);
+    ListAdd(list4, &i4);
+    ListAdd(list4, &i5);
+    ListAdd(list4, &i6);
+
+    ListFirst(list4);
+    printf("ListSearch test1: test equality of integers\n");
+    num_tests++;
+    if (ListSearch(list4, listComp1, &i5) == &i5){
+        printf("ListSearch test1 passed\n");
+        tests_passed++;
+    } else
+        printf("ListSearch test1 FAILED\n");
+
+    ListNext(list4);
+    printf("ListSearch test2: test equality, but fail and reach end of list\n");
+    num_tests++;
+    if (ListSearch(list4, listComp1, &i5) == ListLast(list4)) {
+        printf("ListSearch test 2 passed\n");
+        tests_passed++;
+    } else
+        printf("ListSearch test 2 FAILED\n");
+
+    ListFirst(list4);
+    printf("ListSearch test 3: test divisibility of integers\n");
+    num_tests++;
+    if (ListSearch(list4, listComp2, &i2) == &i2) {
+        printf("ListSearch test 3 passed\n");
+        tests_passed++;
+    } else
+        printf("ListSearch test 3 FAILED\n");
+
+    ListNext(list4);
+    printf("ListSearch test 4: test divisibility with different integers\n");
+    num_tests++;
+    if (ListSearch(list4, listComp2, &i2) == &i3) {
+        printf("ListSearch test 4 passed\n");
+        tests_passed++;
+    } else
+        printf("ListSearch test 4 FAILED\n");
+
+    printf("ListSearch test 5: test divisiblity but fail\n");
+    num_tests++;
+    if (ListSearch(list4, listComp2, &i1) == ListLast(list4)) {
+        printf("ListSearch test 5 passed\n");
+        tests_passed++;
+    } else
+        printf("ListSearch test 5 FAILED\n");
+
+
+    
+
+
+
+
+    printf("\n\n\n");
+
+    results[0] = num_tests;
+    results[1] = tests_passed;
+    results[2] = fails;
+}
+
 /* Tests for list adders */
 /* @param results: integer pointer used to store test results */
 void test_adders(int* results) {
@@ -34,6 +270,8 @@ void test_adders(int* results) {
 
     num_tests = 0;
     tests_passed = 0;
+
+    printf("Beginning list_adders tests\n");
     
     list1 = ListCreate();
     list2 = ListCreate();
@@ -286,6 +524,8 @@ void test_adders(int* results) {
     tests_passed++; /*this test always passes whether nodes are created or not.
     If nodes fail to be created, it's because the computer doesn't have enough
     memory, not because our program doesn't work.*/
+
+    printf("\n\n\n");
     
     results[0] = num_tests;
     results[1] = tests_passed;
@@ -294,13 +534,23 @@ void test_adders(int* results) {
 
 int main(int argc, char* argv[]){
     int la_results[3];
+    int lm_results[3];
+    test_movers(lm_results);
     test_adders(la_results);
 
     /****** FINAL OUTPUT ******/
     if (la_results[1] == la_results[0]) {
-        printf("All %d tests passed!\n", la_results[0]);
+        printf("All %d list_adders tests passed!\n", la_results[0]);
     } else {
-        printf("Only %d/%d tests passed :(\n",la_results[1], la_results[0] );
+        printf("Only %d/%d list_adders tests passed :(\n",
+                la_results[1], la_results[0] );
+    }
+
+    if (lm_results[1] == lm_results[0]) {
+        printf("All %d list_movers tests passed!\n", lm_results[0]);
+    } else {
+        printf("Only %d/%d list_movers tests passed :(\n",
+                lm_results[1], lm_results[0]);
     }
 
 

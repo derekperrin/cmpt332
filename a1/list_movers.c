@@ -94,7 +94,7 @@ void* ListSearch(LIST* list, int (* comparator)(void* item1, void* item2),
     }
     while (comparator(comparisonArg, list->curr->data) != 1){
         if (list->curr == list->tail)
-            return NULL;
+            break;
         list->curr = list->curr->next;
     }
     return list->curr->data;
