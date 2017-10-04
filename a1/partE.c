@@ -73,11 +73,15 @@ int main(int argc, char* argv[]){
             return EXIT_FAILURE;
         
         while (ListCount(list_of_pipes) != 0){
-            /* split the arguments from the command */
+            /* grab the next pipe */
             LIST* list = parse_line(ListRemove(list_of_pipes), ' ');
             if (list == NULL)
                 return EXIT_FAILURE;
+            
+            /* split the command from the arguments */
             command = ListRemove(list);
+            execute(command, list);
+            
         }
         
         
