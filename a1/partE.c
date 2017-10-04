@@ -27,8 +27,8 @@ int execute(char* command, LIST* args){
 }
 
 /* Input:
- *   delim: a character to split the string input_line by
- *   input_line: a string containing 0 or more delim characters
+ *   delim: a character to split the string input_line by.
+ *   input_line: a string containing 0 or more delim characters.
  * Return:
  *   a list of strings. Each node in the string will contain a section of the 
  *   input string input_line. The list iterator will be pointing at the head of
@@ -48,7 +48,7 @@ LIST* parse_line(char* input_line, char delim){
         input_line = NULL; /* except for the first call to strtok, 
                             * input_line should be null */
         ListAdd(list, arg);
-        printf("Parameter: %s\n", arg);
+        printf("Parameter: %s\n", arg); /* TODO: remove this line */ 
     }
     
     ListFirst(list);
@@ -74,10 +74,12 @@ int main(int argc, char* argv[]){
         
         while (ListCount(list_of_pipes) != 0){
             /* split the arguments from the command */
-            LIST* list = parse_line(ListRemove(list), ' ');     
+            LIST* list = parse_line(ListRemove(list_of_pipes), ' ');
+            if (list == NULL)
+                return EXIT_FAILURE;
             command = ListRemove(list);
         }
-            
+        
         
         
     }
