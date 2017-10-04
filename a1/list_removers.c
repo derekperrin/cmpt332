@@ -14,10 +14,10 @@ void* ListRemove(LIST* list){
     NODE* node_to_remove;
 
     if (list == NULL) {
-        fprintf(stderr, "list is NULL\n");
+        fprintf(stderr, "Error in ListRemove: list is NULL\n");
         return NULL;
     } else if ( list->curr == NULL) {
-        fprintf(stderr, "list->curr is NULL\n");
+        fprintf(stderr, "Error in ListRemove: list->curr is NULL\n");
         return NULL;
     }
     node_to_remove = list->curr;
@@ -55,7 +55,7 @@ void* ListRemove(LIST* list){
 void ListFree(LIST* list, void (* itemFree)(void* itemToBeFreed)){
     NODE* temp_node;
     if (list == NULL) {
-        fprintf(stderr, "list is NULL\n");
+        fprintf(stderr, "Error in ListFree: list is NULL\n");
         return;
     }
     list->curr = list->head;
@@ -73,7 +73,7 @@ void ListFree(LIST* list, void (* itemFree)(void* itemToBeFreed)){
 void* ListTrim(LIST* list){
     NODE* node_to_remove;
     if (list == NULL) {
-        fprintf(stderr, "list is NULL\n");
+        fprintf(stderr, "Error in ListTrim: list is NULL\n");
         return NULL;
     }
 

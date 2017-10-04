@@ -11,7 +11,7 @@
 
 int ListCount(LIST* list){
     if (list == NULL) {
-        fprintf(stderr, "list is NULL\n");
+        fprintf(stderr, "Error is ListCount: list is NULL\n");
         return EXIT_FAILURE;
     }
     return list->size;
@@ -19,7 +19,7 @@ int ListCount(LIST* list){
 
 void* ListFirst(LIST* list){
     if (list == NULL) {
-        fprintf(stderr, "list is NULL\n");
+        fprintf(stderr, "Error in ListFirst: list is NULL\n");
         return NULL;
     }
     if (list->size == 0)
@@ -30,7 +30,7 @@ void* ListFirst(LIST* list){
 
 void* ListLast(LIST* list){
     if (list == NULL) {
-        fprintf(stderr, "list is NULL\n");
+        fprintf(stderr, "Error in ListLast: list is NULL\n");
         return NULL;
     }
     if (list->size == 0)
@@ -41,7 +41,7 @@ void* ListLast(LIST* list){
 
 void* ListNext(LIST* list){
     if (list == NULL) {
-        fprintf(stderr, "list is NULL\n");
+        fprintf(stderr, "Error in ListNext: list is NULL\n");
         return NULL;
     } else if ( list->curr == NULL ) {
         return NULL;
@@ -54,7 +54,7 @@ void* ListNext(LIST* list){
 
 void* ListPrev(LIST* list){
     if (list == NULL) {
-        fprintf(stderr, "list is NULL\n");
+        fprintf(stderr, "Error in ListPrev: list is NULL\n");
         return NULL;
     } else if ( list->curr == NULL ){
         return NULL;
@@ -67,7 +67,7 @@ void* ListPrev(LIST* list){
 
 void* ListCurr(LIST* list){
     if (list == NULL) {
-        fprintf(stderr, "list is NULL\n");
+        fprintf(stderr, "Error in ListCur: list is NULL\n");
         return NULL;
     } if (list->curr == NULL) {
         return NULL;
@@ -78,16 +78,16 @@ void* ListCurr(LIST* list){
 void* ListSearch(LIST* list, int (* comparator)(void* item1, void* item2),
         void* comparisonArg){
     if (list == NULL) {
-        fprintf(stderr, "list is NULL\n");
+        fprintf(stderr, "Error in ListSearch: list is NULL\n");
         return NULL;
     }
     else if (list->size == 0) {
         return NULL;
     } else if (comparator == NULL){
-        fprintf(stderr, "list comparator is NULL\n");
+        fprintf(stderr, "Error in ListSearch: list comparator is NULL\n");
         return NULL;
     } else if (comparisonArg == NULL){
-        fprintf(stderr, "list comparisonArg is NULL\n");
+        fprintf(stderr, "Error in ListSearch: list comparisonArg is NULL\n");
         return NULL;
     } else if (list->curr == NULL) {
         return NULL;

@@ -10,6 +10,8 @@
 #include <unistd.h>
 #include <string.h>
 
+#include "list.h"
+
 #define INPUT_SIZE 32
 
 int cd(char* dest){
@@ -20,29 +22,63 @@ int cd(char* dest){
     return EXIT_SUCCESS;
 }
 
-/* returns an array of strings */
-char** parse_line(char* input_line){
-    /* TODO: Finish this function */
-    char* delim = malloc(sizeof(char));
-    char** parsed_args;
-    if (delim == NULL){
-        perror("Failed to allocate memory for delimitor in parse_line");
+int execute(char* command, LIST* args){
+    return 0;
+}
+
+/* Input:
+ *   delim: a character to split the string input_line by
+ *   input_line: a string containing 0 or more delim characters
+ * Return:
+ *   a list of strings. Each node in the string will contain a section of the 
+ *   input string input_line. The list iterator will be pointing at the head of
+ *   the list 
+ */
+LIST* parse_line(char* input_line, char delim){
+    char* arg; /* one argument from input_line, used 
+                * as a temporary variable in a loop below */
+    LIST* list; /* The list of arguments. Will be the return value */
+    
+    list = ListCreate();
+    if (list == NULL){
         return NULL;
     }
-    *delim = ' ';
-    strtok_r(input_line, delim, parsed_args);
-    return NULL;
+    
+    while((arg = strtok(input_line, &delim)) != NULL){
+        input_line = NULL; /* except for the first call to strtok, 
+                            * input_line should be null */
+        ListAdd(list, arg);
+        printf("Parameter: %s\n", arg);
+    }
+    
+    ListFirst(list);
+    return list;
 }
 
 int main(int argc, char* argv[]){
     char input_line[INPUT_SIZE];
     char prompt[128];
+    char* next_line;
+    char* command;
     if (getcwd(prompt, 128) == NULL){
         perror("getcwd error in main partE");
         exit(1);
     }
     while (printf("%s> ", prompt) && 
-           fgets(input_line, sizeof(input_line), stdin) != NULL); {
+           (next_line = fgets(input_line, sizeof(input_line), stdin)) != NULL)
+    {
+        /* First, split all pipes */
+        LIST* list_of_pipes = parse_line(next_line, '|');
+        if (list_of_pipes == NULL)
+            return EXIT_FAILURE;
+        
+        while (ListCount(list_of_pipes) != 0){
+            /* split the arguments from the command */
+            LIST* list = parse_line(ListRemove(list), ' ');     
+            command = ListRemove(list);
+        }
+            
+        
         
     }
     

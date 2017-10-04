@@ -12,9 +12,9 @@
 #  as a prerequisite for a target, make will find partA1.c and build it with
 #  default flags.
 # -If you don't include a recipe, make will build with default flags
-# -If you don't include prerequisites for a target, make won't link them 
+# -If you don't include prerequisites for a target, make won't link them
 #  together.
-# 
+#
 # Special variables from the make documentation:
 # $@ -> target name
 # $^ -> all prerequisites
@@ -68,9 +68,9 @@ partA2.o: partA2.c
 partC: mytestlist liblist.a
 
 # compile part E
-partE: partE.o
+partE: partE.o liblist.a
 
-# compiles mytestlist; temp sets LDFLAGS and LDLIBS to link liblist.a 
+# compiles mytestlist; temp sets LDFLAGS and LDLIBS to link liblist.a
 mytestlist: LDFLAGS=-L.
 mytestlist: LDLIBS=-llist
 mytestlist: mytestlist.o liblist.a
