@@ -1,0 +1,64 @@
+# CMPT 332 -- Fall 2017
+# Assignment 1
+# Derek Perrin 		dmp450 11050915
+# Dominic McKeith 	dom258 11184543
+
+xv6 DESIGN DOCUMENT
+The goal of this part of the assignment was to implement a system call in xv6
+that counts the number of context switches in a process. First thing we did was
+use Google to find out how to add a system call to xv6. This involved adding:
+usys.S
+    SYSCALL(csinfo)
+    
+syscall.h
+    #define SYS_csinfo 22
+
+syscall.c
+    extern int sys_csinfo(void);
+    [SYS_csinfo] sys_csinfo
+
+Our actual syscall is implemented in sysproc.c under sys_csinfo. All it does is
+return proc->cscount. cscount is an integer field we added to the proc structure
+in proc.h. It is initialized to 0 in allocproc. It is incremented on any call to
+sched and scheduler. We decided to have it increment twice because once it
+increments on the context switch from P1 -> scheduler, and the other increment
+is from the scheduler -> P1. So if both were 0 we have:
+
+    P1->cscount = 1
+    P2->cscount = 1
+
+We decided to do this because technically two context switches are happening.
+This is evident because switch is being called and that performs the context
+switches. We found this out from looking in the xv6 book.
+
+
+
+
+USER PROGRAM xv6test.c
+To run our test, run the following command in qemu:
+'xv6test'
+
+In the user program, we used the Square function that was given to us for the
+other parts of this assignment. We fork off several children and give Square
+an argument of 100. While the children are running Square, we have the parent
+process run in a while loop 10 times and call sleep(1) periodically. This allows
+context switches to be performed. In the loop, we have csinfo() called through
+each iteration. There is no real way to count every single context switch aside
+from running through gdb and hand counting each time; this would be incredibly
+painful. What we look for is to see that csinfo() is strictly increasing. The
+results that are printed are below:
+
+$ xv6test
+Beginning xv6 test
+cscount of parent: 33
+cscount of parent: 35
+cscount of parent: 39
+cscount of parent: 41
+cscount of parent: 51
+cscount of parent: 59
+cscount of parent: 61
+cscount of parent: 63
+cscount of parent: 67
+cscount of parent: 69
+
+We see that cscount is strictly increasing as expected.
