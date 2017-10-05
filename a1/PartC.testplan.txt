@@ -65,6 +65,7 @@ nodes. This should succeed and none of the nodes should be NULL unless there's
 not enough physical memory for some reason. We check if each of the nodes is
 NULL and print a failure message if any nodes fails the test.
 
+####    BONUS PART  ####
 * Testing max number of lists
 Near the end of main we have already created 5 lists. The max number of lists
 our implementation uses is 64. As a result, we attempt to create 60 more lists.
@@ -72,9 +73,52 @@ This should leave us with a total of 64 lists and one list should fail to be
 created. When the 65th list is to be created, we have a test to make sure that
 ListCreate returned NULL instead of a pointer to a list.
 
+####    BONUS PART  ####
 * Testing max number of nodes.
 Near the end of main, we have already created several nodes for testing other
 functions. The max number of nodes our implementation can handle is 1024. We
 attempt to create 1020 more nodes. The creation of the last several nodes 
 should fail. We check node 1019 to see if ListInsert returned -1 which means 
 fail.
+
+Testing for ListRemove
+Test removing with an empty list, a list of size 1, a list of size 4 with
+list->curr pointing to the head, a list of size 3 with list->curr pointing to
+the tail. This tests to make sure that all pointers are adjusted properly.
+
+Testing for ListTrim
+Test trimming an empty list, then test again with a list of size 1 to make sure
+that the list size is 0 after the trim, and then test the general case with an
+arbitrary number of list items.
+
+Testing for ListFree
+There is only one test. We perform ListFree and then check to make sure every
+item is NULLed out.
+
+Testing for ListCurr
+Test on a list of size 0, then test again with an arbitrary number of list items
+
+Testing for ListPrev
+Test on a list of size 0, size 1, size 2, then make sure you can't go out of 
+bounds by going prior to the head.
+
+Testing for ListNext
+Test on a list of size 0, size 1, size 2, then make sure you can't go out of 
+bounds by going after the tail.
+
+Testing for ListFirst
+Test on lists of size 0, 1, 2, 3. Make sure it handle empty lists properly
+and that list->curr gets updated properly.
+
+Testing for ListLast
+Test on lists of size 0, 1, 2, 3. Make sure it handle empty lists properly
+and that list->curr gets updated properly.
+
+Testing ListCount
+Test on an empty list, then again on a list of arbitary size. Make sure 
+the proper count is returned.
+
+Testing for ListSearch
+Test using a trivial == comparator with integers. Test again using a more
+sophisticated search comparator which checks divisibility of integers.
+

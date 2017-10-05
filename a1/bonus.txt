@@ -1,0 +1,9 @@
+# CMPT 332 -- Fall 2017
+# Assignment 1
+# Derek Perrin 		dmp450 11050915
+# Dominic McKeith 	dom258 11184543
+
+Suggestion for improvement:
+Implement thread joining in partA programs. This would make it so the parent
+can gracefully wait for all children to exit without setting crazy boolean
+arrays. We implemented this using WaitForMultipleChildren in Windows for partA1.
