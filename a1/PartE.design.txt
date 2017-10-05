@@ -3,9 +3,30 @@
 # Derek Perrin 		dmp450 11050915
 # Dominic McKeith 	dom258 11184543
 
-    The Shell, partE.c containts X functions, cd, execute, parse_line, and main. Our Shell supports infinite pipes and uses our LIST library from part C.
+    The Shell, partE.c containts X functions, cd, execute, parse_line, and 
+main. Our Shell supports infinite pipes and uses our LIST library from part C.
 
-    Execution starts in main. We use the function fgets to continuously get the next line of input. Let's go over what happens when it takes a line of input.
+    Execution starts in main. We use the function fgets to continuously get the
+next line of input. Let's go over what happens when it takes a line of input.
 
-    Unpon taking a line on input from the command line, our function parse_line is called with the string and a delim character '|'. This function uses the function strtok to split the string into many strings. Each string it returns is added into a list. For example, "Command1 arg1 arg2 | Command2 arg3 arg4 | Command3 arg5 arg6" will be split into "Command1 arg1 arg2", "Command2 arg3 arg4", and "Command3 arg5 arg6". Each one of these strings will be added to a list and the list will be returned to main.
-    Upon execution returning to main, it will go into a loop and look at each string in the list and split it into more strings using parse_line() but with a space, ' ', as the delimiter instead of a pipe character. Let's look at our previous example. main() will look at the first string in the list, "Command1 arg1 arg2" and input that into parse_line() with a space as the delimiter. parse_args() will return a list of strings: "Command1", "arg1", and "arg2". The list of strings will then be returned to main. Main will look and the first string in the list, "Command1" and treat that as the executable. It will treat the rest of the list as the arguments to that command.
+    Unpon taking a line on input from the command line, our function parse_line
+is called with the string and a delim character '|'. This function uses the 
+function strtok to split the string into many strings. Each string it returns
+is added into a list. For example, "Command1 arg1 arg2 | Command2 arg3 arg4 | 
+Command3 arg5 arg6" will be split into "Command1 arg1 arg2", "Command2 arg3 
+arg4", and "Command3 arg5 arg6". Each one of these strings will be added to a 
+list and the list will be returned to main.
+    Upon execution returning to main, it will go into a loop and look at each 
+string in the list and split it into more strings using parse_line() but with 
+a space, ' ', as the delimiter instead of a pipe character. Let's look at our 
+previous example. main() will look at the first string in the list, "Command1 
+arg1 arg2", and input that into parse_line() with a space as the delimiter. 
+parse_args() will return a list of strings: "Command1", "arg1", and "arg2". The
+list of strings will then be returned to main. Main will look and the first 
+string in the list, "Command1" and treat that as the executable. It will treat
+the rest of the list as the arguments to that command.
+    Currently, it can execute files, but you must provide a parameter. There 
+was not enough time to finish so that is where we left it. For example, to 
+execute ls, you must type "ls ." (or something other than .) for it to execute.
+There is a bug where once the execution completes, it exits the shell, again, 
+this is because we did not have time to finish.
