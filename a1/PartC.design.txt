@@ -45,6 +45,14 @@ struct LIST {
     LIST next
 }
 
+################################################################################
+################################################################################
+
+############### PLEASE READ THE COMMENTS ABOVE FUNCTIONS #######################
+
+################################################################################
+################################################################################
+
 # We create a queue to keep track of free lists and nodes. This is the reason
 # we have a 'next' member in our LIST implementation. All lists point to the
 # next free list. The last list points to NULL. A 'free' pointer points to the
@@ -101,7 +109,12 @@ shrink_node_memory()
     # We have no idea how we'll implement this yet. It shrinks the available
     # memory to be half of the current available memory.
     
+# sends a requestList to our list allocator. The list returned should never be
+  NULL because we implementd a way for the list allocator to grow the total
+  memory.
 
+  @param None
+  @return LIST* list: a pointer to a newly created list.
 LIST* ListCreate()
     LIST* newList = requestList();
     if (newList == NULL)
@@ -114,49 +127,115 @@ LIST* ListCreate()
     newList->size = 0
     return newList
 
+# This returns the number of elements in the list. If the list is NULL, it 
+  returns EXIT_FAILURE. THere isn't too much to this function.
+  @param LIST* list: list to access
+  @return int: size of list
 int ListCount()
     return list.size
 
+# This returns a pointer to the item at the front of the list. That is,
+  list->head->data. This works for any size list. It also sets list->curr
+  to be at the head of the list.
+  @param LIST* list: A pointer to a list to access.
+  @return void* item: A pointer to the first item in the list.
 void* ListFirst()
     return list.head
 
+# This returns a pointer to the item at the back of the list. That is,
+  list->tail->data. This works for any size list. It also sets list->curr
+  to be at the tail of the list.
+  @param LIST* list: A pointer to a list to access
+  @return void* item: A pointer to the item at the back of the list.
 void* ListLast()
     return list.tail
 
+# This advances list->curr to point to the next item in the list.
+  @param LIST* list: A pointer to a list to access.
+  @return void* item: A pointer to the item immediately after list->curr.
+    returns NULL if list->curr is already at the end of the list.
 void* ListNext()
     list.curr = list.curr.next
     return list.curr.data
 
+# This moves list->curr to the item immediately before current position.
+  @param LIST* list: a pointer to a list to access
+  @return void* item: a pointer to an item that is immediately before list->curr
+    returns NULL if list->curr is currently at the head of the list.
 void* ListPrev()
     list.curr = list.curr.prev
     return list.curr.data
 
+# This returns a pointer to the current item in the list. Does not modify list.
+  @param LIST* list: a pointer to a list to access.
+  @return void* item: a pointer to the item at list->curr. Returns NULL if list
+      is empty
 void* ListCurr()
     return list.curr
 
+# This modifies a list by adding an element immediately after where the current
+  pointer in the list is. list->curr is adjusted to point to the new item. If 
+  adding to the tail of a list, list->tail is also updated. In the event of 
+  adding to an empty list, list->head is also updated.
+  @param LIST* list: a list to be modified
+  @param void* item: the item to add to the list
+  @return int exit_code: returns 0 on success, -1 on failure.
 int ListAdd()
     pop from node_pool
     adjust pointers to accommodate it
     insert item in list.curr
 
+# This modifies a list by adding an element immediately prior where the current
+  pointer in the list is. list->curr is adjusted to point to the new item. If 
+  adding to the head of a list, list->head is also updated. In the event of 
+  adding to an empty list, list->tail is also updated.
+  @param LIST* list: a list to be modified
+  @param void* item: the item to inserted into the list
+  @return int exit_code: returns 0 on success, -1 on failure.
 int ListInsert()
     Same as ListAdd(), but backwards
 
+# This modifies a list by adding an element to the end of the list. list->curr
+  is adjusted to point to the new item. list->tail is adjusted to point to the 
+  new item. In the event of appending to an empty list, list->head is also
+  updated.
+  @param LIST* list: a list to be modified
+  @param void* item: the item to appended onto the list
+  @return int exit_code: returns 0 on success, -1 on failure.
 int ListAppend()
     pop from node_pool
     adjust pointers of tail for new node
     insert item in last node
     return 1
 
+# This modifies a list by adding an element to the front of the list. list->curr
+  is adjusted to point to the new item. list->head is adjusted to point to the 
+  new item. In the event of appending to an empty list, list->tail is also
+  updated.
+  @param LIST* list: a list to be modified
+  @param void* item: the item to prepended onto the list
+  @return int exit_code: returns 0 on success, -1 on failure.
 int ListPrepend()
     same as ListAppend, but adjust head
 
+# This modifies the list by removing the element at list->curr. The next item is
+  made to be the current one. If this is at the tail of the list, list->curr
+  is moved to the previous item.
+  @param LIST* list: a list to be modified
+  @return void* item: the item at list->curr to be removed.
 void* ListRemove()
     list.curr.next.prev = list.curr.prev
     list.curr = list.curr.next
     list.curr.prev.next = list.curr
     return list.curr.item
 
+# This modifies two lists by concatenating one onto the end of the other. 
+  The tail pointer of the first list is adjusted to the end of list2, and the 
+  end of the original list1 has its next pointer to point to the beginning of 
+  list2. list2 is freed at the end of the function call.
+  @param LIST* list1: a list to be concatenated  onto
+  @param LIST* list2: a list to be concatenated 
+  @return None
 void ListConcat()
     list1.tail.next = list2.head
     list2.head.prev = list1.tail
@@ -164,6 +243,12 @@ void ListConcat()
     list2 and its members are NULL
     push(list2) to list_stack
 
+# This traverses through a list, frees every item in the list, releases every
+  node back into the node memory pool, then finally releases a the list to the
+  list memory pool.
+  @param LIST* list: a list to be released back to the memory pool.
+  @param (*itemFree)(itemToBeFreed) item_free_func: a function pointer that
+    releases type *itemFree
 void ListFree(list, freeitem)
     for (node in list)
         freeitem(node.item)
@@ -172,12 +257,27 @@ void ListFree(list, freeitem)
     nullify(list members)
     release_list(list)
 
+# This removes the item at the end of the list and returns it to the user. 
+  list->curr is moved to the end of the list.
+  @param LIST* list: a list to be modified.
+  @return void* item: the item which will be returned that currently resides at
+  list->tail.
 void* ListTrim
     rNode = list.tail
     list.tail = list.tail.prev
     list.tail.next = NULL
     return rNode
 
+# This traverses through a list beginning at list->curr and ending at list->tail
+  searching for an item that matches a criteria. If that item is found, it is 
+  returned and the search terminates. In the event no item matches, list->curr
+  is set to remain at the tail and the search terminates.
+  @param LIST* list: a list to be searched through.
+  @param (void*)(*comparator)(item1, item2): a pointer to a comparator function
+    that somehow compares item1 and item2. 
+  @param void* comparisonArg: an argument to be compared to.
+  @return void* item: the first instance of the item that matches the criteria
+     for the comparator and comparisonArg.
 void* ListSearch()
     for (node in list)
         if (comparator(item, comparisonArg))

@@ -36,7 +36,7 @@ int listComp2(void* item1, void* item2) {
  */
 
 void test_removers(int* results) {
-    int num_tests, tests_passed, fails;
+    int num_tests, tests_passed;
     LIST* list1;
     LIST* list2;
     LIST* list3;
@@ -175,7 +175,6 @@ void test_removers(int* results) {
 
     results[0] = num_tests;
     results[1] = tests_passed;
-    results[2] = fails;
 }
 
 
@@ -183,7 +182,7 @@ void test_removers(int* results) {
 /* Tests for list_movers */
 /* @param results: integer pointer used to store test results */
 void test_movers(int* results) {
-    int num_tests, tests_passed, fails;
+    int num_tests, tests_passed;
     LIST* list1;
     LIST* list2;
     LIST* list3;
@@ -386,7 +385,6 @@ void test_movers(int* results) {
 
     results[0] = num_tests;
     results[1] = tests_passed;
-    results[2] = fails;
 }
 
 /* Tests for list adders */

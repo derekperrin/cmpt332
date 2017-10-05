@@ -3,6 +3,7 @@
 # Derek Perrin 		dmp450 11050915
 # Dominic McKeith 	dom258 11184543
 
+## PLEASE READ ## 
 
 ## PART A1 ##
 Use Thread Local Storage to store a variable for each thread to track the number
@@ -29,6 +30,34 @@ stats before exiting.
 # Stack size
 We set the stack size to be 2^22 bytes. We chose this number because it seemed
 to fit with our boundaries without getting a segmentation fault.
+
+## PART A3 ##
+The design for this was a combination of partA1 and partA2, but we used the 
+same pthreads that the rest of the world uses. We used something called thread
+specific data to store a custom id for each thread. This id started at 0 and 
+incremented up to num_threads - 1. We were able to use this id to index into
+an array for counting squares and to allow each thread to mark itself as being
+completed. When the deadline was reached, the parent killed all of the threads
+that weren't completed, then it would print their information for them.
+Overall, design is almost identical to partA2.
+
+## PART A4 ##
+This design is similar to partA1, but we used UNIX processes instead. Instead
+of making an array for all of the threads like in previous parts, we were able
+to fork of the mother process into child processes. This was much better because
+each child got its own address space and we didn't have to muck around with
+custom thread id's or thread local storage. 
+
+A timer process is created. Sleep is used to set the timer. When the timer is
+up, all children processes are sent a SIGALRM. We have a thread handler at the 
+top of our c file and the children jump there, print out their stats, then 
+exit(1). The parent uses waitpid() to wait for all of the children to gracefully
+exit. Please comment if you read this sentence so I know you actually read my 
+docs. An improvement to this assignment would be to scrap the timer altogether
+and get the students to use alarm() in the child processes which call Square().
+We suggest this because it is a proper use of SIGALRM and seems to follow what
+is recommended in the UNIX documents.
+
 
 ########## Pseudocode for partA1 ##########
 main(args)
