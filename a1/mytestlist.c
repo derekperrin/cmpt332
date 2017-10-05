@@ -31,6 +31,154 @@ int listComp2(void* item1, void* item2) {
     return 0;
 }
 
+/* Tests for list_removers *
+ * @param results: integer pointers used to store test results
+ */
+
+void test_removers(int* results) {
+    int num_tests, tests_passed, fails;
+    LIST* list1;
+    LIST* list2;
+    LIST* list3;
+
+    char c1, c2, c3, c4;
+    int* i1;
+    int* i2;
+    int* i3;
+    int* i4;
+
+    num_tests = 0;
+    tests_passed = 0;
+
+    printf("Beginning list_removers tests\n");
+
+    list1 = ListCreate();
+    list2 = ListCreate();
+    list3 = ListCreate();
+
+    c1 = 'H';
+    c2 = 'e';
+    c3 = 'l';
+    c4 = 'p';
+
+    printf("ListRemove test 1: checking with list of size 0\n");
+    num_tests++;
+    if (ListRemove(list1) == NULL) {
+        printf("ListRemove test 1 passed\n");
+        tests_passed++;
+    } else
+        printf("ListRemove test 1 FAILED\n");
+
+    printf("ListRemove test 2: cheking with list of size 1\n");
+    num_tests++;
+    ListAdd(list1, &c1);
+    if (ListRemove(list1) == &c1
+            && ListCount(list1) == 0) {
+        printf("ListRemove test 2 passed\n");
+        tests_passed++;
+    } else
+        printf("ListRemove test 2 FAILED\n");
+
+    printf("ListRemove test 3: checking with list size 4, curr @ head\n");
+    num_tests++;
+    ListAdd(list1, &c1);
+    ListAdd(list1, &c2);
+    ListAdd(list1, &c3);
+    ListAdd(list1, &c4);
+    ListFirst(list1);
+    if (ListRemove(list1) == &c1
+            && ListCount(list1) == 3
+            && ListCurr(list1) == ListFirst(list1)) {
+        printf("ListRemove test 3 passed\n");
+        tests_passed++;
+    } else
+        printf("ListRemove test 3 FAILED\n");
+
+    printf("ListRemove test 4: checking with list->curr @ tail\n");
+    num_tests++;
+    ListLast(list1);
+    if (ListRemove(list1) == &c4
+            && ListCount(list1) == 2
+            && ListCurr(list1) == ListLast(list1)) {
+        printf("ListRemove test 4 passed\n");
+        tests_passed++;
+    } else
+        printf("ListRemove test 4 FAILED\n");
+
+    printf("ListRemove test 5: checking with list->curr in middle\n");
+    num_tests++;
+    ListAdd(list1, &c4);
+    ListAdd(list1, &c1);
+    ListPrev(list1);
+    ListPrev(list1);
+    if (ListRemove(list1) == &c3
+            && ListCount(list1) == 3) {
+        printf("ListRemove test 5 passed\n");
+        tests_passed++;
+    } else
+        printf("ListRemove test 5 FAILED\n");
+
+    printf("ListTrim test1: checking with empty list\n");
+    num_tests++;
+    if (ListTrim(list2) == NULL) {
+        printf("ListTrim test 1 passed\n");
+        tests_passed++;
+    } else
+        printf("ListTrim test 1 FAILED\n");
+
+    printf("ListRemove test 2: checking with list of size 1"
+            " that everything is NULL after removal\n");
+    num_tests++;
+    ListAdd(list2, &c1);
+    if (ListTrim(list2) == &c1
+            && ListCount(list2) == 0
+            && ListFirst(list2) == NULL
+            && ListCurr(list2) == NULL
+            && ListLast(list2) == NULL){
+        printf("ListTrim test 2 passed\n");
+        tests_passed++;
+    } else
+        printf("ListTrim test2 FAILED\n");
+
+    printf("ListTrim test 3: checking general case\n");
+    num_tests++;
+    ListAdd(list2, &c1);
+    ListAdd(list2, &c1);
+    if (ListTrim(list2) == &c1
+            && ListCount(list2) == 1) {
+        printf("ListTrim test 3 passed\n");
+        tests_passed++;
+    } else
+        printf("ListTrim test 3 FAILED\n");
+
+    printf("ListFree test 1: testing removing a list with integer arrays\n");
+    num_tests++;
+    i1 = calloc(10, sizeof(int));
+    i2 = calloc(20, sizeof(int));
+    i3 = calloc(100, sizeof(int));
+    i4 = calloc(1000, sizeof(int));
+    ListAdd(list3, i1);
+    ListAdd(list3, i2);
+    ListAdd(list3, i3);
+    ListAdd(list3, i4);
+    ListFree(list3, free);
+    if (ListFirst(list3) == NULL
+            && ListLast(list3) == NULL
+            && ListCurr(list3) == NULL
+            && ListCount(list3) == 0) {
+        printf("ListFree test 1 passed\n");
+        tests_passed++;
+    } else
+        printf("ListFree test 1 FAILED\n");
+    
+    printf("\n\n\n");
+
+    results[0] = num_tests;
+    results[1] = tests_passed;
+    results[2] = fails;
+}
+
+
 
 /* Tests for list_movers */
 /* @param results: integer pointer used to store test results */
@@ -68,10 +216,10 @@ void test_movers(int* results) {
     item1 = 17;
     ListAdd(list1, &item1);
     if (ListCount(list1) == 1) {
-        printf("ListSize test 2 passed\n");
+        printf("ListCount test 2 passed\n");
         tests_passed++;
     } else
-        printf("ListSize test 2 FAILED\n");
+        printf("ListCount test 2 FAILED\n");
 
     /* Testing ListFirst */
     printf("ListFirst test 1: checking empty list\n");
@@ -232,11 +380,6 @@ void test_movers(int* results) {
         tests_passed++;
     } else
         printf("ListSearch test 5 FAILED\n");
-
-
-    
-
-
 
 
     printf("\n\n\n");
@@ -454,6 +597,7 @@ void test_adders(int* results) {
             ListNext(list1) == &i2 &&
             ListLast(list1) == &i3) {
         printf("ListConcat test 1 passed\n");
+
         tests_passed++;
     }
     else
@@ -535,8 +679,10 @@ void test_adders(int* results) {
 int main(int argc, char* argv[]){
     int la_results[3];
     int lm_results[3];
+    int lr_results[3];
     test_movers(lm_results);
     test_adders(la_results);
+    test_removers(lr_results);
 
     /****** FINAL OUTPUT ******/
     if (la_results[1] == la_results[0]) {
@@ -553,6 +699,12 @@ int main(int argc, char* argv[]){
                 lm_results[1], lm_results[0]);
     }
 
+    if (lr_results[1] == lr_results[0]) {
+        printf("All %d list_removers tests passed!\n", lr_results[0]);
+    } else {
+        printf("Only %d/%d list_removers tests passed :(\n",
+                lr_results[1], lr_results[0]);
+    }
 
     return EXIT_SUCCESS;
 }

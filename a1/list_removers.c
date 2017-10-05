@@ -67,6 +67,9 @@ void ListFree(LIST* list, void (* itemFree)(void* itemToBeFreed)){
         list->curr = list->curr->next;
         release_node(temp_node);
     }
+    list->head = NULL;
+    list->tail = NULL;
+    list->size = 0;
     release_list(list);
 }
 
