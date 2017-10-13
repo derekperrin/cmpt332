@@ -4,22 +4,106 @@
 * Dominic McKeith 	dom258 11184543
 */
 
+Beginning list_movers tests
+ListCount test 1: checking size of empty list
+ListCount test 1 passed
+ListCount test 2: checking size of list with size 1.
+ListCount test 2 passed
+ListFirst test 1: checking empty list
+ListFirst test 1 passed
+ListFirst test 2: checking with list of size 1
+ListFirst test 2 passed
+ListFirst test 3: checking with list of size 2
+ListFirst test 3 passed
+ListLast  test 1: checking with list of size 0
+ListLast test 1 passed
+ListLast test 2: checking with list of size 1
+ListLast test 2 passed
+ListLast test 3: checking with list of size 2. Also checking position of list->curr
+ListLast test 3 passed
+ListNext test 1: checking at the head of size 3 list
+ListNext test 1 passed
+ListPrev test 1: checking at the tail of size 3 list
+ListPrev test 1 passed
+ListCurr test1: checking ListCurr on an empty list
+ListCurr test 1 passed
+ListCurr test2: checking ListCurr on the generic case
+ListCurr test 2 passed
+ListSearch test1: test equality of integers
+ListSearch test1 passed
+ListSearch test2: test equality, but fail and reach end of list
+ListSearch test 2 passed
+ListSearch test 3: test divisibility of integers
+ListSearch test 3 passed
+ListSearch test 4: test divisibility with different integers
+ListSearch test 4 passed
+ListSearch test 5: test divisiblity but fail
+ListSearch test 5 passed
+
+
+
+Beginning list_adders tests
+ListCreate test 1: Attempting to create 4 lists
 ListCreate test passed
+ListAdd test 1: attempting to add to an empty list
 ListAdd test 1 passed
+ListAdd test 2: attempting to add to a list of size 1
 ListAdd test 2 passed
+ListAdd test 3: attempting to add to a list of size 2
 ListAdd test 3 passed
+ListInsert test 1: attempting to add to an empty list
 ListInsert test 1 passed 
+ListInsert test 2: attempting to add to a list of size 1
 ListInsert test 2 passed 
+ListInsert test 3: attempting to insert in middle  of a list of size 2
 ListInsert test 3 passed 
+ListAppend test 1: attempting to append to an empty list.
 ListAppend test 1 passed
+ListAppend test 2: attempting to append to a list of size 1.
 ListAppend test 2 passed
+ListAppend test 3: attempting to append to a list of size 2.
 ListAppend test 3 passed
+ListPrepend test 1: attempting to prepend to an empty list.
 ListPrepend test 1 passed
+ListPrepend test 2: attempting to prepend to a list of size 1.
 ListPrepend test 2 passed
+ListPrepend test 3: attempting to prepend to a list of size 2.
 ListPrepend test 3 passed
+ListConcat test 1: concat new (int)list5 to (int)list1
 ListConcat test 1 passed
+ListConcat test 2: check prev and next ptrs on head and tail
 ListConcat test 2 passed
+ListConcat test 3: check list structure going backwards
 ListConcat test 3 passed
-ListCreate test passed.
-Node Overflow test passed.
-All 18 tests passed!
+Test list growing. MIN_LISTS: 2
+Creation of 60 lists passed!
+Test node growing. MIN_NODES: 8
+Creation of 1000 nodes passed!
+
+
+
+Beginning list_removers tests
+ListRemove test 1: checking with list of size 0
+ListRemove test 1 passed
+ListRemove test 2: cheking with list of size 1
+ListRemove test 2 passed
+ListRemove test 3: checking with list size 4, curr @ head
+ListRemove test 3 passed
+ListRemove test 4: checking with list->curr @ tail
+ListRemove test 4 passed
+ListRemove test 5: checking with list->curr in middle
+ListRemove test 5 passed
+ListTrim test1: checking with empty list
+ListTrim test 1 passed
+ListRemove test 2: checking with list of size 1 that everything is NULL after removal
+ListTrim test 2 passed
+ListTrim test 3: checking general case
+ListTrim test 3 passed
+ListFree test 1: testing removing a list with integer arrays
+ListFree test 1 passed
+
+
+
+All 18 list_adders tests passed!
+All 17 list_movers tests passed!
+All 9 list_removers tests passed!
