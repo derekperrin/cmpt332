@@ -18,7 +18,7 @@
 #include <standards.h>
 #include <os.h>
 
-#include <monitor.h>
+#include <Monitor.h>
 
 #define OKtoWrite 4
 #define OKtoRead  3

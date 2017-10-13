@@ -57,13 +57,22 @@ list_movers.o: list_movers.c list.h
 list_removers.o: list_removers.c list_alloc.h list.h
 
 # make monitor library 
-libMonitor.a: libMonitor.a(Monitor.o)
+libMonitor.a: libMonitor.a(Monitor.o) liblist.a
 Monitor.o: Monitor.c Monitor.h list.h 
 
-# TODO: 
-reader-writer-test: reader-writer-test.o
+reader-writer-test: LDFLAGS += $(UBC_PTHREADS_LD) -L./
+reader-writer-test: LDLIBS += $(UBC_PTHREADS_LIB) -lMonitor -llist
+reader-writer-test: CPPFLAGS += $(UBC_PTHREADS_INC) -I./
+reader-writer-test: reader-writer.o reader-writer-monitor.o libMonitor.a
+	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
-# Change variables just for s-chat and it's dependencies. 
+# No need to update CPPFLAGS because it is handled above to its dependencies
+reader-writer.o: reader-writer.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $^
+reader-writer-monitor.o: reader-writer-monitor.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $^
+
+# Change variables just for s-chat and dependencies. 
 s-chat: CFLAGS += -m32
 s-chat: CPPFLAGS += $(RT_THREADS_INC)
 s-chat: LDFLAGS += $(RT_THREADS_LD) -m32

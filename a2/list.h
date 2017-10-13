@@ -7,6 +7,7 @@
 #define LIST_H
 
 #include <stdbool.h>
+#include <stdlib.h>
 
 #define MIN_LISTS 2    /* we picked these because they're computer numbers */
 #define MIN_NODES 8

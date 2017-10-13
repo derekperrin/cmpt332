@@ -17,7 +17,7 @@
 #include <standards.h>
 #include <os.h>
 
-#include <monitor.h>
+#include <Monitor.h>
 
 
 PROCESS reader(void *arg)
