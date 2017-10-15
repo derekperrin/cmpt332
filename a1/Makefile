@@ -15,7 +15,7 @@
 # -If you don't include prerequisites for a target, make won't link them
 #  together.
 #
-# Special variables from the make documentation:
+# Automatic variables from the make documentation:
 # $@ -> target name
 # $^ -> all prerequisites
 # $< -> first prerequisite
