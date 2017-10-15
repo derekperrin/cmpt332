@@ -1,5 +1,5 @@
 # CMPT 332 -- Fall 2017
-# Assignment 1
+# Assignment 2
 # Derek Perrin 		dmp450 11050915
 # Dominic McKeith 	dom258 11184543
 #
@@ -23,12 +23,12 @@
 
 CC = gcc
 CFLAGS = -g
-CPPFLAGS = -Wall -pedantic -std=c90
-LDFLAGS =
+CPPFLAGS = -Wall -pedantic -std=c90 -I./
+LDFLAGS = -L./
 LDLIBS =
 ARFLAGS = rcs
 
-EXE = s-chat reader-writer-test
+EXE = $(BUILD_DIR)/s-chat reader-writer-test
 
 ARCH = $(shell uname -m)
 OS = $(shell uname -s)
@@ -45,24 +45,34 @@ RT_THREADS_INC = -I$(RT_THREADS_DIR)/include
 RT_THREADS_LD = -L$(RT_THREADS_DIR)/lib/$(OS)$(ARCH)
 RT_THREADS_LIB = -lRtt
 
+# BUILD_DIR is the architecture specific directory path to be created
+BUILD_DIR = build/$(OS)$(ARCH)
+LIST_OBJS := $(addprefix $(BUILD_DIR)/, list_adders.o list_movers.o \
+		list_alloc.o list_removers.o)
+S_CHAT_OBJS := $(addprefix $(BUILD_DIR)/, s-chat.o)
+
 .PHONY: all clean 
 
 all: $(EXE)
 
+# create the architecture specific directories
+$(BUILD_DIR): 
+	mkdir -p $(BUILD_DIR)
+
 # make the list library
-liblist.a: liblist.a(list_adders.o list_alloc.o list_movers.o list_removers.o)
-list_adders.o: list_adders.c list_alloc.h list.h
-list_alloc.o: list_alloc.c list_alloc.h list.h
-list_movers.o: list_movers.c list.h
-list_removers.o: list_removers.c list_alloc.h list.h
+$(BUILD_DIR)/liblist.a: $(LIST_OBJS) list.h | $(BUILD_DIR)
+	$(AR) $(ARFLAGS) $@ $(LIST_OBJS)
+# % does pattern matching to anything. This compiles each list object file.
+$(BUILD_DIR)/list%.o: list%.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 # make monitor library 
-libMonitor.a: libMonitor.a(Monitor.o) liblist.a
+libMonitor.a: libMonitor.a(Monitor.o) $(BUILD_DIR)/liblist.a
 Monitor.o: Monitor.c Monitor.h list.h 
 
-reader-writer-test: LDFLAGS += $(UBC_PTHREADS_LD) -L./
+reader-writer-test: LDFLAGS += $(UBC_PTHREADS_LD) -L./$(BUILD_DIR)
 reader-writer-test: LDLIBS += $(UBC_PTHREADS_LIB) -lMonitor -llist
-reader-writer-test: CPPFLAGS += $(UBC_PTHREADS_INC) -I./
+reader-writer-test: CPPFLAGS += $(UBC_PTHREADS_INC)
 reader-writer-test: reader-writer.o reader-writer-monitor.o libMonitor.a
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
@@ -73,12 +83,18 @@ reader-writer-monitor.o: reader-writer-monitor.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $^
 
 # Change variables just for s-chat and dependencies. 
-s-chat: CFLAGS += -m32
-s-chat: CPPFLAGS += $(RT_THREADS_INC)
-s-chat: LDFLAGS += $(RT_THREADS_LD) -m32
-s-chat: LDLIBS += $(RT_THREADS_LIB)
+$(BUILD_DIR)/s-chat: CFLAGS += -m32
+$(BUILD_DIR)/s-chat: CPPFLAGS += $(RT_THREADS_INC)
+$(BUILD_DIR)/s-chat: LDFLAGS += $(RT_THREADS_LD) -m32
+$(BUILD_DIR)/s-chat: LDLIBS += $(RT_THREADS_LIB)
+# The '|' character means: Do the following if it doesn't exist.
+$(BUILD_DIR)/s-chat: $(S_CHAT_OBJS) | $(BUILD_DIR)
 
-s-chat: s-chat.o
+$(S_CHAT_OBJS): s-chat.c | $(BUILD_DIR)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $^ -o $@
+
+
+	
 
 clean:
-	$(RM) -rf $(EXE) *.o *.a
+	$(RM) -rf $(EXE) *.o *.a build
