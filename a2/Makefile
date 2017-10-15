@@ -25,7 +25,7 @@ CC = gcc
 CFLAGS = -g
 CPPFLAGS = -Wall -pedantic -std=c90 -I./
 LDFLAGS = -L./
-LDLIBS =
+LDLIBS = 
 ARFLAGS = rcs
 
 EXE = $(BUILD_DIR)/s-chat reader-writer-test
@@ -66,12 +66,18 @@ $(BUILD_DIR)/liblist.a: $(LIST_OBJS) list.h | $(BUILD_DIR)
 $(BUILD_DIR)/list%.o: list%.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
+liblist.a: liblist.a(list_adders.o list_movers.o list_removers.o list_alloc.o)
+list_movers.o: list_movers.c list.h
+list_removers.o: list_movers.c list_alloc.c list_alloc.h list.h
+list_adders.o: list_adders.c list_alloc.c list_alloc.h list.h
+list_alloc.o: list_alloc.c list_alloc.h 
+
 # make monitor library 
-libMonitor.a: libMonitor.a(Monitor.o) $(BUILD_DIR)/liblist.a
+libMonitor.a: libMonitor.a(Monitor.o) liblist.a
 Monitor.o: Monitor.c Monitor.h list.h 
 
-reader-writer-test: LDFLAGS += $(UBC_PTHREADS_LD) -L./$(BUILD_DIR)
-reader-writer-test: LDLIBS += $(UBC_PTHREADS_LIB) -lMonitor -llist
+reader-writer-test: LDFLAGS += $(UBC_PTHREADS_LD)
+reader-writer-test: LDLIBS += $(UBC_PTHREADS_LIB) -lMonitor -llist 
 reader-writer-test: CPPFLAGS += $(UBC_PTHREADS_INC)
 reader-writer-test: reader-writer.o reader-writer-monitor.o libMonitor.a
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
@@ -85,16 +91,14 @@ reader-writer-monitor.o: reader-writer-monitor.c
 # Change variables just for s-chat and dependencies. 
 $(BUILD_DIR)/s-chat: CFLAGS += -m32
 $(BUILD_DIR)/s-chat: CPPFLAGS += $(RT_THREADS_INC)
-$(BUILD_DIR)/s-chat: LDFLAGS += $(RT_THREADS_LD) -m32
+$(BUILD_DIR)/s-chat: LDFLAGS += $(RT_THREADS_LD) -L./$(BUILD_DIR) -m32
 $(BUILD_DIR)/s-chat: LDLIBS += $(RT_THREADS_LIB)
+
 # The '|' character means: Do the following if it doesn't exist.
-$(BUILD_DIR)/s-chat: $(S_CHAT_OBJS) | $(BUILD_DIR)
+$(BUILD_DIR)/s-chat: $(S_CHAT_OBJS) $(BUILD_DIR)/liblist.a | $(BUILD_DIR)
 
 $(S_CHAT_OBJS): s-chat.c | $(BUILD_DIR)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $^ -o $@
-
-
-	
 
 clean:
 	$(RM) -rf $(EXE) *.o *.a build

@@ -4,6 +4,8 @@
 * Dominic McKeith   dom258 11184543
 */
 
+#include <list.h>
+
 int mainp(int argc, char* argv[]){
 	return 0;
 }
