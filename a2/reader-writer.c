@@ -11,6 +11,11 @@
    *********** reader-writer.c ***********
 */
 
+/* CMPT 332 -- Fall 2017
+* Assignment 2
+* Derek Perrin      dmp450 11050915
+* Dominic McKeith   dom258 11184543
+*/
 
 #include <stdio.h>
 
@@ -18,13 +23,14 @@
 #include <os.h>
 
 #include <Monitor.h>
+#include <reader-writer-monitor.h>
 
 
 PROCESS reader(void *arg)
 {
   int myId;
   
-  myId = (int) arg;
+  myId = *((int*) arg);
   
   for(;;)
     {
@@ -44,7 +50,7 @@ PROCESS writer(void *arg)
 {
   int myId;
   
-  myId = (int) arg;
+  myId = *((int*) arg);
   
   for(;;)
     {
@@ -62,6 +68,11 @@ PROCESS writer(void *arg)
 int mainp()
 {
     int temp, temp2, temp3;
+    temp = 1;
+    temp2 = 2;
+    temp3 = 3;
+    temp = temp2 + temp3;
+    temp2 = temp + 1;
 
 
     setbuf(stdout, 0);

@@ -1,0 +1,11 @@
+/* CMPT 332 -- Fall 2017
+* Assignment 2
+* Derek Perrin      dmp450 11050915
+* Dominic McKeith   dom258 11184543
+*/
+
+We have a separate build directory that is architecture specific for each
+s-chat executable. The user only needs to run the included s-chat shell script
+after building the exectuables. It should work across different architectures.
+The user can execute the executables directly from ./build/${OS}${ARCH} if they
+don't want to use the script for some reason.

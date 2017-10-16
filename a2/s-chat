@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# CMPT 332 -- Fall 2017
+# Assignment 2
+# Derek Perrin      dmp450 11050915
+# Dominic McKeith   dom258 11184543
+
+OS=`uname -s`
+ARCH=`uname -m`
+
+BINDIR="./build/${OS}${ARCH}"
+
+if [ ! -f "${BINDIR}/s-chat" ]; then
+    echo "s-chat is not built on this architecture. Please make."
+else
+    ${BINDIR}/s-chat
+fi
+

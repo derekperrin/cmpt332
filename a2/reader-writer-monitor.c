@@ -11,6 +11,12 @@
    *********** reader-writer.c ***********
 */
 
+/* CMPT 332 -- Fall 2017
+* Assignment 2
+* Derek Perrin      dmp450 11050915
+* Dominic McKeith   dom258 11184543
+*/
+
 
 #include <stdio.h>
 
@@ -18,7 +24,9 @@
 #include <standards.h>
 #include <os.h>
 
+/* These are added from the students */
 #include <Monitor.h>
+#include <reader-writer-monitor.h>
 
 #define OKtoWrite 4
 #define OKtoRead  3
