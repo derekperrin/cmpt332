@@ -118,6 +118,9 @@ void            userinit(void);
 int             wait(void);
 void            wakeup(void*);
 void            yield(void);
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
+int             thread_create(void (*tmain)(void *), void*, void*);
+int             thread_join(void**);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

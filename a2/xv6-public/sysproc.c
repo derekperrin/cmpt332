@@ -89,3 +89,31 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
+int
+sys_thread_create(void)
+{
+  void (*tmain) (void *);
+  void *stack;
+  void *arg;
+  if (argptr(0, (void*) &tmain, sizeof(tmain)) < 0)
+    return -1;
+  if (argptr(1, (void*) &stack, sizeof(stack)) < 0)
+    return -1;
+  if (argptr(2, (void*) &arg, sizeof(arg)) < 0)
+    return -1;
+  
+  return thread_create(tmain, stack, arg);
+}
+
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
+int
+sys_thread_join(void)
+{
+  void **stack;
+  if(argptr(0, (void*) &stack, sizeof(stack) < 0))
+     return -1;
+  
+  return thread_join(stack);
+}

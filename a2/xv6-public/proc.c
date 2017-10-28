@@ -464,3 +464,17 @@ procdump(void)
     cprintf("\n");
   }
 }
+
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
+int
+thread_create(void (*tmain)(void *), void *stack, void *arg)
+{
+  return 0;
+}
+
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
+int
+thread_join(void **stack)
+{
+  return 0;
+}

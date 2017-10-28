@@ -20,3 +20,6 @@
 #define SYS_link   19
 #define SYS_mkdir  20
 #define SYS_close  21
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
+#define SYS_thread_create 22
+#define SYS_thread_join   23
