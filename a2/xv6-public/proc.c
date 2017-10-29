@@ -469,7 +469,50 @@ procdump(void)
 int
 thread_create(void (*tmain)(void *), void *stack, void *arg)
 {
-  return 0;
+  int tid, i;
+  uint sp, ustack[2];
+  struct proc *nt;
+  
+  // Allocate thread like a process.
+  if ((nt = allocproc()) == 0)
+    return -1;
+  
+  // Copy process state and page table from p.
+  nt->pgdir = proc->pgdir;
+  nt->sz = proc->sz;
+  nt->parent = proc;
+  *(nt->tf) = *(proc->tf);
+  nt->tf->eip = (uint)tmain; // Set instruction pointer to tmain.
+  
+  // Set stack pointer to point to new stack.
+  // Decrement it by 2 to move it below the return PC.
+  // See Figure 2-3 in xv6 book for memory layout. Also, see code for exec()
+  sp = (uint)stack;
+  sp -= 2*sizeof(uint);
+  ustack[0] = 0xffffffff; // fake return PC
+  ustack[1] = (uint)arg;  // argument
+  if (copyout(nt->pgdir, sp, ustack, 2) < 0)
+    return -1;
+  nt->tf->esp = sp;
+  
+  // Copy open files.
+  for(i = 0; i < NOFILE; i++)
+    if(proc->ofile[i])
+      nt->ofile[i] = filedup(proc->ofile[i]);
+  
+  nt->cwd = idup(proc->cwd);
+  
+  // Don't actually need this. Just for debugging.
+  safestrcpy(nt->name, proc->name, sizeof(proc->name));
+  
+  tid = nt->pid;
+  
+  // Change thread state.
+  acquire(&ptable.lock);
+  nt->state = RUNNABLE;
+  release(&ptable.lock);
+  
+  return tid;
 }
 
 /* CMPT 332 GROUP 23 Change, Fall 2017 */
