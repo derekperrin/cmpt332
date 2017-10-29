@@ -1,0 +1,64 @@
+# CMPT 332 -- Fall 2017
+# Assignment 2
+# Derek Perrin 		dmp450 11050915
+# Dominic McKeith 	dom258 11184543
+#
+
+Adding system calls:
+	- Follow the procedure for adding a syscall to xv6. This is the same as 
+		it was in A1. 
+	-	System calls need to be added to usys.S, syscall.c, syscall.h, user.h
+		defs.h
+	- We are dealing with processes, so we also need to add the syscall to
+		sysproc.c. Our actual system call implementations belongs in proc.c.
+
+Functions needed:
+***	int thread_create(void (*tmain)(void*), void* stack, void* arg) ***
+
+	- This system call closely mimics the behavior of the fork system call. The
+		main difference is that we want to use the same page table as the parent
+		process instead of creating a new one
+	- In the proc structure, the relevant fields we need to take care of in the 
+		new process are:
+			pgdir: the page table
+			sz: size of the process memory in bytes
+			pid: this will be the thread id
+			parent: the process which creates this thread
+			trapframe: this puppy is magic and has lots of registers and stuff.
+			ofile: the open files
+			cwd: the current working directory
+			name: this is the process name and is used for debugging.
+	- after allocating the process, we can copy most things from the parent. We
+		set the child sz, pgdir, and tf to be the same as the parent. Fork does the
+		same thing, with the exceptiong of copying pgdir. parent is set to the
+		parent. 
+	- The open files of the parent are iterated through and added to be
+		open files in the child thread.
+	- the cwd of the parent is copied to the child. We must use idup(proc->cwd)
+		because we want to increment the number of references to that directory.
+	- The only other thnig that needs to be taken care of is setting up the stack.
+		Looking in the exec() system call, we see how to do this. The important
+		pointers are esp and eip. We point eip to the function pointer tmain given
+		by the user.
+	- the stack pointer, esp, is set to point at the top of the provided stack,
+		and then decremented by 2 * sizeof(uint). This is because we want the stack
+		pointer to point below the arguments and return address. 
+	- the return PC is set to 0xffffffff because the book told us to do that.
+	- finally, we use copyout to copy our size 2 stack inside our syscall to the
+		page table of the new process/thread.
+	- set the thread id to be returned to the pid of the new thread.
+		IMPORTANT: it must be done before changing the state to RUNNABLE.
+		this is explained further in the provided TRICKS documentation inside the 
+		xv6	directory.
+	- return thread id
+
+
+	int thread_join(void** stack)
+
+	int mtx_create(int locked)
+
+	int mtx_lock(int lock_id)
+
+	int mtx_unlock(int lock_id)
+
+
