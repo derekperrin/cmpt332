@@ -224,7 +224,8 @@ wait(void)
     // Scan through table looking for zombie children.
     havekids = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->parent != proc)
+	  /* CMPT 332 GROUP 23 Change, Fall 2017 */
+      if(p->parent != proc || p->pgdir == proc->pgdir)
         continue;
       havekids = 1;
       if(p->state == ZOMBIE){
@@ -466,6 +467,10 @@ procdump(void)
 }
 
 /* CMPT 332 GROUP 23 Change, Fall 2017 */
+// Creates a new thread of execution. The new thread is the same as a process,
+// but it shares the address space with the parent process. New thread starts
+// execution at tmain and takes a pointer to arguments in arg. The user is
+// responsible for providing a stack for the newly provided thread.
 int
 thread_create(void (*tmain)(void *), void *stack, void *arg)
 {
@@ -492,8 +497,10 @@ thread_create(void (*tmain)(void *), void *stack, void *arg)
   ustack[0] = 0xffffffff; // fake return PC
   ustack[1] = (uint)arg;  // argument
   if (copyout(nt->pgdir, sp, ustack, 2) < 0)
-    return -1;
+	return -1;
+
   nt->tf->esp = sp;
+  nt->tf->ebp = (uint)stack;	// needed to return stack in thread_join
   
   // Copy open files.
   for(i = 0; i < NOFILE; i++)
@@ -506,6 +513,8 @@ thread_create(void (*tmain)(void *), void *stack, void *arg)
   safestrcpy(nt->name, proc->name, sizeof(proc->name));
   
   tid = nt->pid;
+  if (tid == -1)
+	  return -1;
   
   // Change thread state.
   acquire(&ptable.lock);
@@ -516,8 +525,46 @@ thread_create(void (*tmain)(void *), void *stack, void *arg)
 }
 
 /* CMPT 332 GROUP 23 Change, Fall 2017 */
+// Calling process will block until a child thread exits.
+// Return pid of child thread on success. Store the stack pointer of the child
+// thread in the stack argument provided so the user can free the stack.
 int
 thread_join(void **stack)
 {
-  return 0;
+  struct proc *p;
+  int havekids, pid;
+
+  acquire(&ptable.lock);
+  for(;;){
+    // Scan through table looking for zombie children.
+    havekids = 0;
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->parent != proc || p->pgdir != proc->pgdir)
+        continue;
+      havekids = 1;
+      if(p->state == ZOMBIE){
+        // Found one.
+        pid = p->pid;
+        kfree(p->kstack);
+        p->kstack = 0;
+        p->state = UNUSED;
+        p->pid = 0;
+        p->parent = 0;
+        p->name[0] = 0;
+        p->killed = 0;
+		*stack = (void*) p->tf->ebp;
+        release(&ptable.lock);
+        return pid;
+      }
+    }
+
+    // No point waiting if we don't have any children.
+    if(!havekids || proc->killed){
+      release(&ptable.lock);
+      return -1;
+    }
+
+    // Wait for children to exit.  (See wakeup1 call in proc_exit.)
+    sleep(proc, &ptable.lock);  //DOC: wait-sleep
+  }
 }
