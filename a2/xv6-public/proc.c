@@ -572,3 +572,21 @@ thread_join(void **stack)
     sleep(proc, &ptable.lock);  //DOC: wait-sleep
   }
 }
+
+int
+mtx_create(int locked)
+{
+  return 0;
+}
+
+int
+mtx_lock(int lock_id)
+{
+  return 0;
+}
+
+int
+mtx_unlock(int lock_id)
+{
+  return 0;
+}

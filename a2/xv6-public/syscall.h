@@ -23,3 +23,6 @@
 /* CMPT 332 GROUP 23 Change, Fall 2017 */
 #define SYS_thread_create 22
 #define SYS_thread_join   23
+#define SYS_mtx_create  24
+#define SYS_mtx_lock    25
+#define SYS_mtx_unlock  26

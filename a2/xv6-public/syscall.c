@@ -101,6 +101,9 @@ extern int sys_uptime(void);
 /* CMPT 332 GROUP 23 Change, Fall 2017 */
 extern int sys_thread_create(void);
 extern int sys_thread_join(void);
+extern int sys_mtx_create(void);
+extern int sys_mtx_lock(void);
+extern int sys_mtx_unlock(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -127,6 +130,9 @@ static int (*syscalls[])(void) = {
 /* CMPT 332 GROUP 23 Change, Fall 2017 */
 [SYS_thread_create] sys_thread_create,
 [SYS_thread_join]   sys_thread_join,
+[SYS_mtx_create]    sys_mtx_create,
+[SYS_mtx_lock]      sys_mtx_lock,
+[SYS_mtx_unlock]    sys_mtx_unlock,
 };
 
 void

@@ -26,6 +26,9 @@ int uptime(void);
 /* CMPT 332 GROUP 23 Change, Fall 2017 */
 int thread_create(void (*tmain)(void*), void*, void*);
 int thread_join(void**);
+int mtx_create(int);
+int mtx_lock(int);
+int mtx_unlock(int);
 
 // ulib.c
 int stat(char*, struct stat*);
