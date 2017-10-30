@@ -105,13 +105,13 @@ sys_thread_create(void)
     return -1;
   return thread_create(tmain, (void*)stack, arg);
 /*
-	int tmain, stack, arg;
-	if(argint(0, &tmain) < 0)
-			return -1;
-	if(argint(1, &stack) < 0)
-			return -1;
-	if(argint(2, &arg) < 0)
-			return -1;
+  int tmain, stack, arg;
+  if(argint(0, &tmain) < 0)
+      return -1;
+  if(argint(1, &stack) < 0)
+      return -1;
+  if(argint(2, &arg) < 0)
+      return -1;
   return thread_create((void*)tmain, (void*)stack, (void*)arg);
   */
 }
