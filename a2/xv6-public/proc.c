@@ -488,6 +488,10 @@ thread_create(void (*tmain)(void *), void *stack, void *arg)
   nt->parent = proc;
   *(nt->tf) = *(proc->tf);
   nt->tf->eip = (uint)tmain; // Set instruction pointer to tmain.
+
+  // EXPERIMENTAL
+  nt->tf->eax = 0;
+  nt->tstack = (char*)stack;	// lets us give stack back in thread_join()
   
   // Set stack pointer to point to new stack.
   // Decrement it by 2 to move it below the return PC.
@@ -496,11 +500,10 @@ thread_create(void (*tmain)(void *), void *stack, void *arg)
   sp -= 2*sizeof(uint);
   ustack[0] = 0xffffffff; // fake return PC
   ustack[1] = (uint)arg;  // argument
-  if (copyout(nt->pgdir, sp, ustack, 2) < 0)
+  if (copyout(nt->pgdir, sp, ustack, 2*sizeof(uint)) < 0)
 	return -1;
 
   nt->tf->esp = sp;
-  nt->tf->ebp = (uint)stack;	// needed to return stack in thread_join
   
   // Copy open files.
   for(i = 0; i < NOFILE; i++)
@@ -513,8 +516,6 @@ thread_create(void (*tmain)(void *), void *stack, void *arg)
   safestrcpy(nt->name, proc->name, sizeof(proc->name));
   
   tid = nt->pid;
-  if (tid == -1)
-	  return -1;
   
   // Change thread state.
   acquire(&ptable.lock);
@@ -539,8 +540,10 @@ thread_join(void **stack)
     // Scan through table looking for zombie children.
     havekids = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->parent != proc || p->pgdir != proc->pgdir)
+      if(p->parent != proc)
         continue;
+			if(proc->pgdir != p->pgdir)
+		 		continue;
       havekids = 1;
       if(p->state == ZOMBIE){
         // Found one.
@@ -552,7 +555,8 @@ thread_join(void **stack)
         p->parent = 0;
         p->name[0] = 0;
         p->killed = 0;
-		*stack = (void*) p->tf->ebp;
+    		*stack = (void*)p->tstack;
+    		p->tstack = 0;
         release(&ptable.lock);
         return pid;
       }

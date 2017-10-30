@@ -95,16 +95,25 @@ int
 sys_thread_create(void)
 {
   void (*tmain) (void *);
-  void *stack;
+  int stack;
   void *arg;
   if (argptr(0, (void*) &tmain, sizeof(tmain)) < 0)
     return -1;
-  if (argptr(1, (void*) &stack, sizeof(stack)) < 0)
+  if (argint(1, (void*) &stack) < 0)
     return -1;
   if (argptr(2, (void*) &arg, sizeof(arg)) < 0)
     return -1;
-  
-  return thread_create(tmain, stack, arg);
+  return thread_create(tmain, (void*)stack, arg);
+/*
+	int tmain, stack, arg;
+	if(argint(0, &tmain) < 0)
+			return -1;
+	if(argint(1, &stack) < 0)
+			return -1;
+	if(argint(2, &arg) < 0)
+			return -1;
+  return thread_create((void*)tmain, (void*)stack, (void*)arg);
+  */
 }
 
 /* CMPT 332 GROUP 23 Change, Fall 2017 */
