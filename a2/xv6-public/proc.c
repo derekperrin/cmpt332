@@ -649,15 +649,19 @@ mtx_lock(int lock_id)
 int
 mtx_unlock(int lock_id)
 {
+  void *chan;
+  chan = 0;
 	// check lock_id is valid and if proc owns mutex
 	if (lock_id >= freemtx || lock_id < 0)
 		return -1;
 	if (mutexes[lock_id].owner != proc->pid)
 		return -1;
 	
+  chan = (void*)(mutexes + lock_id);
 	acquire(&(mutexes[lock_id].mlock));
 	mutexes[lock_id].value = 0;
 	mutexes[lock_id].owner = 0;
 	release(&(mutexes[lock_id].mlock));
+  wakeup(chan);
   return 0;
 }

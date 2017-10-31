@@ -12,9 +12,8 @@ void
 producer(void *arg)
 {
   int pid, i, j;
-  char items[9];
+  char items[9] = "Producer";
 
-  items = "Producer";
   j = 0;
   pid = getpid();
 
@@ -87,7 +86,7 @@ consumer(void *arg)
 int
 main(void)
 {
-  int p1, p2, p3, c1, c2, c3;
+  int i, p1, p2, p3, c1, c2, c3;
   void *prodstack1, *prodstack2, *prodstack3;
   void *consstack1, *consstack2, *consstack3;
   void *stackret;
