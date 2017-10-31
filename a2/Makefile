@@ -57,6 +57,10 @@ S_CHAT_OBJS := $(addprefix $(BUILD_DIR)/, s-chat.o)
 
 .PHONY: all clean 
 
+# Don't allow use of the -jN flags because it breaks things because of the 
+# way our objects are named.
+.NOTPARALLEL:
+
 all: $(EXE)
 	
 # create the architecture specific directories
