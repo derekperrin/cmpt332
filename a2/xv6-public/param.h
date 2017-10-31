@@ -12,3 +12,5 @@
 #define NBUF         (MAXOPBLOCKS*3)  // size of disk block cache
 #define FSSIZE       1000  // size of file system in blocks
 
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
+#define NOMUTEX			 50	 // maximum number of mutexes

@@ -7,6 +7,14 @@
 #include "proc.h"
 #include "spinlock.h"
 
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
+// Mutex structure
+struct mutex {
+	int owner;	// PID of the process which owns this mutex.
+	int value;	// Value of the mutex. Either 0 or 1.
+	struct spinlock mlock; // spinlock needed to adjust each mutex
+};
+
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -25,6 +33,11 @@ pinit(void)
 {
   initlock(&ptable.lock, "ptable");
 }
+
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
+struct mutex mutexes[NOMUTEX];	// allocate mutexes from here
+int freemtx = 0;	// next free mutex available to be created.
+
 
 //PAGEBREAK: 32
 // Look in the process table for an UNUSED proc.
@@ -573,20 +586,78 @@ thread_join(void **stack)
   }
 }
 
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
+// Creates a new mutex if one is available.
+// Return the id of the mutex if one is created, -1 otherwise.
+// if "locked" is 0, mutex is initialized as unlocked. Otherwise it's locked.
 int
 mtx_create(int locked)
 {
-  return 0;
+	int mtx_id;
+	mtx_id = 0;
+	// check if any more mutexes are available to be created.
+	if (freemtx > NOMUTEX)
+		return -1;
+
+	// Initialize the spinlock so processes can use it.
+	initlock(&mutexes[mtx_id].mlock, "mutex");
+
+	mtx_id = freemtx;
+	freemtx++;
+	
+	// Set lock state based on argument
+	if(locked){
+		mutexes[mtx_id].owner = proc->pid;
+		mutexes[mtx_id].value = 1;
+	} else {
+		mutexes[mtx_id].owner = 0;
+		mutexes[mtx_id].value = 0;
+	}
+
+	return mtx_id;
 }
 
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
+// Requests ownership of the mutex. Calling process blocks if mutex is not
+// available. Returns 0 on success, -1 otherwise(invalid parameter)
 int
 mtx_lock(int lock_id)
 {
+	void *chan;
+	chan = 0;
+	// make sure a mutex was allocated before allowing a lock request to be made.
+	if (lock_id >= freemtx || lock_id < 0)
+		return -1;
+	chan = (void*)(mutexes + lock_id);
+	acquire(&(mutexes[lock_id].mlock));
+
+	// sleep until a lock is acquired on the mutex
+	while (mutexes[lock_id].value > 0 && mutexes[lock_id].owner != proc->pid) {
+		sleep(chan, &(mutexes[lock_id].mlock));
+	}
+
+	// after the lock has been acquired
+	mutexes[lock_id].owner = proc->pid;
+	mutexes[lock_id].value = 1;
+	release(&(mutexes[lock_id].mlock));
   return 0;
 }
 
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
+// Releases ownership of the mutex. Calling process must own mutex.
+// Returns 0 on success, -1 otherwise.
 int
 mtx_unlock(int lock_id)
 {
+	// check lock_id is valid and if proc owns mutex
+	if (lock_id >= freemtx || lock_id < 0)
+		return -1;
+	if (mutexes[lock_id].owner != proc->pid)
+		return -1;
+	
+	acquire(&(mutexes[lock_id].mlock));
+	mutexes[lock_id].value = 0;
+	mutexes[lock_id].owner = 0;
+	release(&(mutexes[lock_id].mlock));
   return 0;
 }
