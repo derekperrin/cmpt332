@@ -12,7 +12,8 @@ Adding system calls:
 	- We are dealing with processes, so we also need to add the syscall to
 		sysproc.c. Our actual system call implementations belongs in proc.c.
 
-Functions needed:
+THREADS
+
 ***	int thread_create(void (*tmain)(void*), void* stack, void* arg) ***
 
 	- This system call closely mimics the behavior of the fork system call. The
@@ -53,12 +54,99 @@ Functions needed:
 	- return thread id
 
 
-	int thread_join(void** stack)
+***	int thread_join(void** stack) ***
+  - this system call will closely mimic that of the wait() system call. There
+    are a few minor differences.
+  - in addition to checking if the calling process is a parent, the 
+    page tables need to be compared to be the same
+    
+    if(proc->pgdir != p->pgdir)
+      continue
 
-	int mtx_create(int locked)
+  -We need to give the top of the stack pointer that was given in thread_create
+   back to the user so they can free it. We changed the proc structure to have
+   a stack field so we could save the pointer when the thread was created.
 
-	int mtx_lock(int lock_id)
+    struct proc {
+      ...
+      char *tstack
+      ...
+    }
 
-	int mtx_unlock(int lock_id)
+    thread_join(void **stack) {
+    ...
+    *stack = p->tstack
+    p->tstack = 0;
+    ...
+    }
+  
+  -everything else is identical to the wait() system call. We return the pid
+   on success.
 
 
+MUTEXES
+
+We need to have a mutex structure with the following properties:
+  Ownership Information
+    - this is needed so a process that doesn't own the mutex can't unlock it.
+  Mutex Value
+    - this is how mutexes work. Has a value of 0 or 1.
+  Spinlock
+    - This is needed so processes can try to access the mutex.
+
+We will have an array of NOMUTEX mutexes available for creation. The assignment
+spec does not say we are required to destroy mutexes ever, so this simplifies
+things for us. We will have an index that counts up everytime a mutex is
+created. 
+
+mtx_create(int locked)
+  - Create a mutex and return its ID to the caller.
+  - if locked != 0, then created mutex will be locked and owner will be caller.
+
+  mtx = mutexes[currfree]
+  mtxid = currfree
+  initlock(mtx.lock)
+  if (locked)
+    mtx.owner = proc->pid
+    mtx.value = 1
+  else
+    mtx.owner = 0
+    mtx.value = 0
+
+  currfree++
+  return mtxid
+
+
+mtx_lock(lock_id)
+  - if lock_id is valid, then caller will attempt decrement mutex and obtain
+    ownership. If another process owns it, then caller will be blocked.
+
+  if (lock_id < 0 || lock_id >= currfree)
+    return -1
+
+  mtx = mutexes[lock_id]
+  acquire(&mtx.lock)
+  while(mtx.value > 0 && mtx.owner != proc->pid)
+    sleep(chan, &mtx.lock)
+
+  - once the lock is acquired, process is free to do stuff in CR.
+  mtx.owner = proc->pid
+  mtx.value = 1
+  release(&mtx.lock)
+  return 0
+
+
+mtx_unlock(lock_id)
+  - if lock_id is valid and caller owns the mutex, then unlock the mutex for 
+    other processes which blocked on it and wake them up. If input is invalid, 
+    return -1.
+
+    if (lock_id < 0 || lock_id >= currfree)
+      return -1
+    mtx = mutexes[lock_id]
+    acquire(&mtx.lock)
+    mtx.value = 0
+    mtx.owner = 0
+    release(&mtx.lock)
+    wakeup(chan)
+    return 0

@@ -135,7 +135,7 @@ int mainp(int argc, char* argv[]){
 
     printf("Arguments: %d %s %d\n", my_port, pc_name, their_port);
     /* use seperate scopes to get around c90 conventions 
-       and to make things more organized. */
+       and to make things more organized. */ /* LOL LOL LOL -Derek */
     {
         /* set up the server thread */
         /*int server_pid;*/
