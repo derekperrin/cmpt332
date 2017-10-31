@@ -28,10 +28,14 @@ LDFLAGS = -L./
 LDLIBS = 
 ARFLAGS = rcs
 
-EXE = $(BUILD_DIR)/s-chat reader-writer-test
+EXE = $(BUILD_DIR)/s-chat
 
 ARCH = $(shell uname -m)
 OS = $(shell uname -s)
+
+ifeq ($(ARCH),x86_64)
+	EXE += reader-writer-test
+endif
 
 # Mix tape side A
 UBC_PTHREADS_DIR = /student/cmpt332/pthreads
@@ -54,7 +58,7 @@ S_CHAT_OBJS := $(addprefix $(BUILD_DIR)/, s-chat.o)
 .PHONY: all clean 
 
 all: $(EXE)
-
+	
 # create the architecture specific directories
 $(BUILD_DIR): 
 	mkdir -p $(BUILD_DIR)
@@ -101,4 +105,4 @@ $(S_CHAT_OBJS): s-chat.c | $(BUILD_DIR)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $^ -o $@
 
 clean:
-	$(RM) -rf $(EXE) *.o *.a build
+	$(RM) -rf $(EXE) reader-writer-test *.o *.a build
