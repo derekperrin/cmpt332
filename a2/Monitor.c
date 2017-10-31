@@ -8,11 +8,16 @@
 #include <list.h>
 #include <stdlib.h>
 
+/* UBC Pthreads */
+#include <os.h>
+#include <standards.h>
+
 void MonInit(void) {
 
 }
 
 void MonEnter(void) {
+
 
 }
 

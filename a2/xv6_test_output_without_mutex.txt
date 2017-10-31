@@ -1,0 +1,402 @@
+dd if=/dev/zero of=xv6.img count=10000
+dd if=bootblock of=xv6.img conv=notrunc
+dd if=kernel of=xv6.img seek=1 conv=notrunc
+/student/cmpt332/xv6/qemu/bin/qemu-system-i386 -serial mon:stdio -hdb fs.img xv6.img -smp 2 -m 512 
+xv6...
+cpu1: starting
+cpu0: starting
+sb: size 1000 nblocks 941 ninodes 200 nlog 30 logstart 2 inodestart 32 bmap start 58
+init: starting sh
+$ rosh;     prodscons
+Mutex lock acquired by producer pid 4
+P
+Pr
+Pro
+Prod
+Produ
+Produc
+Produce
+Producer
+Mutex lock acquired by producer pid 5
+ProducerP
+ProducerPr
+ProducerPro
+ProducerProd
+ProducerProdu
+ProducerProduc
+ProducerProduce
+ProducerProducer
+Lock acquired by consumer pid 6
+Consuming BUFFER
+BUFFER: ProducerProducer
+Mutex lock acquired by producer pid 4
+ProducerProducerP
+ProducerProducerPr
+ProducerProducerPro
+ProducerProducerProd
+ProducerProducerProdu
+ProducerProducerProduc
+ProducerProducerProduce
+ProducerProducerProducer
+Mutex lock acquired by proMpid 6 cleared BUFFER
+Lock acquired by consumer pid 7
+Consuming BUFFER
+BUFFER: 
+pid 7 cleared BUFFER
+utex lock acquired by producer pid 8
+P
+Pr
+Pro
+Prod
+Produ
+Produc
+Produce
+Producer
+Lock acquired by consumer pid 9
+Consuming BUFFER
+BUFFER: Producer
+Mutex lock acquired by producer pid 8
+ProducerP
+ProducerPr
+ProducerPro
+ProducerProd
+ProducerProdu
+ProducerProduc
+ProducerProduce
+ProducerProducer
+pid 9 cleared BUFFER
+Mutex lock acquired by producer pid 4
+P
+Pr
+Pro
+Prod
+Produ
+Produc
+Produce
+Lock acquired by consumer pid 6
+Consuming BUFFER
+BUFFER: Produce
+pid 6 cleared BUFFER
+Lock acquired by consumer pid 7
+Consuming BUFFER
+BUFFER: 
+pid 7 cleared BUFFER
+
+dLock acquired by consumer pid 7
+Consuming BUFFER
+BUFFER: 
+pid 7 cleared BUFFER
+Mutex lock acquired by producer pid 8
+P
+Pr
+Pro
+Prod
+Produ
+Produc
+Produce
+Producer
+Lock acquired by consumer pid 9
+Consuming BUFFER
+BUFFER: Producer
+Mutex lock acquired by producer pid 4
+ProducerP
+ProducerPr
+ProducerPro
+ProducerProd
+ProducerProdu
+ProducerProduc
+ProducerProduce
+ProducerProducer
+Mutex lock acquired by producer pid 8
+ProducerProducerP
+ProducerProducerPr
+ProducerProducerPro
+ProducerProducerProd
+ProducerProducerProdu
+ProducerProducerProduc
+pid 9 cleared BUFFER
+Mutex lock acquired by producer pid 4
+P
+Pr
+Pro
+Prod
+Produ
+Produc
+Produce
+Producer
+Lock acquired by consumeruP pid 6
+Consuming BUFFER
+BUFFER: Producer
+pid 6 cleared BUFFER
+Lock acquired by consumer pid 7
+Consuming BUFFER
+cer pid 5
+P
+Pr
+Pro
+Prod
+Produ
+Produc
+Produce
+Producer
+BUFFER: Producer
+pid 7 cleared BUFFER
+Lock acquired by consumer pid 9
+Consuming BUFFER
+BUFFER: 
+pid 9 cleared BUFFER
+Mutex lock acquired by producer pid 4
+P
+Pr
+Mutex lock acquired by producer pid 5
+Pr
+Pr
+Pro
+Prod
+Produ
+Produc
+Produce
+Producer
+Lock acquired by consumer pid 6
+Consuming BUFFER
+Producer
+Producer
+Producer
+Producer
+Producer
+Producer
+Mutex lock acquired by producer rpBoducer
+Producer
+Mutex lock acquired by producer pid 4
+Producer
+Producer
+UFFER: Producer
+pid 6 cleared BUFFER
+Lock acquired by consumer pid 7
+Consuming BUFFER
+
+
+
+
+
+
+BUFFER: 
+pid 7 cleared BUFFER
+Lock acquired by consumer pid 9
+Consuming BUFFER
+BUFFER: 
+pid 9 cleared BUFFER
+iLock acquired by consumer pid 6
+Consuming BUFFER
+BUFFER: 
+pid 6 cleared BUFFER
+Lock acquired by consumer pid 7
+Consuming BUMutex lock acquired by producer pid 8
+P
+Pr
+Pro
+Prod
+Produ
+Produc
+Produce
+Producer
+Mutex lock acquired by producer pid 4
+ProducerP
+ProducerPr
+ProducerPro
+ProducerProd
+ProducerProdu
+ProducerProduc
+ProducerProduce
+ProducerProducer
+d 5
+ProducerProducerP
+ProducerProducerPr
+ProducerProducerPro
+ProducerProducerProd
+ProducerProducerProdu
+ProducerProducerProduc
+ProducerProducerProduce
+ProducerProducerProducer
+Mutex lock acquired by producer pid 8
+ProducerProducerProducerP
+ProducerProducerProducerPr
+ProducerProducerProducerPro
+ProducerProducerProducerProd
+FFER
+BUFFER: ProducerProducerProducerProd
+pid 7 cleared BUFFER
+
+
+
+
+Lock acquired by consumer pid 9
+Consuming BUFFER
+BUFFER: 
+pid 9 cMlutexMutex lock acquired by producer pid 5
+P
+Pr
+Pro
+Prod
+Produ
+ lock acquired by producer pid 4
+Produ
+Produ
+Produ
+Produ
+Produ
+Produc
+Produce
+Producer
+Producer
+Producer
+Mutex lock acquired by producer pid 8
+ProducerP
+ProducerPr
+ProducerPro
+ProducerProd
+ProducerProduce
+ProducerProduce
+ProducerProduce
+ProducerProducer
+ProducerProducer
+eMutex lock acquired by producer pid 4
+ProducerProducer
+ProducerProducer
+ProducerProducer
+Produared BUFFER
+cerProducer
+ProducerProducer
+ProducerProducer
+ProduceMMutex lock acquired by producer pid 5
+ProducerProducer
+ProducerProducer
+ProducerProducer
+ProducerProducer
+ProducerProducer
+ProducerProducer
+ProducerProducer
+ProducerProducer
+Lock acquired by consumer pid 6
+Consuming BUFFER
+BUFFER: ProducerProducer
+pid 6 cleared BUFFER
+Lock acquired by consumer pid 7
+utex lock acquired by producer pid 8
+P
+Pr
+Pro
+Prod
+Produ
+Produc
+Produce
+Producer
+Mutex lock acquired by producer pid 5
+ProdrucerP
+ProducerPr
+ProducerPro
+ProducerProd
+ProducerProdu
+Consuming BUFFER
+BUFFER: ProducerProdu
+pid 7 cleared BUFFER
+Mutex lock acquired by producP
+
+
+Lock acquired by consumer pid 6
+Consuming BUFFER
+BUFFER: 
+pid 6 cleared BUFFER
+Lock acquired by consumer pid 9
+Consuming BUFFER
+BUFFER: 
+pid 9 cleared BUFFER
+
+
+Lock acquired by consumer pid 6
+Consuming BUFFER
+BUFFER: 
+pid 6 cleared BUFFER
+Lock acquired by consumer pid 7
+Consuming BUFFER
+BUFFEer pid 8
+R: 
+pid 7 cleared BUFFER
+P
+Pr
+Pro
+ProMLock acquired by consumer pid 6
+Consuming BUFFER
+BUFFER: Prod
+pid 6 cleared BUFFER
+Lock acquired by consumer pid 7
+Consuming BUFFER
+BUFFER: 
+pid 7 cleared BUFFER
+Lock acquired by consumer pid 9
+Consuming BUFFER
+BUFFER: 
+pid 9 cleared BUFFER
+utex lock acquired by producer pid 5
+P
+Pr
+Pro
+Lock acquired by consumer pid 6
+Consuming BUFFER
+BUFFER: Pro
+pid 6 cleared BUFFER
+Lock acquired by consumer pid 7
+Consuming BUFFER
+BUFFER: 
+pid 7 cleared BUFFER
+Lock acquired by consumer pid 9
+
+Consuming BUFFER
+BUFFER: 
+pid 9 cleared BUFFER
+
+
+Lock acquired by consumer pid 9
+Consuming BUFFER
+BUFFER: 
+pid 9 cleared BUFFER
+
+
+
+
+Mutex lock acquired by producer pid 5
+
+
+
+
+
+
+
+
+
+
+
+LMutex lock acquired by producer pid 5
+
+
+
+
+
+ock acquired by consumer pid 9
+Consuming BUFFER
+BUFFER: 
+pid 9 cleared BUFFER
+M
+
+
+utex lock acquired by producer pid 8
+
+
+
+
+
+
+
+
+Final contents of BUFFER: 
+$ x

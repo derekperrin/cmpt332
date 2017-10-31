@@ -514,7 +514,7 @@ thread_create(void (*tmain)(void *), void *stack, void *arg)
   ustack[0] = 0xffffffff; // fake return PC
   ustack[1] = (uint)arg;  // argument
   if (copyout(nt->pgdir, sp, ustack, 2*sizeof(uint)) < 0)
-  return -1;
+    return -1;
 
   nt->tf->esp = sp;
   
@@ -606,6 +606,7 @@ mtx_create(int locked)
 	freemtx++;
 	
 	// Set lock state based on argument
+  acquire(&mutexes[mtx_id].mlock);
 	if(locked){
 		mutexes[mtx_id].owner = proc->pid;
 		mutexes[mtx_id].value = 1;
@@ -613,6 +614,7 @@ mtx_create(int locked)
 		mutexes[mtx_id].owner = 0;
 		mutexes[mtx_id].value = 0;
 	}
+  release(&mutexes[mtx_id].mlock);
 
 	return mtx_id;
 }

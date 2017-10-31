@@ -164,3 +164,9 @@ For testing mutexes, I implemented the producers consumers problem. To verify
 mutexes were actually working, I just commented out the section where mutex
 locks are acquired and released and noted that the output was no longer
 synchronized.
+
+See the results in xv6_test_output_with_mutex.txt and 
+xv6_test_output_without_mutex.txt. The differences between the files is whether
+or not mutexes are used with the consumer. Mutexes are used in producers all the
+time, but not always in consumers. You can see how the text output can be 
+interrupted when mutexes are not used.

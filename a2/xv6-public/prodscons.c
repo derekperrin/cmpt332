@@ -21,12 +21,12 @@ producer(void *arg)
     
     sleep(1); // used to demonstrate concurrency actually exists
     // acquire the mutex lock
-    /*
+    // comment out this stuff if you want to get mutual exclusion
     if(mtx_lock(mtx_id) < 0) {
       printf(2, "Error in producer obtaining lock\n");
       exit();
     }
-    */
+
     printf(1, "Mutex lock acquired by producer pid %d\n", pid);
     // Critical Section
     for (i = 0; i < 8; i++) {
@@ -36,12 +36,11 @@ producer(void *arg)
     buffindex += 8;
 
     // unlock the mutex
-    /*
+    // comment out this stuff if you want to get mutual exclusion
     if(mtx_unlock(mtx_id) < 0) {
       printf(2, "Error in producer releasing lock\n");
       exit();
     }
-    */
 
     j++;
   }
@@ -62,6 +61,7 @@ consumer(void *arg)
     
     sleep(1); // used to demonstrate concurrency actually exists.
     // acquire the mutex lock
+    // comment out this stuff if you want to get mutual exclusion
     if(mtx_lock(mtx_id) < 0) {
       printf(2, "Error in consumer obtaining lock\n");
       exit();
@@ -77,6 +77,7 @@ consumer(void *arg)
     printf(1, "pid %d cleared BUFFER\n", pid);
 
     // unlock the mutex
+    // comment out this stuff if you want to get mutual exclusion
     if(mtx_unlock(mtx_id) < 0) {
       printf(2, "Error in consumer releasing lock\n");
       exit();
