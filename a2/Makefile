@@ -47,7 +47,7 @@ UBC_PTHREADS_LIB = -lpthreads
 RT_THREADS_DIR = /student/cmpt332/rtt
 RT_THREADS_INC = -I$(RT_THREADS_DIR)/include
 RT_THREADS_LD = -L$(RT_THREADS_DIR)/lib/$(OS)$(ARCH)
-RT_THREADS_LIB = -lRtt
+RT_THREADS_LIB = -lRtt -lRttUtils
 
 # BUILD_DIR is the architecture specific directory path to be created
 BUILD_DIR = build/$(OS)$(ARCH)
