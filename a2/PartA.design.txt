@@ -150,3 +150,17 @@ mtx_unlock(lock_id)
     release(&mtx.lock)
     wakeup(chan)
     return 0
+
+
+
+
+TESTING
+
+For testing threads, I created a bunch of threads. I made sure all threads
+could alter shared data. xv6 crashes and burns if you don't implement
+thread_join, so I debugging things was a nightmare. gdb saved us.
+
+For testing mutexes, I implemented the producers consumers problem. To verify
+mutexes were actually working, I just commented out the section where mutex
+locks are acquired and released and noted that the output was no longer
+synchronized.
