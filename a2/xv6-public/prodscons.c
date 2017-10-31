@@ -17,7 +17,7 @@ producer(void *arg)
   j = 0;
   pid = getpid();
 
-  while(j < 20){
+  while(j < 10){
     
     // acquire the mutex lock
     if(mtx_lock(mtx_id) < 0) {
@@ -53,7 +53,7 @@ consumer(void *arg)
   pid = getpid();
   j = 0;
 
-  while(j < 20) {
+  while(j < 10) {
     
     // acquire the mutex lock
     if(mtx_lock(mtx_id) < 0) {
@@ -86,10 +86,11 @@ consumer(void *arg)
 int
 main(void)
 {
-  int i, p1, p2, p3, c1, c2, c3;
+  int i;// , p1, p2, p3, c1, c2, c3;
   void *prodstack1, *prodstack2, *prodstack3;
   void *consstack1, *consstack2, *consstack3;
   void *stackret;
+  stackret = 0;
 
   mtx_id = mtx_create(0);
   buffindex = 0;
@@ -101,23 +102,26 @@ main(void)
   consstack2 = malloc(STACKSZ);
   consstack3 = malloc(STACKSZ);
   
-  p1 = thread_create(producer, (prodstack1 + STACKSZ - 1), 0);
-  p2 = thread_create(producer, (prodstack2 + STACKSZ - 1), 0);
-  c1 = thread_create(consumer, (consstack1 + STACKSZ - 1), 0);
-  c2 = thread_create(consumer, (consstack2 + STACKSZ - 1), 0);
-  p3 = thread_create(producer, (prodstack3 + STACKSZ - 1), 0);
-  c3 = thread_create(consumer, (consstack3 + STACKSZ - 1), 0);
+  thread_create(producer, (prodstack1 + STACKSZ - 1), 0);
+  thread_create(producer, (prodstack2 + STACKSZ - 1), 0);
+  thread_create(consumer, (consstack1 + STACKSZ - 1), 0);
+  thread_create(consumer, (consstack2 + STACKSZ - 1), 0);
+  thread_create(producer, (prodstack3 + STACKSZ - 1), 0);
+  thread_create(consumer, (consstack3 + STACKSZ - 1), 0);
 
+  /*
   if (p1 < 0 || p2 < 0 || p3 < 0 || c1 < 0 || c2 < 0 || c3 < 0){
     printf(2, "Error in main creating threads\n");
     exit();
   }
-  for (i = 0; i <6; i++) {
+  */
+
+  for (i = 0; i < 6; i++) {
     if (thread_join(&stackret) < 0) {
       printf(2, "Error in thread_join\n");
       exit();
     }
-    free(&stackret - STACKSZ + 1);
+    free(stackret - STACKSZ + 1);
   }
 
   printf(1, "Final contents of BUFFER: %s\n", BUFFER);
