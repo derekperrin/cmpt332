@@ -596,7 +596,7 @@ mtx_create(int locked)
 	int mtx_id;
 	mtx_id = 0;
 	// check if any more mutexes are available to be created.
-	if (freemtx > NOMUTEX)
+	if (freemtx >= NOMUTEX)
 		return -1;
 
 	// Initialize the spinlock so processes can use it.
@@ -660,7 +660,7 @@ mtx_unlock(int lock_id)
   chan = (void*)(mutexes + lock_id);
 	acquire(&(mutexes[lock_id].mlock));
 	mutexes[lock_id].value = 0;
-	mutexes[lock_id].owner = 0;
+	mutexes[lock_id].owner = -1;
 	release(&(mutexes[lock_id].mlock));
   wakeup(chan);
   return 0;
