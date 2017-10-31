@@ -11,25 +11,52 @@
 #include <limits.h>
 #include <string.h>
 
+#define MAX_MESSAGE_SIZE 512
 
+typedef struct thread_communication{
+    char* message;
+    int from; 
+    /* from symantics:
+        0: server
+        1: inputMessage
+        2: receiveMessage
+        3: printMessage
+        4: sendMessage
+     */
+} thread_comm;
+
+/* Read in a message fromt he keyboard and send it to the server */
 void inputMessage(void){
     /* TODO: Implement this for waiting for keyboard input */
     printf("I am the message inputter\n");
+    
+    /* constantly read in from the console */
+    /*for(;;){
+        
+    }*/
+    
     RttExit();
 }
 
-void recieveMessage(void){
+/* Recieve a message from the network and send it to the server */
+void receiveMessage(void){
     /* TODO: Implement whatever this does */
     printf("I am the message reciever\n");
     RttExit();
 }
 
+/* grab a message from the server that was placed there by receiveMessage and
+ * print it to the console
+ */
 void printMessage(void){
     /* TODO: Implement this to print stuff to screen */
     printf("I am the message printer\n");
     RttExit();
 }
 
+/* Grab a message from the server that was put there by inputMessage and send
+ * it over the network to the destination address
+ */
 void sendMessage(void){
     /* TODO: Implement whatever this does too */
     printf("I am the message sender\n");
@@ -37,8 +64,62 @@ void sendMessage(void){
 }
 
 void server(void){
+    LIST* incoming,* outgoing;
+    RttThreadId* from;
+    thread_comm* received_message;
+    u_int* message_size;
     /* TODO: Implement server to handle everything */
     printf("I am the server\n");
+    /* First, setup the queues for incomming and outgoing messages */
+    /* setup the queue for incomming messages */
+    
+    incoming = ListCreate();
+    outgoing = ListCreate();
+    received_message = malloc(sizeof(thread_comm));
+    message_size = malloc(sizeof(u_int));
+    *message_size = sizeof(thread_comm);
+    from = NULL;
+    
+    for(;;){
+        /* If a thread has sent a message to the server */
+        if (RttMsgWaits() == 1){
+            /* recieve the message */
+            /* TODO: check return value of RttReceive */
+            RttReceive(from, received_message, message_size);
+            switch(received_message->from){
+                case 0: /* Message is from server */
+                    printf("Error: Server received message from itself!\n");
+                    break;
+                case 1: /* Message is from inputMessage */
+                    printf("Server received message from inputMessage.\n");
+                    ListAdd(outgoing, received_message->message);
+                    /* TODO: check return value of ListAdd */
+                    break;
+                case 2: /* Message is from receiveMessage */
+                    printf("Server received message from receiveMessage.\n");
+                    ListAdd(incoming, received_message->message);
+                    break;
+                case 3: /* Message is from printMessage */
+                    printf("Error: server should not be receiving messages "
+                           "from printMessage.\n");
+                    break;
+                case 4: /* Message is from sendMessage */
+                    printf("Server received message from sendMessage.\n");
+                    break;
+                default:
+                    printf("Error: server received message from unknown source"
+                           ".\n");
+                    break;
+            }
+        }
+        /* If the server is not receiving a message, then send a message to a 
+           local thread if there is one in the queue */
+        if (ListCount(outgoing) > 0){
+            /* send a message to printMessage and remove node from Queue/List*/
+        }
+        /* Else, send a message over the network. */
+    }
+    
     RttExit();
 }
 
@@ -78,7 +159,7 @@ int mainp(int argc, char* argv[]){
         server_priority->startingtime.seconds = 0; /* Start time of 0? */
         server_priority->startingtime.microseconds = 0; /* Start time of 0? */
         server_priority->deadline.seconds = LONG_MAX; /*Deadline of the max 
-                                        because we don't want the thread to exit */
+                                    because we don't want the thread to exit */
         server_priority->deadline.microseconds = LONG_MAX; /* "" */
         server_priority->priority = 20; /* choose a value halfway between the 
                                            recommended values (10 to 30) */
@@ -86,7 +167,7 @@ int mainp(int argc, char* argv[]){
         server_args = malloc(sizeof(int));
         *server_args = 10;
 
-        /*server_pid = */RttCreate(server_id, server, 2<<20 /* one megabyte */, 
+        /*server_pid = */RttCreate(server_id, server, 2<<20 /* one megabyte */,
                                server_thread_name, 
                                server_args /* have no args for now */,
                                *server_priority, 
@@ -153,7 +234,7 @@ int mainp(int argc, char* argv[]){
                                RTTUSR /* make it a user level thread */);
     }
     {
-        /* set up the recieveMessage thread */
+        /* set up the receiveMessage thread */
         RttThreadId* rm_id;
         char* rm_thread_name;
         RttSchAttr* rm_priority;
@@ -161,7 +242,7 @@ int mainp(int argc, char* argv[]){
 
         rm_id = malloc(sizeof(RttThreadId));
         rm_thread_name = malloc(sizeof(char)*15);
-        strncpy(rm_thread_name, "recieveMessage\0", 15);
+        strncpy(rm_thread_name, "receiveMessage\0", 15);
 
         rm_priority = malloc(sizeof(RttSchAttr));
 
@@ -176,7 +257,7 @@ int mainp(int argc, char* argv[]){
         rm_args = malloc(sizeof(int));
         *rm_args = 10;
 
-        /*rm_pid = */RttCreate(rm_id, recieveMessage, 2<<20 /* one megabyte */,
+        /*rm_pid = */RttCreate(rm_id, receiveMessage, 2<<20 /* one megabyte */,
                                rm_thread_name, 
                                rm_args /* have no args for now */,
                                *rm_priority, 
@@ -191,7 +272,7 @@ int mainp(int argc, char* argv[]){
 
         im_id = malloc(sizeof(RttThreadId));
         im_thread_name = malloc(sizeof(char)*15);
-        strncpy(im_thread_name, "recieveMessage\0", 15);
+        strncpy(im_thread_name, "receiveMessage\0", 15);
 
         im_priority = malloc(sizeof(RttSchAttr));
 
@@ -206,7 +287,7 @@ int mainp(int argc, char* argv[]){
         im_args = malloc(sizeof(int));
         *im_args = 10;
 
-        /*im_pid = */RttCreate(im_id, inputMessage, 2<<20 /* one megabyte */, 
+        /*im_pid = */RttCreate(im_id, inputMessage, 2<<20 /* one megabyte */,
                                im_thread_name, 
                                im_args /* have no args for now */,
                                *im_priority, 
