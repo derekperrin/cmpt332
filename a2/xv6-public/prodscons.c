@@ -19,11 +19,14 @@ producer(void *arg)
 
   while(j < 10){
     
+    sleep(1); // used to demonstrate concurrency actually exists
     // acquire the mutex lock
+    /*
     if(mtx_lock(mtx_id) < 0) {
       printf(2, "Error in producer obtaining lock\n");
       exit();
     }
+    */
     printf(1, "Mutex lock acquired by producer pid %d\n", pid);
     // Critical Section
     for (i = 0; i < 8; i++) {
@@ -33,10 +36,12 @@ producer(void *arg)
     buffindex += 8;
 
     // unlock the mutex
+    /*
     if(mtx_unlock(mtx_id) < 0) {
       printf(2, "Error in producer releasing lock\n");
       exit();
     }
+    */
 
     j++;
   }
@@ -55,6 +60,7 @@ consumer(void *arg)
 
   while(j < 10) {
     
+    sleep(1); // used to demonstrate concurrency actually exists.
     // acquire the mutex lock
     if(mtx_lock(mtx_id) < 0) {
       printf(2, "Error in consumer obtaining lock\n");
