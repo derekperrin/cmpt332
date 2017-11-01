@@ -62,7 +62,7 @@ void inputMessage(void){
         if (input_size < 1)
             continue;
         
-        printf("He is your message:%s\n", input);
+        printf("Her is your message: %s\n", input);
         
         /* parse the input into a struct */
         message_length = strlen(input) + 1;
