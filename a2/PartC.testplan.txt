@@ -1,0 +1,12 @@
+/* CMPT 332 -- Fall 2017
+* Assignment 2
+* Derek Perrin      dmp450 11050915
+* Dominic McKeith   dom258 11184543
+*/
+
+We have our test results in the test results text file. Our plan for testing is
+to try it on all architectures that are required for the assignment. We will 
+use a script to send hundreds of messages between the computers to make sure 
+that no messages get lost along the way. A script will be running on the other
+computer that will record all messages that were received. A diff will be run
+to determine if any messages have been lost accross the network.
