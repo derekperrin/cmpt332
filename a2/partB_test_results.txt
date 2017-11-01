@@ -1,0 +1,710 @@
+# CMPT 332 -- Fall 2017
+# Assignment 2
+# Derek Perrin 		dmp450 11050915
+# Dominic McKeith 	dom258 11184543
+#
+
+processes created
+1000 start read
+starting value of numReaders = 1
+1000 Reading
+100 start write
+1001 start read
+starting value of numReaders = 2
+1001 Reading
+1002 start read
+starting value of numReaders = 3
+1002 Reading
+101 start write
+stopping value of numReaders = 2
+1000 stop read
+stopping value of numReaders = 1
+1001 stop read
+1000 start read
+starting value of numReaders = 2
+1000 Reading
+stopping value of numReaders = 1
+1000 stop read
+1000 start read
+starting value of numReaders = 2
+1000 Reading
+stopping value of numReaders = 1
+1000 stop read
+1000 start read
+starting value of numReaders = 2
+1000 Reading
+stopping value of numReaders = 1
+1000 stop read
+1000 start read
+starting value of numReaders = 2
+1000 Reading
+1001 start read
+starting value of numReaders = 3
+1001 Reading
+stopping value of numReaders = 2
+1002 stop read
+stopping value of numReaders = 1
+1001 stop read
+stopping value of numReaders = 0
+100 writing
+1000 stop read
+1000 start read
+1002 start read
+1001 start read
+about to signal reader 1
+starting value of numReaders = 1
+starting value of numReaders = 2
+starting value of numReaders = 3
+1001 Reading
+100 stop write
+1002 Reading
+1000 Reading
+100 start write
+stopping value of numReaders = 2
+1000 stop read
+stopping value of numReaders = 1
+1002 stop read
+stopping value of numReaders = 0
+1002 start read
+101 writing
+1001 stop read
+1001 start read
+1000 start read
+about to signal reader 4
+starting value of numReaders = 1
+starting value of numReaders = 2
+starting value of numReaders = 3
+1000 Reading
+101 stop write
+1001 Reading
+1002 Reading
+stopping value of numReaders = 2
+1001 stop read
+1001 start read
+starting value of numReaders = 3
+1001 Reading
+stopping value of numReaders = 2
+1002 stop read
+stopping value of numReaders = 1
+1000 stop read
+1002 start read
+starting value of numReaders = 2
+1002 Reading
+1000 start read
+starting value of numReaders = 3
+1000 Reading
+stopping value of numReaders = 2
+1001 stop read
+stopping value of numReaders = 1
+1002 stop read
+1002 start read
+starting value of numReaders = 2
+1002 Reading
+1001 start read
+starting value of numReaders = 3
+1001 Reading
+stopping value of numReaders = 2
+1000 stop read
+1000 start read
+starting value of numReaders = 3
+1000 Reading
+stopping value of numReaders = 2
+1000 stop read
+1000 start read
+starting value of numReaders = 3
+1000 Reading
+stopping value of numReaders = 2
+1000 stop read
+stopping value of numReaders = 1
+1001 stop read
+stopping value of numReaders = 0
+100 writing
+1002 stop read
+1002 start read
+1001 start read
+1000 start read
+101 start write
+about to signal reader 1
+starting value of numReaders = 1
+starting value of numReaders = 2
+starting value of numReaders = 3
+1000 Reading
+100 stop write
+1001 Reading
+1002 Reading
+100 start write
+stopping value of numReaders = 2
+1002 stop read
+stopping value of numReaders = 1
+1001 stop read
+stopping value of numReaders = 0
+1002 start read
+101 writing
+1000 stop read
+1000 start read
+1001 start read
+about to signal reader 4
+starting value of numReaders = 1
+starting value of numReaders = 2
+starting value of numReaders = 3
+1001 Reading
+101 stop write
+1002 Reading
+stopping value of numReaders = 2
+1001 stop read
+1000 Reading
+1001 start read
+starting value of numReaders = 3
+1001 Reading
+stopping value of numReaders = 2
+1002 stop read
+stopping value of numReaders = 1
+1001 stop read
+1001 start read
+starting value of numReaders = 2
+1001 Reading
+stopping value of numReaders = 1
+1001 stop read
+1001 start read
+starting value of numReaders = 2
+1001 Reading
+1002 start read
+starting value of numReaders = 3
+1002 Reading
+stopping value of numReaders = 2
+1000 stop read
+101 start write
+stopping value of numReaders = 1
+1001 stop read
+stopping value of numReaders = 0
+100 writing
+1002 stop read
+1002 start read
+about to signal reader 1
+1000 start read
+starting value of numReaders = 1
+1002 Reading
+starting value of numReaders = 2
+1000 Reading
+100 stop write
+stopping value of numReaders = 1
+1002 stop read
+1001 start read
+starting value of numReaders = 2
+1001 Reading
+1002 start read
+starting value of numReaders = 3
+1002 Reading
+stopping value of numReaders = 2
+1002 stop read
+1002 start read
+starting value of numReaders = 3
+1002 Reading
+stopping value of numReaders = 2
+1000 stop read
+1000 start read
+starting value of numReaders = 3
+1000 Reading
+stopping value of numReaders = 2
+1000 stop read
+stopping value of numReaders = 1
+1002 stop read
+stopping value of numReaders = 0
+1002 start read
+101 writing
+1001 stop read
+about to signal reader 4
+starting value of numReaders = 1
+101 stop write
+1002 Reading
+stopping value of numReaders = 0
+1002 stop read
+1002 start read
+starting value of numReaders = 1
+1002 Reading
+1000 start read
+starting value of numReaders = 2
+1000 Reading
+stopping value of numReaders = 1
+1002 stop read
+1001 start read
+starting value of numReaders = 2
+1001 Reading
+stopping value of numReaders = 1
+1000 stop read
+1000 start read
+starting value of numReaders = 2
+1000 Reading
+stopping value of numReaders = 1
+1000 stop read
+stopping value of numReaders = 0
+1001 stop read
+1002 start read
+starting value of numReaders = 1
+1002 Reading
+stopping value of numReaders = 0
+1002 stop read
+1001 start read
+starting value of numReaders = 1
+1001 Reading
+1000 start read
+starting value of numReaders = 2
+1000 Reading
+stopping value of numReaders = 1
+1001 stop read
+1002 start read
+starting value of numReaders = 2
+1002 Reading
+1001 start read
+starting value of numReaders = 3
+1001 Reading
+stopping value of numReaders = 2
+1000 stop read
+100 start write
+1000 start read
+starting value of numReaders = 3
+1000 Reading
+stopping value of numReaders = 2
+1001 stop read
+stopping value of numReaders = 1
+1002 stop read
+101 start write
+1002 start read
+starting value of numReaders = 2
+1002 Reading
+stopping value of numReaders = 1
+1000 stop read
+1000 start read
+starting value of numReaders = 2
+1000 Reading
+stopping value of numReaders = 1
+1000 stop read
+stopping value of numReaders = 0
+1001 start read
+100 writing
+1002 stop read
+1000 start read
+1002 start read
+about to signal reader 1
+starting value of numReaders = 1
+starting value of numReaders = 2
+starting value of numReaders = 3
+1002 Reading
+100 stop write
+1001 Reading
+stopping value of numReaders = 2
+1002 stop read
+1000 Reading
+stopping value of numReaders = 1
+1001 stop read
+1001 start read
+starting value of numReaders = 2
+1001 Reading
+stopping value of numReaders = 1
+1001 stop read
+stopping value of numReaders = 0
+1002 start read
+101 writing
+1000 stop read
+1000 start read
+1001 start read
+100 start write
+about to signal reader 4
+starting value of numReaders = 1
+starting value of numReaders = 2
+starting value of numReaders = 3
+1001 Reading
+101 stop write
+1000 Reading
+1002 Reading
+stopping value of numReaders = 2
+1000 stop read
+1000 start read
+starting value of numReaders = 3
+1000 Reading
+stopping value of numReaders = 2
+1000 stop read
+1000 start read
+starting value of numReaders = 3
+1000 Reading
+stopping value of numReaders = 2
+1000 stop read
+stopping value of numReaders = 1
+1002 stop read
+stopping value of numReaders = 0
+1002 start read
+100 writing
+1001 stop read
+1001 start read
+101 start write
+1000 start read
+about to signal reader 1
+starting value of numReaders = 1
+starting value of numReaders = 2
+starting value of numReaders = 3
+1000 Reading
+100 stop write
+1001 Reading
+1002 Reading
+stopping value of numReaders = 2
+1002 stop read
+1002 start read
+starting value of numReaders = 3
+1002 Reading
+stopping value of numReaders = 2
+1001 stop read
+stopping value of numReaders = 1
+1000 stop read
+1001 start read
+starting value of numReaders = 2
+1001 Reading
+stopping value of numReaders = 1
+1002 stop read
+1002 start read
+starting value of numReaders = 2
+1002 Reading
+1000 start read
+starting value of numReaders = 3
+1000 Reading
+stopping value of numReaders = 2
+1002 stop read
+stopping value of numReaders = 1
+1001 stop read
+1002 start read
+starting value of numReaders = 2
+1002 Reading
+1001 start read
+starting value of numReaders = 3
+1001 Reading
+stopping value of numReaders = 2
+1000 stop read
+100 start write
+1000 start read
+starting value of numReaders = 3
+1000 Reading
+stopping value of numReaders = 2
+1001 stop read
+stopping value of numReaders = 1
+1002 stop read
+stopping value of numReaders = 0
+1001 start read
+1002 start read
+101 writing
+1000 stop read
+1000 start read
+about to signal reader 4
+starting value of numReaders = 1
+starting value of numReaders = 2
+starting value of numReaders = 3
+1000 Reading
+101 stop write
+1001 Reading
+1002 Reading
+stopping value of numReaders = 2
+1001 stop read
+1001 start read
+starting value of numReaders = 3
+1001 Reading
+stopping value of numReaders = 2
+1002 stop read
+stopping value of numReaders = 1
+1000 stop read
+1002 start read
+starting value of numReaders = 2
+1002 Reading
+stopping value of numReaders = 1
+1001 stop read
+stopping value of numReaders = 0
+1000 start read
+100 writing
+1002 stop read
+1002 start read
+1001 start read
+101 start write
+about to signal reader 1
+starting value of numReaders = 1
+starting value of numReaders = 2
+starting value of numReaders = 3
+1001 Reading
+100 stop write
+1002 Reading
+1000 Reading
+stopping value of numReaders = 2
+1002 stop read
+stopping value of numReaders = 1
+1001 stop read
+1001 start read
+starting value of numReaders = 2
+1001 Reading
+stopping value of numReaders = 1
+1000 stop read
+stopping value of numReaders = 0
+1000 start read
+101 writing
+1001 stop read
+1002 start read
+1001 start read
+about to signal reader 4
+starting value of numReaders = 1
+starting value of numReaders = 2
+starting value of numReaders = 3
+1001 Reading
+101 stop write
+1000 Reading
+stopping value of numReaders = 2
+1001 stop read
+1002 Reading
+stopping value of numReaders = 1
+1002 stop read
+1001 start read
+starting value of numReaders = 2
+1001 Reading
+stopping value of numReaders = 1
+1000 stop read
+1000 start read
+starting value of numReaders = 2
+1000 Reading
+stopping value of numReaders = 1
+1001 stop read
+stopping value of numReaders = 0
+1000 stop read
+1001 start read
+starting value of numReaders = 1
+1001 Reading
+stopping value of numReaders = 0
+1001 stop read
+1001 start read
+starting value of numReaders = 1
+1001 Reading
+1002 start read
+starting value of numReaders = 2
+1002 Reading
+stopping value of numReaders = 1
+1002 stop read
+stopping value of numReaders = 0
+1001 stop read
+1000 start read
+starting value of numReaders = 1
+1000 Reading
+101 start write
+100 start write
+1001 start read
+starting value of numReaders = 2
+1001 Reading
+stopping value of numReaders = 1
+1000 stop read
+1002 start read
+starting value of numReaders = 2
+1002 Reading
+1000 start read
+starting value of numReaders = 3
+1000 Reading
+stopping value of numReaders = 2
+1000 stop read
+1000 start read
+starting value of numReaders = 3
+1000 Reading
+stopping value of numReaders = 2
+1000 stop read
+stopping value of numReaders = 1
+1001 stop read
+1000 start read
+starting value of numReaders = 2
+1000 Reading
+1001 start read
+starting value of numReaders = 3
+1001 Reading
+stopping value of numReaders = 2
+1001 stop read
+stopping value of numReaders = 1
+1000 stop read
+stopping value of numReaders = 0
+1000 start read
+101 writing
+1002 stop read
+1001 start read
+1002 start read
+about to signal reader 4
+starting value of numReaders = 1
+starting value of numReaders = 2
+starting value of numReaders = 3
+1002 Reading
+101 stop write
+1001 Reading
+1000 Reading
+stopping value of numReaders = 2
+1000 stop read
+stopping value of numReaders = 1
+1001 stop read
+stopping value of numReaders = 0
+1001 start read
+100 writing
+1002 stop read
+1002 start read
+about to signal reader 1
+101 start write
+starting value of numReaders = 1
+starting value of numReaders = 2
+1002 Reading
+100 stop write
+1001 Reading
+stopping value of numReaders = 1
+1001 stop read
+1000 start read
+starting value of numReaders = 2
+1000 Reading
+1001 start read
+starting value of numReaders = 3
+1001 Reading
+stopping value of numReaders = 2
+1000 stop read
+stopping value of numReaders = 1
+1001 stop read
+stopping value of numReaders = 0
+101 writing
+1002 stop read
+1002 start read
+about to signal reader 4
+1001 start read
+1000 start read
+starting value of numReaders = 1
+1002 Reading
+starting value of numReaders = 2
+101 stop write
+starting value of numReaders = 3
+1001 Reading
+stopping value of numReaders = 2
+1002 stop read
+1000 Reading
+stopping value of numReaders = 1
+1001 stop read
+1002 start read
+starting value of numReaders = 2
+1002 Reading
+stopping value of numReaders = 1
+1002 stop read
+1001 start read
+starting value of numReaders = 2
+1001 Reading
+stopping value of numReaders = 1
+1000 stop read
+100 start write
+1002 start read
+starting value of numReaders = 2
+1002 Reading
+1000 start read
+starting value of numReaders = 3
+1000 Reading
+stopping value of numReaders = 2
+1002 stop read
+1002 start read
+starting value of numReaders = 3
+1002 Reading
+stopping value of numReaders = 2
+1002 stop read
+1002 start read
+starting value of numReaders = 3
+1002 Reading
+stopping value of numReaders = 2
+1000 stop read
+1000 start read
+starting value of numReaders = 3
+1000 Reading
+stopping value of numReaders = 2
+1001 stop read
+1001 start read
+starting value of numReaders = 3
+1001 Reading
+stopping value of numReaders = 2
+1000 stop read
+stopping value of numReaders = 1
+1002 stop read
+101 start write
+1000 start read
+starting value of numReaders = 2
+1000 Reading
+stopping value of numReaders = 1
+1001 stop read
+stopping value of numReaders = 0
+1001 start read
+100 writing
+1000 stop read
+1002 start read
+1000 start read
+about to signal reader 1
+starting value of numReaders = 1
+starting value of numReaders = 2
+starting value of numReaders = 3
+1000 Reading
+100 stop write
+1001 Reading
+stopping value of numReaders = 2
+1000 stop read
+1002 Reading
+1000 start read
+starting value of numReaders = 3
+1000 Reading
+stopping value of numReaders = 2
+1000 stop read
+stopping value of numReaders = 1
+1001 stop read
+1000 start read
+starting value of numReaders = 2
+1000 Reading
+1001 start read
+starting value of numReaders = 3
+1001 Reading
+stopping value of numReaders = 2
+1000 stop read
+stopping value of numReaders = 1
+1002 stop read
+1002 start read
+starting value of numReaders = 2
+1002 Reading
+1000 start read
+starting value of numReaders = 3
+1000 Reading
+stopping value of numReaders = 2
+1001 stop read
+100 start write
+stopping value of numReaders = 1
+1000 stop read
+1001 start read
+starting value of numReaders = 2
+1001 Reading
+1000 start read
+starting value of numReaders = 3
+1000 Reading
+stopping value of numReaders = 2
+1002 stop read
+1002 start read
+starting value of numReaders = 3
+1002 Reading
+stopping value of numReaders = 2
+1001 stop read
+1001 start read
+starting value of numReaders = 3
+1001 Reading
+stopping value of numReaders = 2
+1002 stop read
+stopping value of numReaders = 1
+1000 stop read
+stopping value of numReaders = 0
+101 writing
+1001 stop read
+1001 start read
+1000 start read
+1002 start read
+about to signal reader 4
+starting value of numReaders = 1
+starting value of numReaders = 2
+starting value of numReaders = 3
+1002 Reading
+101 stop write
+1000 Reading
+1001 Reading
+stopping value of numReaders = 2
+1000 stop read
+1000 start read
+starting value of numReaders = 3
+1000 Reading

@@ -1,0 +1,98 @@
+# CMPT 332 -- Fall 2017
+# Assignment 2
+# Derek Perrin 		dmp450 11050915
+# Dominic McKeith 	dom258 11184543
+#
+
+MONITORS
+
+The goal of this part is to create the mutual exclusion monitor facility using
+semaphores.
+
+There are 4 basic actions, along with a function to initialize everything.
+
+A condition variable structure will be used of the form:
+    CV {    sem cv
+            LIST* waitqueue
+    }
+
+Two global LISTs will be used called an urgent_queue nad an enter_queue.
+
+urgent_queue: where processes are put after signalling a condition variable
+enter_queue: where processes are put when they want to enter the monitor but
+             can't get in.
+
+the semaphore cv will be what actually gives the mutual exclusion, while the 
+waitqueue is just a list used for debugging purposes to see which processes
+are waiting on this same condition variable.
+
+Check to see if anyone is on the urgent queue, then if anyone is on the wait
+queue. If a proc is on either, they get priority respectively. If not, then P()
+is called on the condition variable and the caller is blocked until CV.cv is 
+singalled.
+
+MonWait(CV)
+    ListPrepend(CV.waitqueue, mypid)
+
+    if(ListCount(urgent_queue) > 0 )
+        V(urgent_sem)
+    else if (ListCount(enter_queue) > 0)
+        V(enter_mtx)
+
+    P(CV.cv)
+
+If there are processes waiting on the given condition variable, then signal that
+condition variable so one of the processes can un-block. The caller of Signal
+is added to the urgent queue because priority is given to the process which is
+being freed. It's very important to check that processes are waiting, otherwise
+the condition variable semaphore can be incremented quite high and deadlock can
+occur(ask me how I know).
+
+MonSignal(CV)
+    if(ListCount(CV.waitqueue) > 0)
+        ListPrepend(urgent_queue, mypid)
+        V(CV.cv)
+        P(urgent_sem)
+
+Caller needs to be added to the enter_queue and wait until a process leaves the
+monitor. Caller blocks until a process leaves the monitor.
+
+MonEnter()
+    P(enter_queue_sem)
+    ListPrepend(enter_queue, mypid)
+    V(enter_queue_sem)
+    P(enter_mtx)
+
+Remove caller from the urgent_queue or from the enter_queue. Perform the proper
+V operations respectively.
+
+MonLeave()
+        if (ListCount(urgent_queue) > 0)
+            V(urgent_sem)   /* Allow other urgent_queued procs to enter */
+        else if (ListCount(enter_queue) > 0)
+            V(enter_mtx)    /* Allow another process to enter the monitor */
+
+Used to initialize the monitor facilities. This is where lists are created and
+semaphores are intialized. urgent_sem needs to be initialized to 0 because the
+first time a process goes onto the urgent queue, it needs to block, so sem needs
+to be 0. enter_mtx and enter_queue_sem are initialized to 1 because the procs
+need to be able to enter the monitor on the first run through. All semaphores
+in the CV structs are initialized to 0 because the first time Wait() is called
+the caller needs to block until signalled.
+
+MonInit
+    urgent_queue = ListCreate()
+    enter_queue = ListCreate()
+
+    urgent_sem = NewSem(0)
+    enter_mtx = NewSem(1)
+    enter_queue_sem = NewSem(1)
+
+    for (i = 0; i < NUM_CVs; ++i)
+        CVs[i].wait_queue = ListCreate()
+        Cvs[i].cv = NewSem(0)
+
+TESTING
+For Testing, I ran the reader-writers-test file that we were provided. I scanned
+the output visually to make sure that reading couldn't be done at the same time
+as writing. This was the case. Test results are included.
