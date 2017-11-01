@@ -1,3 +1,11 @@
+# CMPT 332 -- Fall 2017
+# Assignment 2
+# Derek Perrin 		dmp450 11050915
+# Dominic McKeith 	dom258 11184543
+#
+
+
+
 gcc -fno-pic -static -fno-builtin -fno-strict-aliasing -fvar-tracking -fvar-tracking-assignments -O0 -g -Wall -MD -gdwarf-2 -m32 -Werror -fno-omit-frame-pointer -fno-stack-protector   -c -o prodscons.o prodscons.c
 ld -m    elf_i386 -N -e main -Ttext 0 -o _prodscons prodscons.o ulib.o usys.o printf.o umalloc.o
 objdump -S _prodscons > prodscons.asm

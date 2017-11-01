@@ -1,3 +1,10 @@
+# CMPT 332 -- Fall 2017
+# Assignment 2
+# Derek Perrin 		dmp450 11050915
+# Dominic McKeith 	dom258 11184543
+#
+
+
 dom258@drone36:~/CMPT 332/A2-Final/group23/a2> s-chat sadasda
 Incorrect number of arguments.
 dom258@drone36:~/CMPT 332/A2-Final/group23/a2> s-chat this is not correct

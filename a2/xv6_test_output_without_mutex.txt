@@ -1,3 +1,10 @@
+# CMPT 332 -- Fall 2017
+# Assignment 2
+# Derek Perrin 		dmp450 11050915
+# Dominic McKeith 	dom258 11184543
+#
+
+
 dd if=/dev/zero of=xv6.img count=10000
 dd if=bootblock of=xv6.img conv=notrunc
 dd if=kernel of=xv6.img seek=1 conv=notrunc
