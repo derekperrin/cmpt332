@@ -1,0 +1,26 @@
+dom258@drone36:~/CMPT 332/A2-Final/group23/a2> s-chat sadasda
+Incorrect number of arguments.
+dom258@drone36:~/CMPT 332/A2-Final/group23/a2> s-chat this is not correct
+Incorrect number of arguments.
+dom258@drone36:~/CMPT 332/A2-Final/group23/a2> s-chat 31200 drone22 39020 
+Arguments: 31200 drone22 39020
+I am the server
+I am the message sender
+I am the message printer
+I am the message reciever
+I am the message inputter.
+Hello there drone 22, my name is Dominic.
+Here is your message: Hello there drone 22, my name is Dominic.
+
+Hey, drone 36. I am another human.
+Here is your message: Hey, drone 36. I am another human.
+minic.
+
+I am going to type a long message AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+Here is your message: I am going to type a long message AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+
+goodbye
+Here is your message: goodbye
+ng to type a long message AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+
+^C
