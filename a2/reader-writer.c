@@ -29,8 +29,7 @@
 PROCESS reader(void *arg)
 {
   int myId;
-  
-  myId = *((int*) arg);
+  myId = *((int*)arg);
   
   for(;;)
     {
@@ -49,8 +48,7 @@ PROCESS reader(void *arg)
 PROCESS writer(void *arg)
 {
   int myId;
-  
-  myId = *((int*) arg);
+  myId = *((int*)arg);
   
   for(;;)
     {
@@ -68,6 +66,26 @@ PROCESS writer(void *arg)
 int mainp()
 {
     int temp, temp2, temp3;
+    int* id1;
+    int* id2;
+    int* id3;
+    int* id4;
+    int* id5;
+
+    id1 = malloc(sizeof(int));
+    id2 = malloc(sizeof(int));
+    id3 = malloc(sizeof(int));
+    id4 = malloc(sizeof(int));
+    id5 = malloc(sizeof(int));
+
+    *id1 = 1000;
+    *id2 = 100;
+    *id3 = 1001;
+    *id4 = 1002;
+    *id5 = 101;
+
+    /* fix the problems we were given */
+
     temp = 1;
     temp2 = 2;
     temp3 = 3;
@@ -80,11 +98,11 @@ int mainp()
 
     srand(71);
      
-    temp = Create( (void(*)()) reader, 16000, "R1", (void *) 1000, NORM, USR );
-    temp2 = Create( (void(*)()) writer, 16000, "W1", (void *) 100, NORM, USR );
-    temp3 = Create( (void(*)()) reader, 16000, "R2", (void *) 1001, NORM, USR );
-    temp3 = Create( (void(*)()) reader, 16000, "R3", (void *) 1002, NORM, USR );
-    temp3 = Create( (void(*)()) writer, 16000, "W2", (void *) 101, NORM, USR );
+    temp = Create( (void(*)()) reader, 16000, "R1", (void *) id1, NORM, USR );
+    temp2 = Create( (void(*)()) writer, 16000, "W1", (void *)id2, NORM, USR );
+    temp3 = Create( (void(*)()) reader, 16000, "R2", (void *)id3,  NORM, USR );
+    temp3 = Create( (void(*)()) reader, 16000, "R3", (void *)id4,  NORM, USR );
+    temp3 = Create( (void(*)()) writer, 16000, "W2", (void *)id5, NORM, USR );
     printf("processes created\n");
     
     return(0);

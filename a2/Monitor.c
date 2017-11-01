@@ -50,16 +50,17 @@ void MonEnter(void) {
 
     P(enter_queue_sem);
     ListPrepend(enter_queue, (void*)my_pid);
-    P(enter_mtx);
-    ListTrim(enter_queue);
     V(enter_queue_sem);
+    P(enter_mtx);
     return;
 }
 
 void MonLeave(void) {
     if (ListCount(urgent_queue) > 0) {
+        free(ListTrim(urgent_queue));
         V(urgent_sem);
     } else if (ListCount(enter_queue) > 0) {
+        free(ListTrim(enter_queue));
         V(enter_mtx);
     }
     return;
@@ -67,25 +68,35 @@ void MonLeave(void) {
 
 void MonWait(int cv) {
     PID *my_pid;
-
     my_pid = malloc(sizeof(PID));
     *my_pid = MyPid();
     ListPrepend(cond_vars[cv].wait_queue,(void*)my_pid);
+
+    if (ListCount(urgent_queue) > 0) {
+        free(ListTrim(urgent_queue));
+        V(urgent_sem);
+    } else if (ListCount(enter_queue) > 0) {
+        free(ListTrim(enter_queue));
+        V(enter_mtx);
+    }
+
     P(cond_vars[cv].sem);
 
-    free(ListTrim(cond_vars[cv].wait_queue));
     return;
 }
 
 void MonSignal(int cv) {
-    PID* my_pid;
+    if(ListCount(cond_vars[cv].wait_queue) > 0) {
+        PID* my_pid;
     
-    my_pid = malloc(sizeof(PID));
-    *my_pid = MyPid();
+        my_pid = malloc(sizeof(PID));
+        *my_pid = MyPid();
 
-    ListPrepend(urgent_queue, (void*)my_pid);
-    V(cond_vars[cv].sem);
-    P(urgent_sem);
-    free(ListTrim(urgent_queue));
+        ListPrepend(urgent_queue, (void*)my_pid);
+
+        free(ListTrim(cond_vars[cv].wait_queue));
+        V(cond_vars[cv].sem);
+        P(urgent_sem);
+    }
     return;
 }
