@@ -1,0 +1,510 @@
+/* CMPT 332 -- Fall 2017
+* Assignment 2
+* Derek Perrin      dmp450 11050915
+* Dominic McKeith   dom258 11184543
+*/
+
+
+diff -r ./xv6-public/Makefile /student/cmpt332/xv6/xv6-public/Makefile
+54c54
+<  QEMU = /student/cmpt332/xv6/qemu/bin/qemu-system-i386
+---
+>  QEMU = ../qemu/bin/qemu-system-i386
+175d174
+< 	_prodscons\
+245d243
+< 	prodscons.c\
+Only in /student/cmpt332/xv6/xv6-public: Makefile~
+Only in /student/cmpt332/xv6/xv6-public: _cat
+Only in /student/cmpt332/xv6/xv6-public: _echo
+Only in /student/cmpt332/xv6/xv6-public: _forktest
+Only in /student/cmpt332/xv6/xv6-public: _grep
+Only in /student/cmpt332/xv6/xv6-public: _init
+Only in /student/cmpt332/xv6/xv6-public: _kill
+Only in /student/cmpt332/xv6/xv6-public: _ln
+Only in /student/cmpt332/xv6/xv6-public: _ls
+Only in /student/cmpt332/xv6/xv6-public: _mkdir
+Only in /student/cmpt332/xv6/xv6-public: _rm
+Only in /student/cmpt332/xv6/xv6-public: _sh
+Only in /student/cmpt332/xv6/xv6-public: _stressfs
+Only in /student/cmpt332/xv6/xv6-public: _usertests
+Only in /student/cmpt332/xv6/xv6-public: _wc
+Only in /student/cmpt332/xv6/xv6-public: _zombie
+Only in /student/cmpt332/xv6/xv6-public: bio.d
+Only in /student/cmpt332/xv6/xv6-public: bio.o
+Only in /student/cmpt332/xv6/xv6-public: bootasm.d
+Only in /student/cmpt332/xv6/xv6-public: bootasm.o
+Only in /student/cmpt332/xv6/xv6-public: bootblock
+Only in /student/cmpt332/xv6/xv6-public: bootblock.asm
+Only in /student/cmpt332/xv6/xv6-public: bootblock.o
+Only in /student/cmpt332/xv6/xv6-public: bootblockother.o
+Only in /student/cmpt332/xv6/xv6-public: bootmain.d
+Only in /student/cmpt332/xv6/xv6-public: bootmain.o
+Only in /student/cmpt332/xv6/xv6-public: cat.asm
+Only in /student/cmpt332/xv6/xv6-public: cat.d
+Only in /student/cmpt332/xv6/xv6-public: cat.o
+Only in /student/cmpt332/xv6/xv6-public: cat.sym
+Only in /student/cmpt332/xv6/xv6-public: console.d
+Only in /student/cmpt332/xv6/xv6-public: console.o
+diff -r ./xv6-public/defs.h /student/cmpt332/xv6/xv6-public/defs.h
+121,126d120
+< /* CMPT 332 GROUP 23 Change, Fall 2017 */
+< int             thread_create(void (*tmain)(void *), void*, void*);
+< int             thread_join(void**);
+< int             mtx_create(int);
+< int             mtx_lock(int);
+< int             mtx_unlock(int);
+Only in /student/cmpt332/xv6/xv6-public: echo.asm
+Only in /student/cmpt332/xv6/xv6-public: echo.d
+Only in /student/cmpt332/xv6/xv6-public: echo.o
+Only in /student/cmpt332/xv6/xv6-public: echo.sym
+Only in /student/cmpt332/xv6/xv6-public: entry.o
+Only in /student/cmpt332/xv6/xv6-public: entryother
+Only in /student/cmpt332/xv6/xv6-public: entryother.asm
+Only in /student/cmpt332/xv6/xv6-public: entryother.d
+Only in /student/cmpt332/xv6/xv6-public: entryother.o
+Only in /student/cmpt332/xv6/xv6-public: exec.d
+Only in /student/cmpt332/xv6/xv6-public: exec.o
+Only in /student/cmpt332/xv6/xv6-public: file.d
+Only in /student/cmpt332/xv6/xv6-public: file.o
+Only in /student/cmpt332/xv6/xv6-public: forktest.asm
+Only in /student/cmpt332/xv6/xv6-public: forktest.d
+Only in /student/cmpt332/xv6/xv6-public: forktest.o
+Only in /student/cmpt332/xv6/xv6-public: fs.d
+Only in /student/cmpt332/xv6/xv6-public: fs.img
+Only in /student/cmpt332/xv6/xv6-public: fs.o
+Only in /student/cmpt332/xv6/xv6-public: grep.asm
+Only in /student/cmpt332/xv6/xv6-public: grep.d
+Only in /student/cmpt332/xv6/xv6-public: grep.o
+Only in /student/cmpt332/xv6/xv6-public: grep.sym
+Only in /student/cmpt332/xv6/xv6-public: ide.d
+Only in /student/cmpt332/xv6/xv6-public: ide.o
+Only in /student/cmpt332/xv6/xv6-public: init.asm
+Only in /student/cmpt332/xv6/xv6-public: init.d
+Only in /student/cmpt332/xv6/xv6-public: init.o
+Only in /student/cmpt332/xv6/xv6-public: init.sym
+Only in /student/cmpt332/xv6/xv6-public: initcode
+Only in /student/cmpt332/xv6/xv6-public: initcode.asm
+Only in /student/cmpt332/xv6/xv6-public: initcode.d
+Only in /student/cmpt332/xv6/xv6-public: initcode.o
+Only in /student/cmpt332/xv6/xv6-public: initcode.out
+Only in /student/cmpt332/xv6/xv6-public: ioapic.d
+Only in /student/cmpt332/xv6/xv6-public: ioapic.o
+Only in /student/cmpt332/xv6/xv6-public: kalloc.d
+Only in /student/cmpt332/xv6/xv6-public: kalloc.o
+Only in /student/cmpt332/xv6/xv6-public: kbd.d
+Only in /student/cmpt332/xv6/xv6-public: kbd.o
+Only in /student/cmpt332/xv6/xv6-public: kernel
+Only in /student/cmpt332/xv6/xv6-public: kernel.asm
+Only in /student/cmpt332/xv6/xv6-public: kernel.sym
+Only in /student/cmpt332/xv6/xv6-public: kill.asm
+Only in /student/cmpt332/xv6/xv6-public: kill.d
+Only in /student/cmpt332/xv6/xv6-public: kill.o
+Only in /student/cmpt332/xv6/xv6-public: kill.sym
+Only in /student/cmpt332/xv6/xv6-public: lapic.d
+Only in /student/cmpt332/xv6/xv6-public: lapic.o
+Only in /student/cmpt332/xv6/xv6-public: ln.asm
+Only in /student/cmpt332/xv6/xv6-public: ln.d
+Only in /student/cmpt332/xv6/xv6-public: ln.o
+Only in /student/cmpt332/xv6/xv6-public: ln.sym
+Only in /student/cmpt332/xv6/xv6-public: log.d
+Only in /student/cmpt332/xv6/xv6-public: log.o
+Only in /student/cmpt332/xv6/xv6-public: ls.asm
+Only in /student/cmpt332/xv6/xv6-public: ls.d
+Only in /student/cmpt332/xv6/xv6-public: ls.o
+Only in /student/cmpt332/xv6/xv6-public: ls.sym
+Only in /student/cmpt332/xv6/xv6-public: main.d
+Only in /student/cmpt332/xv6/xv6-public: main.o
+Only in /student/cmpt332/xv6/xv6-public: mkdir.asm
+Only in /student/cmpt332/xv6/xv6-public: mkdir.d
+Only in /student/cmpt332/xv6/xv6-public: mkdir.o
+Only in /student/cmpt332/xv6/xv6-public: mkdir.sym
+Only in /student/cmpt332/xv6/xv6-public: mkfs
+Only in /student/cmpt332/xv6/xv6-public: mp.d
+Only in /student/cmpt332/xv6/xv6-public: mp.o
+diff -r ./xv6-public/param.h /student/cmpt332/xv6/xv6-public/param.h
+15,16d14
+< /* CMPT 332 GROUP 23 Change, Fall 2017 */
+< #define NOMUTEX			 50	 // maximum number of mutexes
+Only in /student/cmpt332/xv6/xv6-public: picirq.d
+Only in /student/cmpt332/xv6/xv6-public: picirq.o
+Only in /student/cmpt332/xv6/xv6-public: pipe.d
+Only in /student/cmpt332/xv6/xv6-public: pipe.o
+Only in /student/cmpt332/xv6/xv6-public: printf.d
+Only in /student/cmpt332/xv6/xv6-public: printf.o
+diff -r ./xv6-public/proc.c /student/cmpt332/xv6/xv6-public/proc.c
+10,17d9
+< /* CMPT 332 GROUP 23 Change, Fall 2017 */
+< // Mutex structure
+< struct mutex {
+< 	int owner;	// PID of the process which owns this mutex.
+< 	int value;	// Value of the mutex. Either 0 or 1.
+< 	struct spinlock mlock; // spinlock needed to adjust each mutex
+< };
+< 
+37,41d28
+< /* CMPT 332 GROUP 23 Change, Fall 2017 */
+< struct mutex mutexes[NOMUTEX];	// allocate mutexes from here
+< int freemtx = 0;	// next free mutex available to be created.
+< 
+< 
+240,241c227
+<     /* CMPT 332 GROUP 23 Change, Fall 2017 */
+<       if(p->parent != proc || p->pgdir == proc->pgdir)
+---
+>       if(p->parent != proc)
+480,668d465
+< }
+< 
+< /* CMPT 332 GROUP 23 Change, Fall 2017 */
+< // Creates a new thread of execution. The new thread is the same as a process,
+< // but it shares the address space with the parent process. New thread starts
+< // execution at tmain and takes a pointer to arguments in arg. The user is
+< // responsible for providing a stack for the newly provided thread.
+< int
+< thread_create(void (*tmain)(void *), void *stack, void *arg)
+< {
+<   int tid, i;
+<   uint sp, ustack[2];
+<   struct proc *nt;
+<   
+<   // Allocate thread like a process.
+<   if ((nt = allocproc()) == 0)
+<     return -1;
+<   
+<   // Copy process state and page table from p.
+<   nt->pgdir = proc->pgdir;
+<   nt->sz = proc->sz;
+<   nt->parent = proc;
+<   *(nt->tf) = *(proc->tf);
+<   nt->tf->eip = (uint)tmain; // Set instruction pointer to tmain.
+< 
+<   // EXPERIMENTAL
+<   nt->tf->eax = 0;
+<   nt->tstack = (char*)stack;  // lets us give stack back in thread_join()
+<   
+<   // Set stack pointer to point to new stack.
+<   // Decrement it by 2 to move it below the return PC.
+<   // See Figure 2-3 in xv6 book for memory layout. Also, see code for exec()
+<   sp = (uint)stack;
+<   sp -= 2*sizeof(uint);
+<   ustack[0] = 0xffffffff; // fake return PC
+<   ustack[1] = (uint)arg;  // argument
+<   if (copyout(nt->pgdir, sp, ustack, 2*sizeof(uint)) < 0)
+<     return -1;
+< 
+<   nt->tf->esp = sp;
+<   
+<   // Copy open files.
+<   for(i = 0; i < NOFILE; i++)
+<     if(proc->ofile[i])
+<       nt->ofile[i] = filedup(proc->ofile[i]);
+<   
+<   nt->cwd = idup(proc->cwd);
+<   
+<   // Don't actually need this. Just for debugging.
+<   safestrcpy(nt->name, proc->name, sizeof(proc->name));
+<   
+<   tid = nt->pid;
+<   
+<   // Change thread state.
+<   acquire(&ptable.lock);
+<   nt->state = RUNNABLE;
+<   release(&ptable.lock);
+<   
+<   return tid;
+< }
+< 
+< /* CMPT 332 GROUP 23 Change, Fall 2017 */
+< // Calling process will block until a child thread exits.
+< // Return pid of child thread on success. Store the stack pointer of the child
+< // thread in the stack argument provided so the user can free the stack.
+< int
+< thread_join(void **stack)
+< {
+<   struct proc *p;
+<   int havekids, pid;
+< 
+<   acquire(&ptable.lock);
+<   for(;;){
+<     // Scan through table looking for zombie children.
+<     havekids = 0;
+<     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+<       if(p->parent != proc)
+<         continue;
+<       if(proc->pgdir != p->pgdir)
+<         continue;
+<       havekids = 1;
+<       if(p->state == ZOMBIE){
+<         // Found one.
+<         pid = p->pid;
+<         kfree(p->kstack);
+<         p->kstack = 0;
+<         p->state = UNUSED;
+<         p->pid = 0;
+<         p->parent = 0;
+<         p->name[0] = 0;
+<         p->killed = 0;
+<         *stack = (void*)p->tstack;
+<         p->tstack = 0;
+<         release(&ptable.lock);
+<         return pid;
+<       }
+<     }
+< 
+<     // No point waiting if we don't have any children.
+<     if(!havekids || proc->killed){
+<       release(&ptable.lock);
+<       return -1;
+<     }
+< 
+<     // Wait for children to exit.  (See wakeup1 call in proc_exit.)
+<     sleep(proc, &ptable.lock);  //DOC: wait-sleep
+<   }
+< }
+< 
+< /* CMPT 332 GROUP 23 Change, Fall 2017 */
+< // Creates a new mutex if one is available.
+< // Return the id of the mutex if one is created, -1 otherwise.
+< // if "locked" is 0, mutex is initialized as unlocked. Otherwise it's locked.
+< int
+< mtx_create(int locked)
+< {
+< 	int mtx_id;
+< 	mtx_id = 0;
+< 	// check if any more mutexes are available to be created.
+< 	if (freemtx >= NOMUTEX)
+< 		return -1;
+< 
+< 	// Initialize the spinlock so processes can use it.
+< 	initlock(&mutexes[mtx_id].mlock, "mutex");
+< 
+< 	mtx_id = freemtx;
+< 	freemtx++;
+< 	
+< 	// Set lock state based on argument
+<   acquire(&mutexes[mtx_id].mlock);
+< 	if(locked){
+< 		mutexes[mtx_id].owner = proc->pid;
+< 		mutexes[mtx_id].value = 1;
+< 	} else {
+< 		mutexes[mtx_id].owner = 0;
+< 		mutexes[mtx_id].value = 0;
+< 	}
+<   release(&mutexes[mtx_id].mlock);
+< 
+< 	return mtx_id;
+< }
+< 
+< /* CMPT 332 GROUP 23 Change, Fall 2017 */
+< // Requests ownership of the mutex. Calling process blocks if mutex is not
+< // available. Returns 0 on success, -1 otherwise(invalid parameter)
+< int
+< mtx_lock(int lock_id)
+< {
+< 	void *chan;
+< 	chan = 0;
+< 	// make sure a mutex was allocated before allowing a lock request to be made.
+< 	if (lock_id >= freemtx || lock_id < 0)
+< 		return -1;
+< 	chan = (void*)(mutexes + lock_id);
+< 	acquire(&(mutexes[lock_id].mlock));
+< 
+< 	// sleep until a lock is acquired on the mutex
+< 	while (mutexes[lock_id].value > 0 && mutexes[lock_id].owner != proc->pid) {
+< 		sleep(chan, &(mutexes[lock_id].mlock));
+< 	}
+< 
+< 	// after the lock has been acquired
+< 	mutexes[lock_id].owner = proc->pid;
+< 	mutexes[lock_id].value = 1;
+< 	release(&(mutexes[lock_id].mlock));
+<   return 0;
+< }
+< 
+< /* CMPT 332 GROUP 23 Change, Fall 2017 */
+< // Releases ownership of the mutex. Calling process must own mutex.
+< // Returns 0 on success, -1 otherwise.
+< int
+< mtx_unlock(int lock_id)
+< {
+<   void *chan;
+<   chan = 0;
+< 	// check lock_id is valid and if proc owns mutex
+< 	if (lock_id >= freemtx || lock_id < 0)
+< 		return -1;
+< 	if (mutexes[lock_id].owner != proc->pid)
+< 		return -1;
+< 	
+<   chan = (void*)(mutexes + lock_id);
+< 	acquire(&(mutexes[lock_id].mlock));
+< 	mutexes[lock_id].value = 0;
+< 	mutexes[lock_id].owner = -1;
+< 	release(&(mutexes[lock_id].mlock));
+<   wakeup(chan);
+<   return 0;
+Only in /student/cmpt332/xv6/xv6-public: proc.d
+diff -r ./xv6-public/proc.h /student/cmpt332/xv6/xv6-public/proc.h
+59d58
+<   char *tstack;                // Top of thread stack
+Only in /student/cmpt332/xv6/xv6-public: proc.o
+Only in ./xv6-public: prodscons.c
+Only in /student/cmpt332/xv6/xv6-public: rm.asm
+Only in /student/cmpt332/xv6/xv6-public: rm.d
+Only in /student/cmpt332/xv6/xv6-public: rm.o
+Only in /student/cmpt332/xv6/xv6-public: rm.sym
+Only in /student/cmpt332/xv6/xv6-public: sh.asm
+Only in /student/cmpt332/xv6/xv6-public: sh.d
+Only in /student/cmpt332/xv6/xv6-public: sh.o
+Only in /student/cmpt332/xv6/xv6-public: sh.sym
+Only in /student/cmpt332/xv6/xv6-public: spinlock.d
+Only in /student/cmpt332/xv6/xv6-public: spinlock.o
+Only in /student/cmpt332/xv6/xv6-public: stressfs.asm
+Only in /student/cmpt332/xv6/xv6-public: stressfs.d
+Only in /student/cmpt332/xv6/xv6-public: stressfs.o
+Only in /student/cmpt332/xv6/xv6-public: stressfs.sym
+Only in /student/cmpt332/xv6/xv6-public: string.d
+Only in /student/cmpt332/xv6/xv6-public: string.o
+Only in /student/cmpt332/xv6/xv6-public: swtch.o
+diff -r ./xv6-public/syscall.c /student/cmpt332/xv6/xv6-public/syscall.c
+101,106d100
+< /* CMPT 332 GROUP 23 Change, Fall 2017 */
+< extern int sys_thread_create(void);
+< extern int sys_thread_join(void);
+< extern int sys_mtx_create(void);
+< extern int sys_mtx_lock(void);
+< extern int sys_mtx_unlock(void);
+130,135d123
+< /* CMPT 332 GROUP 23 Change, Fall 2017 */
+< [SYS_thread_create] sys_thread_create,
+< [SYS_thread_join]   sys_thread_join,
+< [SYS_mtx_create]    sys_mtx_create,
+< [SYS_mtx_lock]      sys_mtx_lock,
+< [SYS_mtx_unlock]    sys_mtx_unlock,
+Only in /student/cmpt332/xv6/xv6-public: syscall.d
+diff -r ./xv6-public/syscall.h /student/cmpt332/xv6/xv6-public/syscall.h
+23,28d22
+< /* CMPT 332 GROUP 23 Change, Fall 2017 */
+< #define SYS_thread_create 22
+< #define SYS_thread_join   23
+< #define SYS_mtx_create  24
+< #define SYS_mtx_lock    25
+< #define SYS_mtx_unlock  26
+\ No newline at end of file
+Only in /student/cmpt332/xv6/xv6-public: syscall.o
+Only in /student/cmpt332/xv6/xv6-public: sysfile.d
+Only in /student/cmpt332/xv6/xv6-public: sysfile.o
+diff -r ./xv6-public/sysproc.c /student/cmpt332/xv6/xv6-public/sysproc.c
+92,155d91
+< 
+< /* CMPT 332 GROUP 23 Change, Fall 2017 */
+< int
+< sys_thread_create(void)
+< {
+<   void (*tmain) (void *);
+<   int stack;
+<   void *arg;
+<   if (argptr(0, (void*) &tmain, sizeof(tmain)) < 0)
+<     return -1;
+<   if (argint(1, (void*) &stack) < 0)
+<     return -1;
+<   if (argptr(2, (void*) &arg, sizeof(arg)) < 0)
+<     return -1;
+<   return thread_create(tmain, (void*)stack, arg);
+< /*
+<   int tmain, stack, arg;
+<   if(argint(0, &tmain) < 0)
+<       return -1;
+<   if(argint(1, &stack) < 0)
+<       return -1;
+<   if(argint(2, &arg) < 0)
+<       return -1;
+<   return thread_create((void*)tmain, (void*)stack, (void*)arg);
+<   */
+< }
+< 
+< /* CMPT 332 GROUP 23 Change, Fall 2017 */
+< int
+< sys_thread_join(void)
+< {
+<   void **stack;
+<   if(argptr(0, (void*) &stack, sizeof(stack) < 0))
+<      return -1;
+<   
+<   return thread_join(stack);
+< }
+< 
+< int
+< sys_mtx_create(void)
+< {
+<   int locked;
+<   if(argint(0, &locked) < 0)
+<     return -1;
+<   return mtx_create(locked);
+< }
+< 
+< int
+< sys_mtx_lock(void)
+< {
+<   int lock_id;
+<   if(argint(0, &lock_id) < 0)
+<     return -1;
+<   return mtx_lock(lock_id);
+< }
+< 
+< int
+< sys_mtx_unlock(void)
+< {
+<   int lock_id;
+<   if(argint(0, &lock_id) < 0)
+<     return -1;
+<   return mtx_unlock(lock_id);
+< }
+\ No newline at end of file
+Only in /student/cmpt332/xv6/xv6-public: sysproc.d
+Only in /student/cmpt332/xv6/xv6-public: sysproc.o
+Only in /student/cmpt332/xv6/xv6-public: timer.d
+Only in /student/cmpt332/xv6/xv6-public: timer.o
+Only in /student/cmpt332/xv6/xv6-public: trap.d
+Only in /student/cmpt332/xv6/xv6-public: trap.o
+Only in /student/cmpt332/xv6/xv6-public: trapasm.o
+Only in /student/cmpt332/xv6/xv6-public: uart.d
+Only in /student/cmpt332/xv6/xv6-public: uart.o
+Only in /student/cmpt332/xv6/xv6-public: ulib.d
+Only in /student/cmpt332/xv6/xv6-public: ulib.o
+Only in /student/cmpt332/xv6/xv6-public: umalloc.d
+Only in /student/cmpt332/xv6/xv6-public: umalloc.o
+diff -r ./xv6-public/user.h /student/cmpt332/xv6/xv6-public/user.h
+26,31d25
+< /* CMPT 332 GROUP 23 Change, Fall 2017 */
+< int thread_create(void (*tmain)(void*), void*, void*);
+< int thread_join(void**);
+< int mtx_create(int);
+< int mtx_lock(int);
+< int mtx_unlock(int);
+Only in /student/cmpt332/xv6/xv6-public: usertests.asm
+Only in /student/cmpt332/xv6/xv6-public: usertests.d
+Only in /student/cmpt332/xv6/xv6-public: usertests.o
+Only in /student/cmpt332/xv6/xv6-public: usertests.sym
+diff -r ./xv6-public/usys.S /student/cmpt332/xv6/xv6-public/usys.S
+32,36d31
+< SYSCALL(thread_create)
+< SYSCALL(thread_join)
+< SYSCALL(mtx_create)
+< SYSCALL(mtx_lock)
+< SYSCALL(mtx_unlock)
+\ No newline at end of file
+Only in /student/cmpt332/xv6/xv6-public: usys.o
+Only in /student/cmpt332/xv6/xv6-public: vectors.S
+Only in /student/cmpt332/xv6/xv6-public: vectors.o
+Only in /student/cmpt332/xv6/xv6-public: vm.d
+Only in /student/cmpt332/xv6/xv6-public: vm.o
+Only in /student/cmpt332/xv6/xv6-public: wc.asm
+Only in /student/cmpt332/xv6/xv6-public: wc.d
+Only in /student/cmpt332/xv6/xv6-public: wc.o
+Only in /student/cmpt332/xv6/xv6-public: wc.sym
+Only in /student/cmpt332/xv6/xv6-public: xv6.img
+Only in /student/cmpt332/xv6/xv6-public: zombie.asm
+Only in /student/cmpt332/xv6/xv6-public: zombie.d
+Only in /student/cmpt332/xv6/xv6-public: zombie.o
+Only in /student/cmpt332/xv6/xv6-public: zombie.sym
