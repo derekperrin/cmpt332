@@ -29,6 +29,9 @@ int thread_join(void**);
 int mtx_create(int);
 int mtx_lock(int);
 int mtx_unlock(int);
+int nice(int);
+int getpriority(int);
+int setpriority(int, int);
 
 // ulib.c
 int stat(char*, struct stat*);

@@ -124,6 +124,9 @@ int             thread_join(void**);
 int             mtx_create(int);
 int             mtx_lock(int);
 int             mtx_unlock(int);
+int             nice(int);
+int             getpriority(int);
+int             setpriority(int, int);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

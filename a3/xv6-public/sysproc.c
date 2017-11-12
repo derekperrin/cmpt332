@@ -61,7 +61,7 @@ sys_sleep(void)
 {
   int n;
   uint ticks0;
-  
+
   if(argint(0, &n) < 0)
     return -1;
   acquire(&tickslock);
@@ -83,7 +83,7 @@ int
 sys_uptime(void)
 {
   uint xticks;
-  
+
   acquire(&tickslock);
   xticks = ticks;
   release(&tickslock);
@@ -123,7 +123,7 @@ sys_thread_join(void)
   void **stack;
   if(argptr(0, (void*) &stack, sizeof(stack) < 0))
      return -1;
-  
+
   return thread_join(stack);
 }
 
@@ -152,4 +152,32 @@ sys_mtx_unlock(void)
   if(argint(0, &lock_id) < 0)
     return -1;
   return mtx_unlock(lock_id);
+}
+
+int
+sys_nice(void)
+{
+  int incr;
+  if(argint(0, &incr) < 0)
+    return -1;
+  return nice(incr);
+}
+
+int
+sys_getpriority(void)
+{
+  int pid;
+  if(argint(0, &pid) < 0)
+    return -1;
+  return getpriority(pid);
+}
+
+int
+sys_setpriority(void)
+{
+  int pid;
+  int new_priority;
+  if(argint(0, &pid) < 0 || argint(1, &new_priority))
+    return -1;
+  return setpriority(pid, new_priority);
 }

@@ -55,7 +55,7 @@ int
 argptr(int n, char **pp, int size)
 {
   int i;
-  
+
   if(argint(n, &i) < 0)
     return -1;
   if((uint)i >= proc->sz || (uint)i+size > proc->sz)
@@ -104,6 +104,9 @@ extern int sys_thread_join(void);
 extern int sys_mtx_create(void);
 extern int sys_mtx_lock(void);
 extern int sys_mtx_unlock(void);
+extern int sys_nice(void);
+extern int sys_getpriority(void);
+extern int sys_setpriority(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -133,6 +136,9 @@ static int (*syscalls[])(void) = {
 [SYS_mtx_create]    sys_mtx_create,
 [SYS_mtx_lock]      sys_mtx_lock,
 [SYS_mtx_unlock]    sys_mtx_unlock,
+[SYS_nice]          sys_nice,
+[SYS_getpriority]   sys_getpriority,
+[SYS_setpriority]   sys_setpriority,
 };
 
 void

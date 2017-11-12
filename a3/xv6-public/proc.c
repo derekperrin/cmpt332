@@ -60,6 +60,8 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  /* CMPT 332 GROUP 23 Change, Fall 2017 */
+  p->priority = 0;
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -68,11 +70,11 @@ found:
     return 0;
   }
   sp = p->kstack + KSTACKSIZE;
-  
+
   // Leave room for trap frame.
   sp -= sizeof *p->tf;
   p->tf = (struct trapframe*)sp;
-  
+
   // Set up new context to start executing at forkret,
   // which returns to trapret.
   sp -= 4;
@@ -93,7 +95,7 @@ userinit(void)
 {
   struct proc *p;
   extern char _binary_initcode_start[], _binary_initcode_size[];
-  
+
   p = allocproc();
   initproc = p;
   if((p->pgdir = setupkvm()) == 0)
@@ -121,7 +123,7 @@ int
 growproc(int n)
 {
   uint sz;
-  
+
   sz = proc->sz;
   if(n > 0){
     if((sz = allocuvm(proc->pgdir, sz, sz + n)) == 0)
@@ -158,6 +160,8 @@ fork(void)
   np->sz = proc->sz;
   np->parent = proc;
   *np->tf = *proc->tf;
+  /* CMPT 332 GROUP 23 Change, Fall 2017 */
+  np->priority = proc->priority
 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
@@ -168,14 +172,14 @@ fork(void)
   np->cwd = idup(proc->cwd);
 
   safestrcpy(np->name, proc->name, sizeof(proc->name));
- 
+
   pid = np->pid;
 
   // lock to force the compiler to emit the np->state write last.
   acquire(&ptable.lock);
   np->state = RUNNABLE;
   release(&ptable.lock);
-  
+
   return pid;
 }
 
@@ -350,13 +354,13 @@ forkret(void)
 
   if (first) {
     // Some initialization functions must be run in the context
-    // of a regular process (e.g., they call sleep), and thus cannot 
+    // of a regular process (e.g., they call sleep), and thus cannot
     // be run from main().
     first = 0;
     iinit(ROOTDEV);
     initlog(ROOTDEV);
   }
-  
+
   // Return to "caller", actually trapret (see allocproc).
 }
 
@@ -461,7 +465,7 @@ procdump(void)
   struct proc *p;
   char *state;
   uint pc[10];
-  
+
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->state == UNUSED)
       continue;
@@ -490,11 +494,11 @@ thread_create(void (*tmain)(void *), void *stack, void *arg)
   int tid, i;
   uint sp, ustack[2];
   struct proc *nt;
-  
+
   // Allocate thread like a process.
   if ((nt = allocproc()) == 0)
     return -1;
-  
+
   // Copy process state and page table from p.
   nt->pgdir = proc->pgdir;
   nt->sz = proc->sz;
@@ -505,7 +509,7 @@ thread_create(void (*tmain)(void *), void *stack, void *arg)
   // EXPERIMENTAL
   nt->tf->eax = 0;
   nt->tstack = (char*)stack;  // lets us give stack back in thread_join()
-  
+
   // Set stack pointer to point to new stack.
   // Decrement it by 2 to move it below the return PC.
   // See Figure 2-3 in xv6 book for memory layout. Also, see code for exec()
@@ -517,24 +521,24 @@ thread_create(void (*tmain)(void *), void *stack, void *arg)
     return -1;
 
   nt->tf->esp = sp;
-  
+
   // Copy open files.
   for(i = 0; i < NOFILE; i++)
     if(proc->ofile[i])
       nt->ofile[i] = filedup(proc->ofile[i]);
-  
+
   nt->cwd = idup(proc->cwd);
-  
+
   // Don't actually need this. Just for debugging.
   safestrcpy(nt->name, proc->name, sizeof(proc->name));
-  
+
   tid = nt->pid;
-  
+
   // Change thread state.
   acquire(&ptable.lock);
   nt->state = RUNNABLE;
   release(&ptable.lock);
-  
+
   return tid;
 }
 
@@ -549,7 +553,7 @@ thread_join(void **stack)
   int havekids, pid;
 
   acquire(&ptable.lock);
-  for(;;){
+  for(;;){/* CMPT 332 GROUP 23 Change, Fall 2017 */
     // Scan through table looking for zombie children.
     havekids = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
@@ -604,7 +608,7 @@ mtx_create(int locked)
 
 	mtx_id = freemtx;
 	freemtx++;
-	
+
 	// Set lock state based on argument
   acquire(&mutexes[mtx_id].mlock);
 	if(locked){
@@ -658,12 +662,37 @@ mtx_unlock(int lock_id)
 		return -1;
 	if (mutexes[lock_id].owner != proc->pid)
 		return -1;
-	
+
   chan = (void*)(mutexes + lock_id);
 	acquire(&(mutexes[lock_id].mlock));
 	mutexes[lock_id].value = 0;
 	mutexes[lock_id].owner = -1;
 	release(&(mutexes[lock_id].mlock));
   wakeup(chan);
+  return 0;
+}
+
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
+// increase the priority of the current process by incr
+int
+nice(int incr)
+{
+  return 0;
+}
+
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
+// get the priority of the process with PID pid
+int
+getpriority(int pid)
+{
+  return 0;
+}
+
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
+// set the prority of the process with PID pid to new_priority
+
+int
+setpriority(int pid, int new_priority)
+{
   return 0;
 }
