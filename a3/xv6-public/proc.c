@@ -47,6 +47,10 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
+static void _queue_add(struct qnode *qn);
+static void _queue_remove(struct qnode *qn);
+
 void
 pinit(void)
 {
@@ -119,6 +123,7 @@ userinit(void)
 {
   struct proc *p;
   extern char _binary_initcode_start[], _binary_initcode_size[];
+  struct qnode *qn;
   /* CMPT 332 GROUP 23 Change, Fall 2017 */
   int i;
   freenode = &qnodes[0];
@@ -149,6 +154,16 @@ userinit(void)
 
   safestrcpy(p->name, "initcode", sizeof(p->name));
   p->cwd = namei("/");
+
+  /* CMPT 332 GROUP 23 Change, Fall 2017 */
+  qn = freenode;
+  freenode = freenode->next;
+  if (freenode != 0)
+    freenode->prev = 0;
+  qn->p = p;
+  acquire(&queue[p->priority].qlock);
+  _queue_add(qn);
+  release(&queue[p->priority].qlock);
 
   p->state = RUNNABLE;
 }
@@ -181,10 +196,18 @@ fork(void)
 {
   int i, pid;
   struct proc *np;
+  struct qnode *qn;
 
   // Allocate process.
   if((np = allocproc()) == 0)
     return -1;
+
+  /* CMPT 332 GROUP 23 Change, Fall 2017 */
+  // Grab a node from the free node queue
+  qn = freenode;
+  freenode = freenode->next;
+  if (freenode != 0)
+    freenode->prev = 0;
 
   // Copy process state from p.
   if((np->pgdir = copyuvm(proc->pgdir, proc->sz)) == 0){
@@ -211,9 +234,12 @@ fork(void)
 
   pid = np->pid;
 
+  qn->p = np;
   // lock to force the compiler to emit the np->state write last.
   acquire(&ptable.lock);
   np->state = RUNNABLE;
+  /* CMPT 332 GROUP 23 Change, Fall 2017 */
+  _queue_add(qn);
   release(&ptable.lock);
 
   return pid;
@@ -319,17 +345,34 @@ wait(void)
 void
 scheduler(void)
 {
+  int i;
   struct proc *p;
+  struct qnode *qn;
 
   for(;;){
     // Enable interrupts on this processor.
     sti();
-
-    // Loop over process table looking for process to run.
+    // Instead of looping over the process table looking for a process to run,
+    // look over each queue to find a process to run.
     acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->state != RUNNABLE)
+
+    for (i = 0; i < NQUEUE; i++){
+      acquire(&queue[i].qlock);
+      if (queue[i].size == 0){
+        release(&queue[i].qlock);
         continue;
+      }
+      qn = queue[i].head;
+      _queue_remove(qn);
+      p = qn->p;
+      // release qn back to the system.
+      qn->next = freenode;
+      freenode = qn;
+      if (qn->next != 0)
+        qn->next->prev = qn;
+      qn->prev = 0;
+      qn->p = 0;
+      release(&queue[i].qlock);
 
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
@@ -339,13 +382,12 @@ scheduler(void)
       p->state = RUNNING;
       swtch(&cpu->scheduler, proc->context);
       switchkvm();
-
       // Process is done running for now.
       // It should have changed its p->state before coming back.
       proc = 0;
+      break;
     }
     release(&ptable.lock);
-
   }
 }
 
@@ -373,7 +415,21 @@ sched(void)
 void
 yield(void)
 {
+  int priority;
+  struct qnode *qn;
+
+  qn = freenode;
+  freenode = freenode->next;
+  if (freenode != 0){
+    freenode->prev = 0;
+  }
   acquire(&ptable.lock);  //DOC: yieldlock
+  priority = proc->priority;
+  qn->p = proc;
+
+  acquire(&queue[priority].qlock);
+  _queue_add(qn);
+  release(&queue[priority].qlock);
   proc->state = RUNNABLE;
   sched();
   release(&ptable.lock);
@@ -444,10 +500,23 @@ static void
 wakeup1(void *chan)
 {
   struct proc *p;
+  /* CMPT 332 GROUP 23 Change, Fall 2017 */
+  struct qnode *np;
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
-    if(p->state == SLEEPING && p->chan == chan)
+    if(p->state == SLEEPING && p->chan == chan){
+      /* CMPT 332 GROUP 23 Change, Fall 2017 */
+      np = freenode;
+      freenode = freenode->next;
+      if (freenode != 0)
+        freenode->prev = 0;
+      np->p = p;
+      acquire(&queue[p->priority].qlock);
+      _queue_add(np);
+      release(&queue[p->priority].qlock);
+
       p->state = RUNNABLE;
+    }
 }
 
 // Wake up all processes sleeping on chan.
@@ -466,14 +535,26 @@ int
 kill(int pid)
 {
   struct proc *p;
+  /* CMPT 332 GROUP 23 Change, Fall 2017 */
+  struct qnode *qn;
 
   acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->pid == pid){
       p->killed = 1;
       // Wake process from sleep if necessary.
-      if(p->state == SLEEPING)
+      if(p->state == SLEEPING){
         p->state = RUNNABLE;
+        /* CMPT 332 GROUP 23 Change, Fall 2017 */
+        qn = freenode;
+        freenode = freenode->next;
+        if (freenode != 0)
+          freenode->prev = 0;
+        qn->p = p;
+        acquire(&queue[p->priority].qlock);
+        _queue_add(qn);
+        release(&queue[p->priority].qlock);
+      }
       release(&ptable.lock);
       return 0;
     }
