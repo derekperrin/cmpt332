@@ -24,13 +24,15 @@ struct {
 struct qnode {
   struct proc *p;
   struct qnode *next;
+  struct qnode *prev;
 };
 
 /* CMPT 332 GROUP 23 Change, Fall 2017 */
 struct {
   struct spinlock qlock;  // used for mutual exclusion when accessing queues
-  struct qnode *first;
-  struct qnode *last;
+  struct qnode *head;
+  struct qnode *tail;
+  int size;
 } queue[NQUEUE];
 
 struct qnode qnodes[NPROC];
@@ -120,9 +122,15 @@ userinit(void)
   /* CMPT 332 GROUP 23 Change, Fall 2017 */
   int i;
   freenode = &qnodes[0];
-  for (i = 0; i < NPROC-1; i++)
+  qnodes[0].prev = 0;
+  for (i = 0; i < NPROC-1; i++){
     qnodes[i].next = &qnodes[i+1];
+    qnodes[i+1].prev = &qnodes[i];
+  }
   qnodes[NPROC-1].next = 0;
+
+  for (i = 0; i < NQUEUE; i++)
+    queue[i].size = 0;
 
   p = allocproc();
   initproc = p;
@@ -699,6 +707,50 @@ mtx_unlock(int lock_id)
   wakeup(chan);
   return 0;
 }
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
+// Search through the appropriate priority queue, remove item with given pid.
+// Lock must be acquired on the appropriate priority queue.
+void
+_queue_remove(struct qnode *qn)
+{
+  int priority;
+  priority = qn->p->priority;
+  if (queue[priority].size == 1){
+    queue[priority].head = 0;
+    queue[priority].tail = 0;
+  } else if (queue[priority].head == qn) {
+    qn->next->prev = 0;
+    queue[priority].head = qn->next;
+  } else if (queue[priority].tail == qn) {
+    qn->prev->next = 0;
+    queue[priority].tail = qn->prev;
+  } else {
+    qn->prev->next = qn->next;
+    qn->next = qn->prev;
+  }
+  queue[priority].size--;
+}
+
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
+// Append a node onto the end of the queue given by the priority of its proc
+// member. Must hold lock to the proper queue.
+void
+_queue_add(struct qnode *qn)
+{
+  int priority;
+  priority = qn->p->priority;
+  if (queue[priority].size == 0){
+    queue[priority].head = qn;
+    queue[priority].tail = qn;
+  } else {
+    queue[priority].tail->next = qn;
+    qn->prev = queue[priority].tail;
+    qn->next = 0;
+    queue[priority].tail = qn;
+  }
+  queue[priority].size++;
+}
+
 
 /* CMPT 332 GROUP 23 Change, Fall 2017 */
 // increase the priority of the current process by incr
@@ -737,14 +789,9 @@ getpriority(int pid)
 int
 setpriority(int pid, int new_priority)
 {
-  int found;    // used when looking for process in ready queue
   struct proc *p;
   struct qnode *qn;
-  struct qnode *temp;
-  struct queue *newq;
 
-  newq = &queue[new_priority];
-  found = 0;
   if (new_priority > 4 || new_priority < 0)
     return -1;
   acquire(&ptable.lock);
@@ -752,28 +799,31 @@ setpriority(int pid, int new_priority)
   for (p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if (p->pid == pid){
       if (p->state == RUNNABLE){
+        // remove from old queue
         acquire(&queue[p->priority].qlock);
-        qn = queue[p->priority].first; // this should never be null
-        while(qn->next != 0){
-          if (qn->next->p->pid == pid){
-            found = 1;
-            break;
+        qn = queue[p->priority].head; // this should never be null
+        while(qn != 0){
+          if (qn->p->pid == pid){
+            // remove process from its old queue
+            _queue_remove(qn);
+            release(&queue[p->priority].qlock);
+
+            // add process to its new queue corresponding to its new priority
+            qn->p->priority = new_priority;
+            acquire(&queue[new_priority].qlock);
+            _queue_add(qn);
+            release(&queue[new_priority].qlock);
+            release(&ptable.lock);
+            return 0;
           }
         }
-        if (found < 1)
-          return -1;  // some sort of error has occurred
-        acquire(newq->qlock);
-        newq->last->next = qn;
-        newq->last = qn;
-        temp = qn->next;
-        qn->next = 0;
-
+        release(&ptable.lock);
+        return -1;  // some sort of error has occurred
       }
       break;
     }
   }
 
-  queue[p->priority]
   p->priority = new_priority;
   release(&ptable.lock);
   return 0;
