@@ -20,6 +20,18 @@ struct {
   struct proc proc[NPROC];
 } ptable;
 
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
+struct {
+  struct proc *p;
+  struct qnode *next;
+} qnode[NPROC] ;
+
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
+struct {
+  struct qnode first;
+  struct qnode last;
+} queue[NQUEUE];
+
 static struct proc *initproc;
 
 int nextpid = 1;
@@ -685,7 +697,17 @@ nice(int incr)
 int
 getpriority(int pid)
 {
-  return 0;
+  int priority;
+  struct proc *p;
+  priority = -1;
+  acquire(&ptable.lock);
+  for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+    if (p->pid == pid){
+      priority = p->priority;
+      break;
+    }
+  release(&ptable.lock);
+  return priority;
 }
 
 /* CMPT 332 GROUP 23 Change, Fall 2017 */
