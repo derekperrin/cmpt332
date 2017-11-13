@@ -21,16 +21,21 @@ struct {
 } ptable;
 
 /* CMPT 332 GROUP 23 Change, Fall 2017 */
-struct {
+struct qnode {
   struct proc *p;
   struct qnode *next;
-} qnode[NPROC] ;
+};
 
 /* CMPT 332 GROUP 23 Change, Fall 2017 */
 struct {
-  struct qnode first;
-  struct qnode last;
+  struct spinlock qlock;  // used for mutual exclusion when accessing queues
+  struct qnode *first;
+  struct qnode *last;
 } queue[NQUEUE];
+
+struct qnode qnodes[NPROC];
+
+struct qnode *freenode;
 
 static struct proc *initproc;
 
@@ -43,7 +48,12 @@ static void wakeup1(void *chan);
 void
 pinit(void)
 {
+  int i;
   initlock(&ptable.lock, "ptable");
+  /* CMPT 332 GROUP 23 Change, Fall 2017 */
+  for (i = 0; i < NQUEUE; i++){
+    initlock(&queue[i].qlock, "queue");
+  }
 }
 
 /* CMPT 332 GROUP 23 Change, Fall 2017 */
@@ -107,6 +117,12 @@ userinit(void)
 {
   struct proc *p;
   extern char _binary_initcode_start[], _binary_initcode_size[];
+  /* CMPT 332 GROUP 23 Change, Fall 2017 */
+  int i;
+  freenode = &qnodes[0];
+  for (i = 0; i < NPROC-1; i++)
+    qnodes[i].next = &qnodes[i+1];
+  qnodes[NPROC-1].next = 0;
 
   p = allocproc();
   initproc = p;
@@ -173,7 +189,7 @@ fork(void)
   np->parent = proc;
   *np->tf = *proc->tf;
   /* CMPT 332 GROUP 23 Change, Fall 2017 */
-  np->priority = proc->priority
+  np->priority = proc->priority;
 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
@@ -689,6 +705,12 @@ mtx_unlock(int lock_id)
 int
 nice(int incr)
 {
+  int new_priority;
+  new_priority = proc->priority + incr;
+  if (new_priority < 0 || new_priority > 4)
+    return -1;
+  proc->priority = new_priority;
+  // don't move to another queue because current state is RUNNING
   return 0;
 }
 
@@ -712,9 +734,47 @@ getpriority(int pid)
 
 /* CMPT 332 GROUP 23 Change, Fall 2017 */
 // set the prority of the process with PID pid to new_priority
-
 int
 setpriority(int pid, int new_priority)
 {
+  int found;    // used when looking for process in ready queue
+  struct proc *p;
+  struct qnode *qn;
+  struct qnode *temp;
+  struct queue *newq;
+
+  newq = &queue[new_priority];
+  found = 0;
+  if (new_priority > 4 || new_priority < 0)
+    return -1;
+  acquire(&ptable.lock);
+  // Find the process in the process table
+  for (p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if (p->pid == pid){
+      if (p->state == RUNNABLE){
+        acquire(&queue[p->priority].qlock);
+        qn = queue[p->priority].first; // this should never be null
+        while(qn->next != 0){
+          if (qn->next->p->pid == pid){
+            found = 1;
+            break;
+          }
+        }
+        if (found < 1)
+          return -1;  // some sort of error has occurred
+        acquire(newq->qlock);
+        newq->last->next = qn;
+        newq->last = qn;
+        temp = qn->next;
+        qn->next = 0;
+
+      }
+      break;
+    }
+  }
+
+  queue[p->priority]
+  p->priority = new_priority;
+  release(&ptable.lock);
   return 0;
 }
