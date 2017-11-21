@@ -36,7 +36,9 @@ main(void)
     timerinit();   // uniprocessor timer
   startothers();   // start other processors
   kinit2(P2V(4*1024*1024), P2V(PHYSTOP)); // must come after startothers()
+  /* CMPT 332 GROUP 23 Change, Fall 2017 */
   userinit();      // first user process
+  create_kernel_process("swapper", swapper); // set up the swapper.
   // Finish setting up this processor in mpmain.
   mpmain();
 }

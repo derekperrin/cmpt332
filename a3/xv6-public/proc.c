@@ -158,7 +158,7 @@ userinit(void)
   /* CMPT 332 GROUP 23 Change, Fall 2017 */
   qn = freenode;
   freenode = freenode->next;
-  if (freenode != 0)
+  if(freenode != 0)
     freenode->prev = 0;
   qn->p = p;
   acquire(&queue[p->priority].qlock);
@@ -204,8 +204,8 @@ fork(void)
 
   /* CMPT 332 GROUP 23 Change, Fall 2017 */
   // Grab a node from the free node queue
-  qn = freenode;
-  freenode = freenode->next;
+  qn = freenode; //freenode should never initially be null here
+  freenode = freenode->next; 
   if (freenode != 0)
     freenode->prev = 0;
 
@@ -909,3 +909,143 @@ setpriority(int pid, int new_priority)
   release(&ptable.lock);
   return 0;
 }
+
+void
+swapper(void){
+  // this function is currently a test.
+  // should be running in kernel mode... right????
+  // make this function an infinite loop so it never returns.
+  int i;
+  
+  cprintf("The swapper has been loaded.\n");
+  
+  
+  for(;;){
+    i += 1;
+    //cprintf("The swapper has been loaded. %d\n", i);
+  }
+}
+
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
+// TODO: remove all reads from global proc variable because it's null!
+void
+create_kernel_process(const char *name, void (*entrypoint) ()){
+  int i;
+  struct proc *np/*, *temp*/;
+  struct qnode *qn;
+  
+  // Allocate process
+  if ((np = allocproc()) == 0)
+    panic("Failed to allocate kernel process.");
+  
+  qn = freenode;
+  freenode = freenode->next;
+  if(freenode != 0)
+    freenode->prev = 0;
+  /*
+  temp = proc;
+  temp += 1;
+  */
+  if((np->pgdir = setupkvm()) == 0){
+    kfree(np->kstack);
+    np->kstack = 0;
+    np->state = UNUSED;
+    panic("Failed to setup pgdir for kernel process.");
+  }
+  np->sz = proc->sz;                          // Change this. VERY BAD!
+  np->parent = proc;                          // Change this.
+  *np->tf = *proc->tf;                        // Change this. VERY BAD!
+  
+  // Clear %eax so that fork return 0 in the child
+  np->tf->eax = 0;
+  
+  for(i = 0; i < NOFILE; i++){
+    if(proc->ofile[i])                        // Change this. VERY BAD!
+      np->ofile[i] = filedup(proc->ofile[i]); // Change this. VERY BAD!
+  np->cwd = idup(proc->cwd);                  // Change this. VERY BAD!
+  
+  safestrcpy(np->name, name, sizeof(name));
+  
+  qn->p = np;
+  // lock to force the compiler to emit the np-state write last.
+  acquire(&ptable.lock);
+  np->context->eip = (uint)entrypoint;
+  np->state = RUNNABLE;
+  _queue_add(qn);
+  release(&ptable.lock);
+  }
+}
+
+
+/*
+void
+create_kernel_process(const char *name, void (*entrypoint) ()){
+  // create a process that never returns, like a system call but never returns.
+  struct proc *p;
+  char *sp;
+  
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+    if(p->state == UNUSED)
+      goto foundk;
+  release(&ptable.lock);
+  panic("Could not create kernel process because all processes are in use.");
+  return;
+  
+foundk:
+  p->state = EMBRYO;
+  p->pid = nextpid++;
+  p->priority = 0;
+  release(&ptable.lock);
+  
+  // Allocate kernel stack.
+  if((p->kstack = kalloc()) == 0){
+    p->state = UNUSED;
+    panic("Could not allocate kernel stack for kernel process.");
+    return;
+  }
+  sp = p->kstack + KSTACKSIZE;
+  
+  // Leave room for trap frame.
+  sp -= sizeof *p->tf;
+  p->tf = (struct trapframe*)sp;
+  
+  // Set up new context to start executing at kernel_process()
+  // which will be set to return to trapret but it won't actually return.
+  sp -= 4;
+  *(uint*)sp = (uint)trapret;
+  
+  sp -= sizeof *p->context;
+  p->context = (struct context*)sp;
+  memset(p->context, 0, sizeof *p->context);
+  p->context->eip = (uint)entrypoint;
+  
+  //return p;
+}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
