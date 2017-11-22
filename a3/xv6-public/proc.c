@@ -21,6 +21,13 @@ struct {
 } ptable;
 
 /* CMPT 332 GROUP 23 Change, Fall 2017 */
+// used for swapping out mutual exclusion
+struct {
+  struct spinlock lock;
+  int chan;
+} swapout;
+
+/* CMPT 332 GROUP 23 Change, Fall 2017 */
 struct qnode {
   struct proc *p;
   struct qnode *next;
@@ -56,7 +63,9 @@ pinit(void)
 {
   int i;
   initlock(&ptable.lock, "ptable");
+
   /* CMPT 332 GROUP 23 Change, Fall 2017 */
+  initlock(&swapout.lock, "swapout");
   for (i = 0; i < NQUEUE; i++){
     initlock(&queue[i].qlock, "queue");
   }
@@ -94,8 +103,7 @@ found:
 
   // Allocate kernel stack.
   if((p->kstack = kalloc()) == 0){
-    //p->state = UNUSED; // This is how xv6 originally did it.
-    p->state = SLEEPING;
+    p->state = UNUSED;
     return 0;
   }
   sp = p->kstack + KSTACKSIZE;
@@ -341,7 +349,7 @@ wait(void)
 // Scheduler never returns.  It loops, doing:
 //  - choose a process to run
 //  - swtch to start running that process
-//  - eventually that process transfers control
+//  - eventually that Gprocess transfers control
 //      via swtch back to the scheduler.
 void
 scheduler(void)
@@ -916,13 +924,16 @@ swapper(void){
   // this function is currently a test.
   // should be running in kernel mode... right????
   // make this function an infinite loop so it never returns.
-  int i;
+  // int i;
+  release(&ptable.lock);
   
   cprintf("The swapper has been loaded.\n");
   
   for(;;){
-    i += 1;
-    cprintf("The swapper is running with i = %d :)\n", i);
+    acquire(&swapout.lock);
+    sleep(&swapout.chan, &swapout.lock);
+    // do stuff
+    release(&swapout.lock);
   }
 }
 
