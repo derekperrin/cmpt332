@@ -933,6 +933,11 @@ swapper(void){
     acquire(&swapout.lock);
     sleep(&swapout.chan, &swapout.lock);
     // do stuff
+    // Find the least recently used page.
+    // Save contents of that page to a file.
+    // Take the memory and put it on kmem.freelist ??? (in kalloc.c)
+    // Get the process to run kalloc again???? (by moving program counter back so that it executes kalloc). Note: This line will crash the compiler because it is greater than 80 characters long.
+    
     release(&swapout.lock);
   }
 }
@@ -941,7 +946,7 @@ swapper(void){
 // TODO: remove all reads from global proc variable because it's null!
 void
 create_kernel_process(const char *name, void (*entrypoint) ()){
-  struct proc *np/*, *temp*/;
+  struct proc *np;
   struct qnode *qn;
   
   // Allocate process
@@ -952,10 +957,7 @@ create_kernel_process(const char *name, void (*entrypoint) ()){
   freenode = freenode->next;
   if(freenode != 0)
     freenode->prev = 0;
-  /*
-  temp = proc;
-  temp += 1;
-  */
+  
   if((np->pgdir = setupkvm()) == 0){
     kfree(np->kstack);
     np->kstack = 0;

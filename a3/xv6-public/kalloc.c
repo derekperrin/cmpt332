@@ -86,9 +86,13 @@ kalloc(void)
 
   if(kmem.use_lock)
     acquire(&kmem.lock);
-  r = kmem.freelist;
+  r = kmem.freelist; // Add label for this line.
   if(r)
     kmem.freelist = r->next;
+  // else:
+  //    send request to swapper to get a page.
+  //    put process to sleep.
+  //    (on resume) jump to the label to try again.
   if(kmem.use_lock)
     release(&kmem.lock);
   return (char*)r;
