@@ -368,7 +368,7 @@ scheduler(void)
       p = qn->p;
       // release qn back to the system.
       qn->next = freenode;
-      freenode = qn;proc->state = SLEEPING;
+      freenode = qn;
       if (qn->next != 0)
         qn->next->prev = qn;
       qn->prev = 0;
@@ -980,77 +980,5 @@ create_kernel_process(const char *name, void (*entrypoint) ()){
   _queue_add(qn);
   release(&ptable.lock);
 }
-
-
-/*
-void
-create_kernel_process(const char *name, void (*entrypoint) ()){
-  // create a process that never returns, like a system call but never returns.
-  struct proc *p;
-  char *sp;
-  
-  acquire(&ptable.lock);
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
-    if(p->state == UNUSED)
-      goto foundk;
-  release(&ptable.lock);
-  panic("Could not create kernel process because all processes are in use.");
-  return;
-  
-foundk:
-  p->state = EMBRYO;
-  p->pid = nextpid++;
-  p->priority = 0;
-  release(&ptable.lock);
-  
-  // Allocate kernel stack.
-  if((p->kstack = kalloc()) == 0){
-    p->state = UNUSED;
-    panic("Could not allocate kernel stack for kernel process.");
-    return;
-  }
-  sp = p->kstack + KSTACKSIZE;
-  
-  // Leave room for trap frame.
-  sp -= sizeof *p->tf;
-  p->tf = (struct trapframe*)sp;
-  
-  // Set up new context to start executing at kernel_process()
-  // which will be set to return to trapret but it won't actually return.
-  sp -= 4;
-  *(uint*)sp = (uint)trapret;
-  
-  sp -= sizeof *p->context;
-  p->context = (struct context*)sp;
-  memset(p->context, 0, sizeof *p->context);
-  p->context->eip = (uint)entrypoint;
-  
-  //return p;
-}*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
