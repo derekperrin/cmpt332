@@ -94,7 +94,8 @@ found:
 
   // Allocate kernel stack.
   if((p->kstack = kalloc()) == 0){
-    p->state = UNUSED;
+    //p->state = UNUSED; // This is how xv6 originally did it.
+    p->state = SLEEPING;
     return 0;
   }
   sp = p->kstack + KSTACKSIZE;
@@ -367,7 +368,7 @@ scheduler(void)
       p = qn->p;
       // release qn back to the system.
       qn->next = freenode;
-      freenode = qn;
+      freenode = qn;proc->state = SLEEPING;
       if (qn->next != 0)
         qn->next->prev = qn;
       qn->prev = 0;
