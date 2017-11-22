@@ -919,10 +919,9 @@ swapper(void){
   
   cprintf("The swapper has been loaded.\n");
   
-  
   for(;;){
     i += 1;
-    //cprintf("The swapper has been loaded. %d\n", i);
+    cprintf("The swapper is running with i = %d :)\n", i);
   }
 }
 
@@ -930,7 +929,6 @@ swapper(void){
 // TODO: remove all reads from global proc variable because it's null!
 void
 create_kernel_process(const char *name, void (*entrypoint) ()){
-  int i;
   struct proc *np/*, *temp*/;
   struct qnode *qn;
   
@@ -952,17 +950,24 @@ create_kernel_process(const char *name, void (*entrypoint) ()){
     np->state = UNUSED;
     panic("Failed to setup pgdir for kernel process.");
   }
-  np->sz = proc->sz;                          // Change this. VERY BAD!
-  np->parent = proc;                          // Change this.
-  *np->tf = *proc->tf;                        // Change this. VERY BAD!
+  np->sz = PGSIZE;
+  np->parent = initproc; // parent is the first process.
+  memset(np->tf, 0, sizeof(*np->tf));
+  np->tf->cs = (SEG_UCODE << 3) | DPL_USER;
+  np->tf->ds = (SEG_UDATA << 3) | DPL_USER;
+  np->tf->es = np->tf->ds;
+  np->tf->ss = np->tf->ds;
+  np->tf->eflags = FL_IF;
+  np->tf->esp = PGSIZE;
+  np->tf->eip = 0;  // beginning of initcode.S
   
   // Clear %eax so that fork return 0 in the child
   np->tf->eax = 0;
-  
-  for(i = 0; i < NOFILE; i++){
+  /*
+  for(i = 0; i < NOFILE; i++)
     if(proc->ofile[i])                        // Change this. VERY BAD!
-      np->ofile[i] = filedup(proc->ofile[i]); // Change this. VERY BAD!
-  np->cwd = idup(proc->cwd);                  // Change this. VERY BAD!
+      np->ofile[i] = filedup(proc->ofile[i]); // Change this. VERY BAD!*/
+  np->cwd = namei("/");
   
   safestrcpy(np->name, name, sizeof(name));
   
@@ -973,7 +978,6 @@ create_kernel_process(const char *name, void (*entrypoint) ()){
   np->state = RUNNABLE;
   _queue_add(qn);
   release(&ptable.lock);
-  }
 }
 
 
