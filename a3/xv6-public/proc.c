@@ -25,7 +25,7 @@ struct {
 struct {
   struct spinlock lock;
   int chan;
-} swapout;
+} swapo;
 
 /* CMPT 332 GROUP 23 Change, Fall 2017 */
 struct qnode {
@@ -65,7 +65,7 @@ pinit(void)
   initlock(&ptable.lock, "ptable");
 
   /* CMPT 332 GROUP 23 Change, Fall 2017 */
-  initlock(&swapout.lock, "swapout");
+  initlock(&swapo.lock, "swapout");
   for (i = 0; i < NQUEUE; i++){
     initlock(&queue[i].qlock, "queue");
   }
@@ -920,27 +920,50 @@ setpriority(int pid, int new_priority)
 }
 
 void
-swapper(void){
+swapout(void){
   // this function is currently a test.
   // should be running in kernel mode... right????
   // make this function an infinite loop so it never returns.
   // int i;
   release(&ptable.lock);
   
-  cprintf("The swapper has been loaded.\n");
+  cprintf("The swapout swapper has been loaded.\n");
   
   for(;;){
-    acquire(&swapout.lock);
-    sleep(&swapout.chan, &swapout.lock);
+    acquire(&swapo.lock);
+    sleep(&swapo.chan, &swapo.lock);
     // do stuff
     // Find the least recently used page.
     // Save contents of that page to a file.
     // Take the memory and put it on kmem.freelist ??? (in kalloc.c)
     // Get the process to run kalloc again???? (by moving program counter back 
-    // so that it executes kalloc). Note: This line will crash the compiler 
-    // because it is greater than 80 characters long.
+    // so that it executes kalloc).
     
-    release(&swapout.lock);
+    release(&swapo.lock);
+  }
+}
+
+void
+swapin(void){
+  // this function is currently a test.
+  // should be running in kernel mode... right????
+  // make this function an infinite loop so it never returns.
+  // int i;
+  release(&ptable.lock);
+  
+  cprintf("The swapin swapper has been loaded.\n");
+  
+  for(;;){
+    acquire(&swapo.lock);
+    sleep(&swapo.chan, &swapo.lock);
+    // do stuff
+    // get page table lock.
+    // Find the place to put the page in the page table.
+    // Load contents of page from file into page table.
+    // release page table lock.
+    // delete the file from disk.
+    
+    release(&swapo.lock);
   }
 }
 

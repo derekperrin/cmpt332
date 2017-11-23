@@ -128,7 +128,8 @@ int             nice(int);
 int             getpriority(int);
 int             setpriority(int, int);
 void            create_kernel_process(const char*, void (*entrypoint) ());
-void            swapper(void);
+void            swapout(void);
+void            swapin(void);
 
 // swtch.S
 void            swtch(struct context**, struct context*);
