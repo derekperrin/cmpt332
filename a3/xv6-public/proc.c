@@ -936,7 +936,9 @@ swapper(void){
     // Find the least recently used page.
     // Save contents of that page to a file.
     // Take the memory and put it on kmem.freelist ??? (in kalloc.c)
-    // Get the process to run kalloc again???? (by moving program counter back so that it executes kalloc). Note: This line will crash the compiler because it is greater than 80 characters long.
+    // Get the process to run kalloc again???? (by moving program counter back 
+    // so that it executes kalloc). Note: This line will crash the compiler 
+    // because it is greater than 80 characters long.
     
     release(&swapout.lock);
   }
@@ -977,8 +979,7 @@ create_kernel_process(const char *name, void (*entrypoint) ()){
   
   // Clear %eax so that fork return 0 in the child
   np->tf->eax = 0;
-  /*
-  for(i = 0; i < NOFILE; i++)
+  for(int i = 0; i < NOFILE; i++)
     if(proc->ofile[i])                        // Change this. VERY BAD!
       np->ofile[i] = filedup(proc->ofile[i]); // Change this. VERY BAD!*/
   np->cwd = namei("/");

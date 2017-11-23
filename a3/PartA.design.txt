@@ -1,0 +1,234 @@
+# CMPT 332 -- Fall 2017
+# Assignment 3
+# Derek Perrin 		dmp450 11050915
+# Dominic McKeith 	dom258 11184543
+#
+
+# Part A Design: Priority Scheduling Algorithm
+
+Needed system calls:
+  int nice(int incr)
+  int getpriority(int pid)
+  int setpriority(int pid, int new_priority)
+
+To implement these system calls, we need to add definitions for them in the
+following files:
+  usys.S
+  sysproc.c
+  syscall.h
+  syscall.c
+  user.h
+  defs.h
+
+The actual implementation of the syscall is in proc.c. We needed to alter the
+proc structure, so we also had to make changes to proc.h.
+
+We implemented a janky linked-list-style queue to store the processes on when 
+they were changed into the RUNNABLE state. Below are the node and queue structs.
+
+struct qnode {
+  struct proc *p
+  struct qnode *next
+  struct qnode *prev
+}
+
+struct {
+  struct spinlock qlock
+  struct qnode *head
+  struct qnode *tail
+  int size
+} queue[NQUEUE]
+
+struct qnode *free_node
+
+Keeping the number of elements in the queue is useful for the scheduler to save
+time from having to iterate through things to see if it's empty or not before
+moving to the next queue. Pretty basic linked list that is very similar to our 
+linked list implementation in A1. We initialize all NPROC of the nodes to be
+pointing in sequence so we can keep track of which nodes are free. we have a 
+free pointer pointing to the current free node if we want to allocate. This is
+done in userinit()--the initialization of the first process.
+
+Node diagram:
+    
+    0<-node_0 -> <-node_1 -> ... -><-node_NPROC->0
+        |
+      free_node
+
+Before we can adjust the priority of different processes, we need to have a 
+priority field inside each process that we can increment, set, and return. For
+this we edited the proc structure inside proc.h
+
+We have two helper functions that make our lives easier because they are used
+in several places. Those functions are:
+
+  _queue_remove(struct qnode *qn)
+  _queue_add(struct qnode *qn)
+
+The implementations are as follows:
+
+void
+_queue_add(struct qnode *qn)
+{
+  int priority
+  priority = qn->p->priority
+  if (queue[priority].size == 0){
+    queue[priority].head = qn
+    queue[priority].tail = qn
+  } else {
+    queue[priority].tail->next = qn
+    qn->prev = queue[priority].tail
+    qn->next = 0
+    queue[priority].tail = qn
+  }
+  queue[priority].size++
+}
+
+void
+_queue_remove(struct qnode *qn)
+{
+  int priority
+  priority = qn->p->priority
+  if (queue[priority].size == 1){
+    queue[priority].head = 0
+    queue[priority].tail = 0
+  } else if (queue[priority].head == qn) {
+    qn->next->prev = 0
+    queue[priority].head = qn->next
+  } else if (queue[priority].tail == qn) {
+    qn->prev->next = 0
+    queue[priority].tail = qn->prev
+  } else {
+    qn->prev->next = qn->next
+    qn->next = qn->prev
+  }
+  queue[priority].size--
+}
+
+They are pretty straightforward. The just add nodes to the back of the queue, or
+remove them from the front of the queue. Now for the system calls.
+
+For nice, it must be able to accept negative input. It cannot change the process
+priority to a negative number, or a number greater than 4. If the result would
+be either, then return -1. Return 0 on success.
+
+nice(int incr)
+{
+  int new_priority
+  new_priority = proc->priority + incr
+  if (new_priority < 0 || new_priority > 4)
+    return -1
+  proc->priority = new_priority
+  return 0
+}
+
+The implementation of getpriority is really simple. You just return the current
+priority of the process with the given pid
+
+int
+getpriority(int pid)
+{
+  int priority
+  struct proc *p
+  priority = -1
+  acquire(&ptable.lock)
+  for (p = ptable.proc p < &ptable.proc[NPROC] p++)
+    if (p->pid == pid){
+      priority = p->priority
+      break
+    }
+  release(&ptable.lock)
+  return priority
+}
+
+There's no fancy handwaving there. The real magic comes in setpriority. We have
+to be a bit more careful with this. We iterate through the process table until
+we find a process with the given pid. If the process is already on a queue,
+if it's in the RUNNABLE state, we need to remove it from the old queue. 
+Regardless if it was in a queue before or not, we now have to put it at the back
+of the new queue. Removing it from the old queue can be done in constant time
+because we are using a linked list implementation.
+
+int
+setpriority(int pid, int new_priority)
+{
+  struct proc *p
+  struct qnode *qn
+
+  if (new_priority > 4 || new_priority < 0)
+    return -1
+  acquire(&ptable.lock)
+  for (p = ptable.proc p < &ptable.proc[NPROC] p++){
+    if (p->pid == pid){
+      if (p->state == RUNNABLE){
+        acquire(&queue[p->priority].qlock)
+        qn = queue[p->priority].head // this should never be null
+        while(qn != 0){
+          if (qn->p->pid == pid){
+            _queue_remove(qn)
+            release(&queue[p->priority].qlock)
+
+            qn->p->priority = new_priority
+            acquire(&queue[new_priority].qlock)
+            _queue_add(qn)
+            release(&queue[new_priority].qlock)
+            release(&ptable.lock)
+            return 0
+          }
+        }
+        release(&ptable.lock)
+        return -1  // some sort of error has occurred
+      }
+      break
+    }
+  }
+
+  p->priority = new_priority
+  release(&ptable.lock)
+  return 0
+}
+
+Any time a process is created, the priority is initialized to 0. We do this in
+allocproc().
+
+
+
+
+SCHEDULER
+This section is the design of the scheduler. Not much needed to be changed from
+the old design of the original round-robin scheduler. Instead of iterating over
+a process table, we instead iterate though our queues. Care needs to be taken
+that the queues are iterated over in order of decreasing priority. We also
+need to make sure that when we schedule a process to run, we need to start back
+at the beginning of the first priority queue and not just continue looking in
+the current queue we are in. We have to do this in case something changes its 
+priority to a higher priority. This bit of code is inside the scheduler and is
+how we iterate over the processes to find one to run. In the round-robin 
+scheduler, they had to check if the p->state == RUNNABLE. We are guaranteed
+the state will be RUNNABLE because only RUNNABLE processes should be in the
+queues in the first place.
+
+  for (i = 0 i < NQUEUE i++){
+    acquire(&queue[i].qlock)
+    if (queue[i].size == 0){
+      release(&queue[i].qlock)
+      continue
+    }
+
+
+
+ADDING TO QUEUES
+We need to take caution to always put processes on the appropriate queues as
+soon as their state changes to RUNNABLE in other functions. We need to do this 
+because this is the only place the scheduler looks to schedule processes to run.
+The following functions need code added to them to enqueue processes:
+
+  userinit()  // Initial process has its state changed to RUNNABLE at the end.
+  fork()
+  yield()
+  wakeup()
+  kill()  // we weren't sure with this one, but it needs to be scheduled
+          // again to be able to exit after kill() is called.
+
+
+TESTING
