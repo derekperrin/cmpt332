@@ -24,8 +24,9 @@ struct {
 // used for swapping out mutual exclusion
 struct {
   struct spinlock lock;
-  int chan;
-} swapo;
+  int chanswapin;
+  int chanswapout;
+} swap;
 
 /* CMPT 332 GROUP 23 Change, Fall 2017 */
 struct qnode {
@@ -65,7 +66,7 @@ pinit(void)
   initlock(&ptable.lock, "ptable");
 
   /* CMPT 332 GROUP 23 Change, Fall 2017 */
-  initlock(&swapo.lock, "swapout");
+  initlock(&swap.lock, "swaplock");
   for (i = 0; i < NQUEUE; i++){
     initlock(&queue[i].qlock, "queue");
   }
@@ -930,8 +931,8 @@ swapout(void){
   cprintf("The swapout swapper has been loaded.\n");
   
   for(;;){
-    acquire(&swapo.lock);
-    sleep(&swapo.chan, &swapo.lock);
+    acquire(&swap.lock);
+    sleep(&swap.chanswapout, &swap.lock);
     // do stuff
     // Find the least recently used page.
     // Save contents of that page to a file.
@@ -939,7 +940,7 @@ swapout(void){
     // Get the process to run kalloc again???? (by moving program counter back 
     // so that it executes kalloc).
     
-    release(&swapo.lock);
+    release(&swap.lock);
   }
 }
 
@@ -954,8 +955,8 @@ swapin(void){
   cprintf("The swapin swapper has been loaded.\n");
   
   for(;;){
-    acquire(&swapo.lock);
-    sleep(&swapo.chan, &swapo.lock);
+    acquire(&swap.lock);
+    sleep(&swap.chanswapin, &swap.lock);
     // do stuff
     // get page table lock.
     // Find the place to put the page in the page table.
@@ -963,7 +964,7 @@ swapin(void){
     // release page table lock.
     // delete the file from disk.
     
-    release(&swapo.lock);
+    release(&swap.lock);
   }
 }
 

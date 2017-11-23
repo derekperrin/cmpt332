@@ -1,0 +1,128 @@
+/* CMPT 332 -- Fall 2017
+* Assignment 2
+* Derek Perrin      dmp450 11050915
+* Dominic McKeith   dom258 11184543
+*/
+
+Implementation of the kernel process.
+Where changes were made in the kernel.
+
+
+
+To implement kernel processes, we created two functions the required 
+create_kernel_process() function in proc.c.
+To implement the swapper, we created two functions, swapin() and swapout().
+These functions run in their own processes, which are created by 
+create_kernel_process() which is called in the main program in main.c
+
+The create_kernel_process() function is called twice, once for the swapin()
+process and once for the swapout() process. Here the code excerpt from main()
+in main.c:
+main()
+{
+  ...other stuff...
+  userinit()
+  create_kernel_process("swapin", swapin);   <---- added this line and
+  create_kernel_process("swapout", swapout); <---- added this line
+  mpmain();
+}
+These function calls to create_kernel_proccess() occurs after userinit() to
+ensures that the priorety queues from partA have been initialized.
+
+
+
+
+Implementation of create_kernel_process().
+ - Implementation of create_kernel_process() is similar to that of fork(),
+allocproc(), and userinit(). It follows the same general structure of fork()
+but there are several key differences between. fork() copies the address 
+space, registers, etc from the parent process but create_kernel_process() does
+not do this. In places where fork() copies data from the parent process, 
+create_kernel_process() sets up the data from scratch the same way allocproc()
+and userinit() do. For example,  when fork sets up the trap frame for the child
+process, it simply copies it from the parent in one line:
+fork(){
+  ...code...
+  *np->tf = *proc->tf     <---  note this line.
+   ...other code...
+}
+create_kernel_process() instead  sets up the entire trap frame the same way 
+userinit() does, which is several lines of code instead of just one:
+create_kernel_process(){
+  ...code...
+  memset(np->tf, 0, sizeof(*np->tf))
+  np->tf->cs = (SEG_UCODE << 3) | DPL_USER
+  np->tf->ds = (SEG_UDATA << 3) | DPL_USER
+  np->tf->es = np->tf->ds
+  np->tf->ss = np->tf->ds
+  np->tf->eflags = FL_IF
+  np->tf->esp = PGSIZE
+  np->tf->eip = 0
+  np->tf->eax = 0
+  ...other code...
+}
+At the end of create_kernel_process(), it sets  np->context->eip to the 
+entrypoint function pointer that was provided in the parameter:
+create_kernel_process(const char *name, void (*entrypoint) ()){
+  ...code...
+  np->context->eip = (uint)entrypoint;
+  ...other code...
+}
+This means that the process will start running at the function entrypoint when
+it starts.
+ 
+ 
+Implementation of swap in, and swap out.
+ - We created two channels for the swapper (one for swap in, one for swap out)
+   in the swap struct (defined at the top of proc.c). These two channels are 
+   for the respective processes to sleep on when there is nothing to 
+   swap-in/swap-out. The swap struct also contains a spinlock to ensure mutual
+   exclusion to the swapper (so that only one process can swap in or swap out 
+   at one time). 
+ 
+Implementation of swap-out.
+ - In swapout(), it sleeps on the channel if there is nothing to swap out. The
+   swapper will wake up when a page needs to be swapped out. When it wakes, it
+   creates a file on the disk using filealloc() (defined in file.c), finds the
+   least recently used page, reads the respective page from the page table as a
+   stream of bytes, saves the bytes to the file that was created using 
+   filewrite() (also defined in file.c), then frees the page from the page 
+   table.
+
+ - We had to modify code in kalloc() in kalloc.c.  Here is the pseudocode for
+   the updated kalloc function:
+
+char*
+kalloc(void)
+{
+  struct run *r;
+retry:                                            <-- added this line
+  if(kmem.use_lock)
+    acquire(&kmem.lock);
+  r = kmem.freelist; // Add label for this line.
+  if(r)
+    kmem.freelist = r->next;
+  else                                            <-- added this line
+    release(&kmem.lock)                           <-- added this line
+    send request to swapper to get a page.        <-- added this line
+    put current process to sleep.                 <-- added this line
+    (on resume) jump to label retry to try again. <-- added this line
+  if(kmem.use_lock)
+    release(&kmem.lock);
+  return (char*)r;
+}
+
+Implementation of swap-in
+ - In swapin(), it sleeps on the channel if there is nothing to swap in. The 
+   swapper will wake up when a page needs to be swapped in. When it wakes, it
+   finds the needed file on the disk, finds a free page in the page table, 
+   writes the stream of bytes from the file to the page, then deletes the file
+   from disk.
+
+ - We had to modify code in trap.c such that when a page fault occurs it 
+   initiates a swap in. Here is the pseudocode:
+
+Page fault occurs:
+    - send a message to the swapper to get a page from the disk.
+    - put process to sleep.
+    - when process wakes: restart code like how it was done in the pseudocode in kalloc using a label.
