@@ -979,6 +979,7 @@ create_kernel_process(const char *name, void (*entrypoint) ()){
   
   // Clear %eax so that fork return 0 in the child
   np->tf->eax = 0;
+  /*
   for(int i = 0; i < NOFILE; i++)
     if(proc->ofile[i])                        // Change this. VERY BAD!
       np->ofile[i] = filedup(proc->ofile[i]); // Change this. VERY BAD!*/
