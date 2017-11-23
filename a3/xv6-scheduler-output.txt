@@ -1,0 +1,74 @@
+/*
+ * CMPT 332 -- Fall 2017
+ * Assignment 3
+ * Derek Perrin 		dmp450 11050915
+ * Dominic McKeith 	dom258 11184543
+ */
+
+cpu1: starting
+cpu0: starting
+The swapper has been loaded.
+sb: size 1000 nblocks 941 ninodes 200 nlog 30 logstart 2 inodestart 32 bmap start 58
+init: starting sh
+$ schedulertest
+I am a child with priority 4
+Nicing myself(pid 5) by -1
+New priority of 5 after nice: 3
+I am a child with priority 4
+Nicing myself(pid 6) by -1
+New priority of 6 after nice: 3
+I am a child with priority 4
+Nicing myself(pid 7) by -1
+New priority of 7 after nice: 3
+Current priority of 5: 3
+New priority of 5: 2	 Expected: 2
+Current priority of 6: 3
+New priority of 6: 2	 Expected: 2
+Current priority of 7: 3
+New priority of 7: 2	 Expected: 2
+Current priority of 8: 0
+New priority of 8: 2	 Expected: 2
+Current priority of 9: 0
+New priority of 9:I am a child with priority 4
+Nicing myself(pid 12) by -1
+New priority of 12 after nice: 3
+I am a child with priority 4
+Nicing myself(pid 13) by -1
+New priority of 13 after nice: 3
+I am a child with priority 4
+Nicing myself(pid 14) by -1
+New priority of 14 after nice: 3
+I am a child with priority 4
+Nicing myself(pid 10) by -1
+New priority of 10 after nice: 3
+ 2	 Expected: 2
+Current priority of 10: 3
+New priority of 10: 2	 Expected: 2
+Current priority of 11: 4
+New priority of 11: 2	 Expected: 2
+Current priority of 12: 3
+New priority of 12: 2	 Expected: 2
+Current priority of 13: 3
+New priority of 13: 2	 Expected: 2
+Current priority of 14: 3
+New priority of 14: 2	 Expected: 2
+I am a child with priority 4
+Nicing myself(pid 9) by -1
+New priority of 9 after nice: 3
+I am a child with priority 4
+Nicing myself(pid 8) by -1
+New priority of 8 after nice: 3
+I am a child with priority 4
+Nicing myself(pid 11) by -1
+New priority of 11 after nice: 1
+Test 1 passed!
+Test 2 passed!
+Test 3 passed!
+Test 4 passed!
+Test 5 passed!
+Test 6 passed!
+Test 7 passed!
+Test 8 passed!
+Test 9 passed!
+Test 10 passed!
+$ QEMU: Terminated

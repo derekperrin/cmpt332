@@ -1,0 +1,45 @@
+/*
+ * CMPT 332 -- Fall 2017
+ * Assignment 3
+ * Derek Perrin 		dmp450 11050915
+ * Dominic McKeith 	dom258 11184543
+ */
+dd if=/dev/zero of=xv6.img count=10000
+dd if=bootblock of=xv6.img conv=notrunc
+dd if=kernel of=xv6.img seek=1 conv=notrunc
+/student/cmpt332/xv6/qemu/bin/qemu-system-i386 -serial mon:stdio -hdb fs.img xv6.img -smp 2 -m 512 
+xv6...
+cpu1: starting
+cpu0: starting
+The swapper has been loaded.
+sb: size 1000 nblocks 941 ninodes 200 nlog 30 logstart 2 inodestart 32 bmap start 58
+init: starting sh
+$ memtest
+allocuvm out of memory
+Out of memory. Exiting
+allocuvm out of memory
+Out of memory. Exiting
+allocuvm out of memory
+Out of memory. Exiting
+allocuvm out of memory
+Out of memory. Exiting
+allocuvm out of memory
+Out of memory. Exiting
+allocuvm out of memory
+Out of memory. Exiting
+allocuvm out of memory
+Out of memoallocuvm out of memory
+Out of memory. Exiting
+allocuvm out of memory
+Out of memory. Exiting
+allocuvm out of memory
+Out of memory. Exiting
+allocuvm out of memory
+Out of memory. Exiting
+first child pid: 5
+ry. Exiting
+allocuvm out of memory
+Out of memory. Exiting
+allocuvm out of memory
+Out of memory. Exiting
+$ QEMU: Terminated
