@@ -232,3 +232,16 @@ The following functions need code added to them to enqueue processes:
 
 
 TESTING
+For testing the scheduler, I forked a bunch of child processes. I then had the 
+parent process keep track of all its children PIDs so it could use the
+setpriority system call, and then use the getpriority system call to verify
+it was set properly. There is chance of this failing because of concurrency, but
+xv6 is a really shitty kernel and the concurrency is really bad in there
+sometimes so we haven't had that happen yet. Inside the children processes, they
+nice their own priority by -1 to get a bit of a higher priority. It then prints
+its own priority before exiting. The test file output is attached in this folder
+somewhere.
+
+"THAT'S ALL FOLKS!"(for xv6 anyway)
+-Bugs Bunny
+
