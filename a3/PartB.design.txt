@@ -126,3 +126,15 @@ Page fault occurs:
     - send a message to the swapper to get a page from the disk.
     - put process to sleep.
     - when process wakes: restart code like how it was done in the pseudocode in kalloc using a label.
+
+
+TESTING
+change PHYSTOP to be:
+#define PHYSTOP 0x600000           // Top physical memory
+This makes it so memory runs out faster. Then what we do is run a bad loop that
+calls malloc forever until memory is runout. What should be done then is 
+the swapper should swap memory to disk so it can keep satisfying the malloc
+requests. Use a verification to make sure that the saved data is the same. Just
+store each process's pid inside the malloc'd thing. To verify, it the data
+should match the pid of the calling process. If not, it means swapping happened
+incorrectly.
