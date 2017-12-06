@@ -5,11 +5,13 @@
 *
 * Authors: Derek Perrin, Dominic McKeith
 */
+#include <stdlib.h>
+#include <stdio.h>
 
 #include <Monitor.h>
 #include <list.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <filesys-sim-monitor.h>
+
 
 /* UBC Pthreads */
 #include <os.h>
@@ -17,16 +19,8 @@
 
 char* disk; /* char because sizeof(char) = 1
                (This makes pointer arithmetic easy) */
-char* superblock;
-char* remaining_blocks;
 
 int num_inodes;
-
-struct superblock {
-    struct free_block* fsl; /* Free Space List */
-    struct inode* root_dir;
-    struct inode* free_inodes;
-};
 
 struct inode {
     int type;
@@ -42,9 +36,17 @@ struct inode {
                                       struct. */
 };
 
+struct superblock {
+    struct inode* root_dir;
+
+    struct free_block* fsl; /* Free Space List */
+    struct inode* free_inodes;
+};
+
+struct superblock* superblock;
+
 struct free_block {
-    char* this_block;
-    char* next_block;
+    struct free_block* next;
 };
 
 int my_mkdir(void){
@@ -83,7 +85,7 @@ int my_seek(void){
     return EXIT_SUCCESS;
 }
 
-int my_fs(void){
+int setup_fs(void){
     int superblock_size;
     int inode_total_size;
     int fsl_total_size;
@@ -91,6 +93,9 @@ int my_fs(void){
     int i;
     struct inode* current_inode;
     struct inode* next_inode;
+    struct free_block* current_free_block;
+    char* remaining_blocks;
+
     /* ------------------------- Create the "disk" ------------------------- */
     disk = malloc(BLOCK_SIZE * NUM_BLOCKS);
 
@@ -99,13 +104,13 @@ int my_fs(void){
     do {
         superblock_size += BLOCK_SIZE;
     } while (superblock_size < sizeof(struct superblock));
-    superblock = disk; /* "Allocating" the super block as the first block */
+    superblock = (struct superblock*) disk; /* "Allocating" the super block as the first block */
     remaining_blocks = disk + superblock_size;
 
     /* ------------------- Set up the inode memory space ------------------- */
     /* Make the amount of space inodes take up to be ~1% of the disk size */
     /* (This is what Wikipedia says is a common heuristic for inode size) */
-    i = BLOCK_SIZE * NUM_BLOCKS / 100; /* inode size to be 1% of disk size */
+    i = BLOCK_SIZE * NUM_BLOCKS / 100; /* the inode size as 1% of disk size */
     /* Next, round up the inode size so it falls on a factor of BLOCK_SIZE */
     inode_total_size = 0;
     do {
@@ -118,13 +123,26 @@ int my_fs(void){
     remaining_blocks = remaining_blocks + inode_total_size;
 
     /* ------------ Set up free inode list and put in superblock ------------ */
-    superblock->free_inodes = inode_memory;
+    superblock->free_inodes = (struct inode*) inode_memory;
     for(i = 0; i < num_inodes - 1; i += 1){
-        current_inode = inode_memory + i * sizeof(struct inode);
-        next_inode = current_inode + 1;
+        current_inode = (struct inode*) (inode_memory + i*sizeof(struct inode));
+        next_inode = current_inode + 1;/* 1 here because next_inode is struct */
         current_inode->next_free_inode = next_inode;
     }
 
-    /* ------------ -Calculate the number of nodes for the FSL ------------- */
-    /* And now I am stuck........... */
+    /* --------------------- Set up the free space list --------------------- */
+    if (sizeof(struct free_block) > BLOCK_SIZE){
+        printf("Error: Block size must be at least: %lu", sizeof(struct free_block));
+        return EXIT_FAILURE;
+    }
+
+    superblock->fsl = (struct free_block*) remaining_blocks;
+    while(remaining_blocks <= disk + NUM_BLOCKS * BLOCK_SIZE - BLOCK_SIZE){
+        struct free_block* current_block;
+        current_block = (struct free_block*) remaining_blocks;
+        current_block->next = (struct free_block*) remaining_blocks + BLOCK_SIZE;
+        remaining_blocks = remaining_blocks + BLOCK_SIZE;
+    }
+    
+    return EXIT_SUCCESS;
 }

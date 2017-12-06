@@ -19,6 +19,6 @@
 #include <filesys-sim-monitor.h>
 
 int mainp(int argc, char* argv[]) {
-  return 0;
+    setup_fs();
+    return 0;
 }
-
