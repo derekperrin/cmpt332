@@ -1,0 +1,16 @@
+#
+# CMPT 332 -- Fall 2017
+# Assignment 2
+# Derek Perrin 		dmp450 11050915
+# Dominic McKeith 	dom258 11184543
+
+- Create a bunch of threads
+- Use rand() to get a random number in each for-loop iteration.
+- Call a syscall at random based on the random number generated. Use a switch
+  statement to determine which system call to make. ALWAYS check the return code
+  of each of the system calls to see if things happened successfully or not.
+- Call Sleep(rand()) at the end of the loop iteration to sleep for a random
+  amount of time. This gives us fake concurrency.
+
+It's been a fun term!
+

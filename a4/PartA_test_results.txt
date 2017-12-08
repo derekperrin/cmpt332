@@ -1,0 +1,45 @@
+#
+# CMPT 332 -- Fall 2017
+# Assignment 2
+# Derek Perrin 		dmp450 11050915
+# Dominic McKeith 	dom258 11184543
+
+Setting up filesystem. . .
+filesystem successfully setup!
+processes created
+call to mkdir from PID 1000 success!
+call to mkdir from PID 100 success!
+call to open from PID 1001 success!
+call to mkdir from PID 1002 success!
+call to write from PID 101 success!
+call to close from PID 1000 success!
+call to close from PID 100 success!
+call to cd from PID 1002 success!
+call to mkdir from PID 1002 success!
+call to mkdir from PID 1002 success!
+call to seek from PID 1002 success!
+call to open from PID 1001 success!
+call to read from PID 100 success!
+call to write from PID 1000 success!
+call to open from PID 1001 success!
+call to close from PID 101 success!
+call to mkdir from PID 1001 success!
+call to read from PID 1001 success!
+call to open from PID 100 success!
+call to cd from PID 1002 success!
+call to seek from PID 1002 success!
+call to open from PID 101 success!
+call to seek from PID 1000 success!
+call to rm from PID 100 success!
+call to seek from PID 101 success!
+call to open from PID 1001 success!
+call to rmdir from PID 1001 success!
+call to mkdir from PID 1000 success!
+call to open from PID 1002 success!
+call to cd from PID 1000 success!
+call to rmdir from PID 1000 success!
+call to mkdir from PID 1002 success!
+call to cd from PID 101 success!
+call to rmdir from PID 100 success!
+call to rmdir from PID 1002 success!
+
