@@ -8,3 +8,4 @@ Type 'make' into the console. Run the executable filesys-sim-threads.
 
 THANKS FOR READING ME.
 
+We would appreciate bonus marks for letting people use our monitor library.
