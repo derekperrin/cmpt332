@@ -38,7 +38,6 @@ UBC_PTHREADS_DIR = /student/cmpt332/pthreads
 UBC_PTHREADS_INC = -I$(UBC_PTHREADS_DIR)
 UBC_PTHREADS_LD = -L$(UBC_PTHREADS_DIR)/lib/$(OS)$(ARCH)
 UBC_PTHREADS_LIB = -lpthreads
-OS = $(shell uname -s)
 
 .PHONY: all clean
 

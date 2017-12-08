@@ -1,0 +1,18 @@
+# CMPT 332 -- Fall 2017
+# Assignment 4
+# Derek Perrin 		dmp450 11050915
+# Dominic McKeith 	dom258 11184543
+
+Inode Structure:
+    - The data inside of our inode is as follows:
+
+    enum filetype type
+    data_block_0
+    data_block_1
+    data_block_2
+    data_block_3
+    inode* next_free_inode
+
+The point of the inode pointer is to point to the next free inode much like the
+way we implemented our list library in A1. This makes it easier to get free
+inodes when we need them.
