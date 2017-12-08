@@ -10,6 +10,8 @@
 #define BLOCK_SIZE 4096
 #define NUM_BLOCKS 64
 
+#define NUM_FILES 10
+
 enum filetype {
     directory,
     file
