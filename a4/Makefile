@@ -1,6 +1,6 @@
 #
 # CMPT 332 -- Fall 2017
-# Assignment 2
+# Assignment 4
 # Derek Perrin 		dmp450 11050915
 # Dominic McKeith 	dom258 11184543
 #

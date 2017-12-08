@@ -1,9 +1,7 @@
-/*
-* List library to be used in CMPT 332 in the Fall 2017 Term at the University
-* of Saskatchewan. This code is not to be redistributed without permission of
-* the authors.
-*
-* Authors: Derek Perrin, Dominic McKeith
+/* CMPT 332 -- Fall 2017
+* Assignment 4
+* Derek Perrin      dmp450 11050915
+* Dominic McKeith   dom258 11184543
 */
 #include <stdlib.h>
 #include <stdio.h>
@@ -126,7 +124,8 @@ int setup_fs(void){
     do {
         superblock_size += BLOCK_SIZE;
     } while (superblock_size < sizeof(struct superblock));
-    superblock = (struct superblock*) disk; /* "Allocating" the super block as the first blocks */
+    /* "Allocating" the super block as the first blocks */
+    superblock = (struct superblock*) disk;
     remaining_blocks = disk + superblock_size;
 
     /* ------------------- Set up the inode memory space ------------------- */
@@ -154,7 +153,8 @@ int setup_fs(void){
 
     /* --------------------- Set up the free space list --------------------- */
     if (sizeof(struct free_block) > BLOCK_SIZE){
-        printf("Error: Block size must be at least: %lu", sizeof(struct free_block));
+        printf("Error: Block size must be at least: %lu",
+                sizeof(struct free_block));
         return EXIT_FAILURE;
     }
 
@@ -163,7 +163,7 @@ int setup_fs(void){
     superblock->fsl = (struct free_block*) remaining_blocks;
     while(remaining_blocks <= disk + NUM_BLOCKS * BLOCK_SIZE - BLOCK_SIZE){
         current_block = (struct free_block*) remaining_blocks;
-        current_block->next = (struct free_block*) remaining_blocks + BLOCK_SIZE;
+        current_block->next = (struct free_block*)remaining_blocks + BLOCK_SIZE;
         remaining_blocks = remaining_blocks + BLOCK_SIZE;
     }
     current_block->next->next = NULL; /* Set the last block to point to null */

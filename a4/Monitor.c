@@ -1,9 +1,7 @@
-/*
-* List library to be used in CMPT 332 in the Fall 2017 Term at the University
-* of Saskatchewan. This code is not to be redistributed without permission of
-* the authors.
-*
-* Authors: Derek Perrin, Dominic McKeith
+/* CMPT 332 -- Fall 2017
+* Assignment 4
+* Derek Perrin      dmp450 11050915
+* Dominic McKeith   dom258 11184543
 */
 
 #include <Monitor.h>
