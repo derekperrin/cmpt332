@@ -3,6 +3,91 @@
 # Derek Perrin 		dmp450 11050915
 # Dominic McKeith 	dom258 11184543
 
+===================== Our File System Simulation =====================
+In our file system, there is ONE use of malloc() to allocate the disk. The disk
+is allocated to a static size, determined by the constants BLOCK_SIZE and
+NUM_BLOCKS in filesys-sim-monitor.h. A global variable, disk, in
+filesys-sim-monitor.c is allocated to BLOCK_SIZE*NUM_BLOCKS when the file system
+first starts. This is the very first thing that happenes when the file system is
+created. Everything that requires memory from that point on (the superblock,
+inodes, directories, files, etc) is taken from the memory pool, disk. To do
+this, we had to do pointer arithmetic. To make pointer arithmetic easier, we
+decided to make the data type of the disk global variable to char* because
+sizeof(char) == 1. An additional benifit is that when we write files to the
+disk, it is already in the character format so no casting is required.
+
+----- Representation of Blocks ------
+To represent blocks in the file system, we place pointers of BLOCK_SIZE
+increments throughout the memory allocated to the disk global varaible.
+A list of these pointers is stored in the superblock by using a Free Space List.
+
+----- Creation of the superblock ------
+There is a superblock struct in filesys-sim-monitor.h (as well as other
+structs). We never directly allocate memory for these structs (by using malloc)
+because if we were to do that, the memory for those structs would not be within
+the memory pointed to by the disk global variable. This means that the structs
+would not actually be contained in our file system. To avoid this, we always
+take memory from the memory pointed to by the disk global variable when we need
+to allocate anything (including the superblock). When we created the
+superblock, a do-while loop takes the respective amount of blocks needed for
+the superblock from the top of the memory pointed to by the disk global
+variable:
+
+superblock_size = 0;
+do {
+    superblock_size += BLOCK_SIZE;
+} while (superblock_size < sizeof(struct superblock));
+superblock = (struct superblock*) disk; /* "Allocating" the super block as the
+first blocks */
+remaining_blocks = disk + superblock_size;
+
+The remaining_blocks pointer points to the rest of memory AFTER the superblock.
+
+------ Creation of inodes ------
+Now that the superblock has been created, we allocate memory for the number of
+inodes needed. It is our design decision that the number of inodes will be
+constant and the amount of space taken up by inodes will be equal to
+aproximately 1% of the size of the disk. All inodes as a result are stored
+immediately after the superblock on our disk, one after another with no extra,
+wasted memory between them.
+
+ ------ Free Space List ------
+Once the inodes have been created, then the list of remaining blocks is added
+to the free space list in the superblock.
+
+
+ ------ Layout of the File System ------
+ Here is a layout of the file system on disk:
+
+        START OF DISK
+         - Superblock (may use more than one disk block)
+         - less than 1 disk block of wasted space
+         - inode0
+         - inode1
+         - inode2
+         - ...
+         - inodeX
+         - less than 1 disk block of wasted space
+         - block0 (first block available to user)
+         - block1 (second block available to user)
+         - block2 (etc)
+         - ...
+         - blockX
+        END OF DISK
+
+There is less than 1 disk block of wasted space in two places because we need
+to keep blocks on increments of BLOCK_SIZE;
+Before anything is written to disk,
+The superblock contains a pointer to block0, which points to block1, etc. This
+is the free space list
+The superblock also contains a pointer to inode0, which points to inode1, etc.
+This is the free inode list.
+
+-------
+
+In Our file system, directories are files with the type variable set to
+directory instead of file
+
 Inode Structure:
     - The data inside of our inode is as follows:
 
@@ -16,3 +101,23 @@ Inode Structure:
 The point of the inode pointer is to point to the next free inode much like the
 way we implemented our list library in A1. This makes it easier to get free
 inodes when we need them.
+
+Files can be up to BLOCK_SIZE*4 in size. This is a limitation of our file
+system.
+
+-------
+
+There are five system functions that are not system calls in
+filesys-sim-monitor.c:
+    _balloc(),
+    _bfree(),
+    _ialloc(),
+    _ifree() and,
+    _cfile.
+
+    balloc means allocates a block (takes it off of the free space list)
+    bfree means free a block (put it on the free space list)
+    ialloc means allocate an inode (take it off the the free inode list)
+    ifree means free an inode (put it on the free inode list)
+    cfile means create file (used by mkdir (a directory is a file in our file
+    systems), and used by open when it creates a file)

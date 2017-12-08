@@ -17,39 +17,23 @@
 #include <os.h>
 #include <standards.h>
 
-char* disk; /* char because sizeof(char) = 1
+char* _balloc(void);
+void _bfree(char*);
+struct inode* _ialloc(void);
+void _ifree(struct inode* inode);
+struct inode* _cfile(enum filetype type);
+
+char* disk; /* The disk itself. char because sizeof(char) = 1
                (This makes pointer arithmetic easy) */
-
-int num_inodes;
-
-struct inode {
-    int type;
-    char* data_block_0;
-    char* data_block_1;
-    char* data_block_2;
-    char* data_block_3;
-    struct inode* next_free_inode; /* Used to keep track of the free inodes,
-                                      just like how we did with our list library
-                                      for free lists. A better way to do this in
-                                      terms of memory managment would be to use
-                                      a union instead of another field in this
-                                      struct. */
-};
-
-struct superblock {
-    struct inode* root_dir;
-
-    struct free_block* fsl; /* Free Space List */
-    struct inode* free_inodes;
-};
-
 struct superblock* superblock;
 
-struct free_block {
-    struct free_block* next;
-};
-
 int my_mkdir(void){
+    enum filetype type;/*TODO: grab this memory from disk instead of the stack*/
+    struct inode* inode_for_directory;
+
+    type = directory;
+    inode_for_directory = _cfile(type);
+    inode_for_directory->type = inode_for_directory->type; /* remove warning */
     return EXIT_SUCCESS;
 }
 
@@ -85,16 +69,54 @@ int my_seek(void){
     return EXIT_SUCCESS;
 }
 
+/* FUNCTION to create a file */
+struct inode* _cfile(enum filetype type){
+    struct inode* inode_for_file;
+    inode_for_file = _ialloc();
+    inode_for_file->type = type;
+    return inode_for_file;
+}
+
+char* _balloc(void){
+    char* return_block;
+    if (superblock->fsl == NULL)
+        return NULL; /* There are no blocks left to return */
+    return_block = (char*) superblock->fsl;
+    superblock->fsl = superblock->fsl->next;
+    return return_block;
+}
+
+void _bfree(char* block){
+    struct free_block* fsl;
+    fsl = superblock->fsl;
+    if (fsl == NULL){
+        superblock->fsl = (struct free_block*) block;
+        superblock->fsl->next = NULL;
+        return;
+    }
+    superblock->fsl = (struct free_block*) block;
+    superblock->fsl->next = fsl;
+}
+
+struct inode* _ialloc(void){
+    /* Same thing as _balloc pretty much */
+    return NULL;
+}
+
+void _ifree(struct inode* inode){
+    /* Same thing as _bfree pretty much */
+}
+
 int setup_fs(void){
     int superblock_size;
     int inode_total_size;
-    int fsl_total_size;
     char* inode_memory;
     int i;
+    int num_inodes;
     struct inode* current_inode;
     struct inode* next_inode;
-    struct free_block* current_free_block;
     char* remaining_blocks;
+    struct free_block* current_block;
 
     /* ------------------------- Create the "disk" ------------------------- */
     disk = malloc(BLOCK_SIZE * NUM_BLOCKS);
@@ -104,13 +126,13 @@ int setup_fs(void){
     do {
         superblock_size += BLOCK_SIZE;
     } while (superblock_size < sizeof(struct superblock));
-    superblock = (struct superblock*) disk; /* "Allocating" the super block as the first block */
+    superblock = (struct superblock*) disk; /* "Allocating" the super block as the first blocks */
     remaining_blocks = disk + superblock_size;
 
     /* ------------------- Set up the inode memory space ------------------- */
     /* Make the amount of space inodes take up to be ~1% of the disk size */
     /* (This is what Wikipedia says is a common heuristic for inode size) */
-    i = BLOCK_SIZE * NUM_BLOCKS / 100; /* the inode size as 1% of disk size */
+    i = BLOCK_SIZE * NUM_BLOCKS / 100; /* the inode size is 1% of disk size */
     /* Next, round up the inode size so it falls on a factor of BLOCK_SIZE */
     inode_total_size = 0;
     do {
@@ -136,13 +158,17 @@ int setup_fs(void){
         return EXIT_FAILURE;
     }
 
+    /* Cast remaining memory blocks to type struct remaining_blocks to keep
+       track of them in a list */
     superblock->fsl = (struct free_block*) remaining_blocks;
     while(remaining_blocks <= disk + NUM_BLOCKS * BLOCK_SIZE - BLOCK_SIZE){
-        struct free_block* current_block;
         current_block = (struct free_block*) remaining_blocks;
         current_block->next = (struct free_block*) remaining_blocks + BLOCK_SIZE;
         remaining_blocks = remaining_blocks + BLOCK_SIZE;
     }
-    
+    current_block->next->next = NULL; /* Set the last block to point to null */
+
+    /* --------------------- Create the root directory --------------------- */
+
     return EXIT_SUCCESS;
 }
